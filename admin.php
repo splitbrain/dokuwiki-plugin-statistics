@@ -47,7 +47,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     /**
-     * output appropriate html
+     * fixme build statistics here
      */
     function html() {
         echo 'fixme';
@@ -74,8 +74,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             }
         }
 
-        $result = mysql_db_query($this->getConf('db_database'),$sql_string,$this->dblink);
-        if(!mysql_db_query($this->conf['db_database'],$sql_string,$this->dblink)){
+        $result = mysql_db_query($this->conf['db_database'],$sql_string,$this->dblink);
+        if(!$result){
             msg('DB Error: '.mysql_error($this->dblink),-1);
             return null;
         }
@@ -107,19 +107,20 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         return '';
     }
 
-
-
     /**
      * log a page access
      *
      * called from log.php
      */
     function log_access(){
+        if(!$_REQUEST['p']) return;
+
         $page    = addslashes($_REQUEST['p']);
         $ip      = addslashes($_SERVER['REMOTE_ADDR']);
-        $ua      = addslashes($_SERVER['USER_AGENT']);
-        $ua_info = addslashes($this->ua_info($_SERVER['USER_AGENT']));
+        $ua      = addslashes($_SERVER['HTTP_USER_AGENT']);
+        $ua_info = addslashes($this->ua_info($_SERVER['HTTP_USER_AGENT']));
         $ref     = addslashes($_REQUEST['r']);
+        $ref_md5 = ($ref) ? md5($ref) : '';
         $sx      = (int) $_REQUEST['sx'];
         $sy      = (int) $_REQUEST['sy'];
         $vx      = (int) $_REQUEST['vx'];
@@ -127,13 +128,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
 
-        $sql  = "INSERT INTO ".$this->getConf('db_prefix')."access
+        $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."access
                     SET page     = '$page',
                         ip       = '$ip',
                         ua       = '$ua',
                         ua_info  = '$ua_info',
                         ref      = '$ref',
-                        ref_md5  = MD5('$ref'),
+                        ref_md5  = '$ref_md5',
                         screen_x = '$sx',
                         screen_y = '$sy',
                         view_x   = '$vx',
