@@ -91,6 +91,18 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                  LIMIT 20";
         $result = $this->runSQL($sql);
         $this->html_resulttable($result,array('Incoming Links','Count'));
+
+        // top countries today
+        $sql = "SELECT B.country, COUNT(*) as cnt
+                  FROM ".$this->getConf('db_prefix')."access as A,
+                       ".$this->getConf('db_prefix')."iplocation as B
+                 WHERE DATE(A.dt) = CURDATE()
+                   AND A.ip = B.ip
+              GROUP BY B.country
+              ORDER BY cnt DESC, B.country
+                 LIMIT 20";
+        $result = $this->runSQL($sql);
+        $this->html_resulttable($result,array('Countries','Count'));
     }
 
     /**
@@ -113,8 +125,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo hsc($v);
                     echo '</a>';
                 }elseif($k == 'url'){
+                    $url = hsc($v);
+                    if(strlen($url) > 50){
+                        $url = substr($url,0,30).' &hellip; '.substr($url,-20);
+                    }
                     echo '<a href="'.$v.'" class="urlextern">';
-                    echo hsc($v);
+                    echo $url;
                     echo '</a>';
                 }elseif($k == 'html'){
                     echo $v;
