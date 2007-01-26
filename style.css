@@ -1,7 +1,7 @@
 
-div.plg_stats_timeselect ul,
-div.plg_stats_timeselect ul li,
-div.plg_stats_timeselect form {
+div.dokuwiki div.plg_stats_timeselect ul,
+div.dokuwiki div.plg_stats_timeselect ul li,
+div.dokuwiki div.plg_stats_timeselect form {
     list-style-type: none;
     display: inline;
     margin: 0;
@@ -9,16 +9,16 @@ div.plg_stats_timeselect form {
     text-align: left;
 }
 
-div.plg_stats_timeselect ul li,
-div.plg_stats_timeselect input {
+div.dokuwiki div.plg_stats_timeselect ul li,
+div.dokuwiki div.plg_stats_timeselect input {
     margin: 0 1em 0 0;
 }
 
-div.plg_stats_dashboard div table {
+div.dokuwiki div.plg_stats_dashboard div table {
     width: 100%;
 }
 
-div.plg_stats_dashboard div {
+div.dokuwiki div.plg_stats_dashboard div {
     float: left;
     width: 450px;
     border: solid 1px __border__;
@@ -26,7 +26,19 @@ div.plg_stats_dashboard div {
     margin: 1em;
 }
 
-div.plg_stats_dashboard div h2 {
+div.dokuwiki div.plg_stats_dashboard div h2,
+div.dokuwiki div.plg_stats_full h2 {
     margin: 0;
     padding-top: 0;
+}
+
+div.dokuwiki div.plg_stats_full{
+    margin: 2em 230px 1em 2em;
+    padding: 1em;
+    border: solid 1px __border__;
+}
+
+div.dokuwiki div.plg_stats_full table {
+    margin: 1em 0 0 2em;
+    width: 100%;
 }

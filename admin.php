@@ -71,16 +71,52 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * fixme build statistics here
      */
     function html() {
-        // fixme build a navigation menu in a TOC here
-
+        $this->html_toc();
         echo '<h1>Access Statistics</h1>';
         $this->html_timeselect();
 
         switch($this->opt){
-
+            case 'country':
+                $this->html_country();
+                break;
+            case 'page':
+                $this->html_page();
+                break;
+            case 'referer':
+                $this->html_referer();
+                break;
             default:
-                echo $this->html_dashboard();
+                $this->html_dashboard();
         }
+    }
+
+    function html_toc(){
+        echo '<div class="toc">';
+        echo '<div class="tocheader toctoggle" id="toc__header">';
+        echo 'Detailed Statistics';
+        echo '</div>';
+        echo '<div id="toc__inside">';
+        echo '<ul class="toc">';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Dashboard</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Pages</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=referer&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Incoming Links</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Countries</a>';
+        echo '</div></li>';
+
+        echo '</ul>';
+        echo '</div>';
+        echo '</div>';
     }
 
     /**
@@ -139,9 +175,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     /**
      * Print an introductionary screen
-     *
-     * @fixme the sql statements probably need to go into their own functions
-     *        to be reused in the syntax plugins to follow
      */
     function html_dashboard(){
         echo '<div class="plg_stats_dashboard">';
@@ -171,6 +204,32 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         echo '</div>';
     }
+
+    function html_country(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Visitor\'s Countries</h2>';
+        $result = $this->sql_countries($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,array('','Countries','Count'));
+        echo '</div>';
+    }
+
+    function html_page(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Popular Pages</h2>';
+        $result = $this->sql_pages($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,array('Page','Count'));
+        echo '</div>';
+    }
+
+    function html_referer(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Incoming Links</h2>';
+        $result = $this->sql_referer($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,array('Incoming Link','Count'));
+        echo '</div>';
+    }
+
+
 
     /**
      * Display a result in a HTML table
