@@ -1,0 +1,31 @@
+
+div.plg_stats_timeselect ul,
+div.plg_stats_timeselect ul li,
+div.plg_stats_timeselect form {
+    list-style-type: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+div.plg_stats_timeselect ul li,
+div.plg_stats_timeselect input {
+    margin: 0 1em 0 0;
+}
+
+div.plg_stats_dashboard div table {
+    width: 100%;
+}
+
+div.plg_stats_dashboard div {
+    float: left;
+    width: 450px;
+    border: solid 1px __border__;
+    padding: 1em;
+    margin: 1em;
+}
+
+div.plg_stats_dashboard div h2 {
+    margin: 0;
+    padding-top: 0;
+}

@@ -1,7 +1,0 @@
-====== Access Statistics ======
-
-FIXME there is nothing here, yet.
-
-I want some dashboard here with links to more detailed stats.
-All stats should be easy to filter by a date range. Everything
-spiced up with nice graphics.

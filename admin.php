@@ -18,6 +18,10 @@ require_once(DOKU_PLUGIN.'admin.php');
  */
 class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     var $dblink = null;
+    var $opt    = '';
+    var $from   = '';
+    var $to     = '';
+    var $tlimit = '';
 
     /**
      * return some info
@@ -44,6 +48,20 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * handle user request
      */
     function handle() {
+        $this->opt = preg_replace('/[^a-z]+/','',$_REQUEST['opt']);
+        // fixme add better sanity checking here:
+        $this->from = preg_replace('/[^\d\-]+/','',$_REQUEST['f']);
+        $this->to = preg_replace('/[^\d\-]+/','',$_REQUEST['t']);
+
+        if(!$this->from) $this->from = date('Y-m-d');
+        if(!$this->to) $this->to     = date('Y-m-d');
+
+        //setup limit clause
+        if($this->from != $this->to){
+            $this->tlimit = "DATE(A.dt) >= DATE('".$this->from."') AND DATE(A.dt) <= DATE('".$this->to."')";
+        }else{
+            $this->tlimit = "DATE(A.dt) = DATE('".$this->from."')";
+        }
     }
 
     /**
@@ -52,38 +70,93 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     function html() {
         // fixme build a navigation menu in a TOC here
 
-        switch($_REQUEST['opt']){
+        echo '<h1>Access Statistics</h1>';
+        $this->html_timeselect();
+
+        switch($this->opt){
 
             default:
-                echo $this->locale_xhtml('intro');
                 echo $this->html_dashboard();
         }
     }
 
+    /**
+     * Print the time selection menu
+     */
     function html_timeselect(){
-        echo '<form>';
+        $now   = date('Y-m-d');
+        $yday  = date('Y-m-d',time()-(60*60*24));
+        $week  = date('Y-m-d',time()-(60*60*24*7));
+        $month = date('Y-m-d',time()-(60*60*24*30));
 
+        echo '<div class="plg_stats_timeselect">';
+        echo '<span>Select the timeframe:</span>';
+        echo '<ul>';
+
+        echo '<li>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$now.'&amp;t='.$now.'">';
+        echo 'today';
+        echo '</a>';
+        echo '</li>';
+
+        echo '<li>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$yday.'&amp;t='.$yday.'">';
+        echo 'yesterday';
+        echo '</a>';
+        echo '</li>';
+
+        echo '<li>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$week.'&amp;t='.$now.'">';
+        echo 'last 7 days';
+        echo '</a>';
+        echo '</li>';
+
+        echo '<li>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$month.'&amp;t='.$now.'">';
+        echo 'last 30 days';
+        echo '</a>';
+        echo '</li>';
+
+        echo '</ul>';
+
+
+        echo '<form action="" method="get">';
+        echo '<input type="hidden" name="do" value="admin" />';
+        echo '<input type="hidden" name="page" value="statistics" />';
+        echo '<input type="hidden" name="opt" value="'.$this->opt.'" />';
+        echo '<input type="text" name="f" value="'.$this->from.'" class="edit" />';
+        echo '<input type="text" name="t" value="'.$this->to.'" class="edit" />';
+        echo '<input type="submit" value="go" class="button" />';
         echo '</form>';
+
+        echo '</div>';
     }
 
 
     function html_dashboard(){
+        echo '<div class="plg_stats_dashboard">';
+
 
         // top pages today
+        echo '<div>';
+        echo '<h2>Most popular pages</h2>';
         $sql = "SELECT page, COUNT(*) as cnt
-                  FROM ".$this->getConf('db_prefix')."access
-                 WHERE DATE(dt) = CURDATE()
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE ".$this->tlimit."
                    AND ua_type = 'browser'
               GROUP BY page
               ORDER BY cnt DESC, page
                  LIMIT 20";
         $result = $this->runSQL($sql);
         $this->html_resulttable($result,array('Pages','Count'));
+        echo '</div>';
 
         // top referer today
+        echo '<div>';
+        echo '<h2>Top incoming links</h2>';
         $sql = "SELECT ref as url, COUNT(*) as cnt
-                  FROM ".$this->getConf('db_prefix')."access
-                 WHERE DATE(dt) = CURDATE()
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE ".$this->tlimit."
                    AND ua_type = 'browser'
                    AND ref_type = 'external'
               GROUP BY ref_md5
@@ -91,18 +164,24 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                  LIMIT 20";
         $result = $this->runSQL($sql);
         $this->html_resulttable($result,array('Incoming Links','Count'));
+        echo '</div>';
 
         // top countries today
+        echo '<div>';
+        echo '<h2>Visitor\'s top countries</h2>';
         $sql = "SELECT B.country, COUNT(*) as cnt
                   FROM ".$this->getConf('db_prefix')."access as A,
                        ".$this->getConf('db_prefix')."iplocation as B
-                 WHERE DATE(A.dt) = CURDATE()
+                 WHERE ".$this->tlimit."
                    AND A.ip = B.ip
               GROUP BY B.country
               ORDER BY cnt DESC, B.country
                  LIMIT 20";
         $result = $this->runSQL($sql);
         $this->html_resulttable($result,array('Countries','Count'));
+        echo '</div>';
+
+        echo '</div>';
     }
 
     /**
