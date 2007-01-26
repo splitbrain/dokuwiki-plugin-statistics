@@ -2,6 +2,8 @@
 /**
  * Browser list based on awstats browsers database
  * $Revision: 1.54 $ - $Author: eldy $ - $Date: 2006/09/14 22:22:12 $
+ *
+ * @link http://awstats.sourceforge.net/
  */
 
 /**

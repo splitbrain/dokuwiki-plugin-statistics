@@ -2,6 +2,8 @@
 /**
  * OS list based on awstats operating systems database
  * $Revision: 1.20 $ - $Author: eldy $ - $Date: 2006/06/05 07:06:35 $
+ *
+ * @link http://awstats.sourceforge.net/
  */
 
 /**

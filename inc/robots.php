@@ -2,6 +2,8 @@
 /**
  * Robots list based on awstats robots database
  * $Revision: 1.44 $ - $Author: eldy $ - $Date: 2006/07/17 23:50:54 $
+ *
+ * @link http://awstats.sourceforge.net/
  */
 
 /**
