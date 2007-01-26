@@ -133,6 +133,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
 
+    /**
+     * Print an introductionary screen
+     *
+     * @fixme the sql statements probably need to go into their own functions
+     *        to be reused in the syntax plugins to follow
+     */
     function html_dashboard(){
         echo '<div class="plg_stats_dashboard">';
 
@@ -169,7 +175,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         // top countries today
         echo '<div>';
         echo '<h2>Visitor\'s top countries</h2>';
-        $sql = "SELECT B.country, COUNT(*) as cnt
+        $sql = "SELECT B.code AS cflag, B.country, COUNT(*) as cnt
                   FROM ".$this->getConf('db_prefix')."access as A,
                        ".$this->getConf('db_prefix')."iplocation as B
                  WHERE ".$this->tlimit."
@@ -178,7 +184,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
               ORDER BY cnt DESC, B.country
                  LIMIT 20";
         $result = $this->runSQL($sql);
-        $this->html_resulttable($result,array('Countries','Count'));
+        $this->html_resulttable($result,array('','Countries','Count'));
         echo '</div>';
 
         echo '</div>';
@@ -213,6 +219,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '</a>';
                 }elseif($k == 'html'){
                     echo $v;
+                }elseif($k == 'cflag'){
+                    echo '<img src="'.DOKU_BASE.'lib/plugin/statistics/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12"/>';
                 }else{
                     echo hsc($v);
                 }
