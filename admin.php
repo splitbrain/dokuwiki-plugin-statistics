@@ -21,6 +21,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     var $opt    = '';
     var $from   = '';
     var $to     = '';
+    var $start  = '';
     var $tlimit = '';
 
     /**
@@ -49,10 +50,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     function handle() {
         $this->opt = preg_replace('/[^a-z]+/','',$_REQUEST['opt']);
+
+        $this->start = (int) $_REQUEST['s'];
+
         // fixme add better sanity checking here:
         $this->from = preg_replace('/[^\d\-]+/','',$_REQUEST['f']);
         $this->to = preg_replace('/[^\d\-]+/','',$_REQUEST['t']);
-
         if(!$this->from) $this->from = date('Y-m-d');
         if(!$this->to) $this->to     = date('Y-m-d');
 
@@ -94,25 +97,25 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<ul>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$now.'&amp;t='.$now.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$now.'&amp;t='.$now.'&amp;s='.$this->start.'">';
         echo 'today';
         echo '</a>';
         echo '</li>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$yday.'&amp;t='.$yday.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$yday.'&amp;t='.$yday.'&amp;s='.$this->start.'">';
         echo 'yesterday';
         echo '</a>';
         echo '</li>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$week.'&amp;t='.$now.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$week.'&amp;t='.$now.'&amp;s='.$this->start.'">';
         echo 'last 7 days';
         echo '</a>';
         echo '</li>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$month.'&amp;t='.$now.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$month.'&amp;t='.$now.'&amp;s='.$this->start.'">';
         echo 'last 30 days';
         echo '</a>';
         echo '</li>';
@@ -124,6 +127,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<input type="hidden" name="do" value="admin" />';
         echo '<input type="hidden" name="page" value="statistics" />';
         echo '<input type="hidden" name="opt" value="'.$this->opt.'" />';
+        echo '<input type="hidden" name="s" value="'.$this->start.'" />';
         echo '<input type="text" name="f" value="'.$this->from.'" class="edit" />';
         echo '<input type="text" name="t" value="'.$this->to.'" class="edit" />';
         echo '<input type="submit" value="go" class="button" />';
@@ -146,45 +150,23 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         // top pages today
         echo '<div>';
         echo '<h2>Most popular pages</h2>';
-        $sql = "SELECT page, COUNT(*) as cnt
-                  FROM ".$this->getConf('db_prefix')."access as A
-                 WHERE ".$this->tlimit."
-                   AND ua_type = 'browser'
-              GROUP BY page
-              ORDER BY cnt DESC, page
-                 LIMIT 20";
-        $result = $this->runSQL($sql);
+        $result = $this->sql_pages($this->tlimit,$this->start,15);
         $this->html_resulttable($result,array('Pages','Count'));
         echo '</div>';
 
         // top referer today
         echo '<div>';
         echo '<h2>Top incoming links</h2>';
-        $sql = "SELECT ref as url, COUNT(*) as cnt
-                  FROM ".$this->getConf('db_prefix')."access as A
-                 WHERE ".$this->tlimit."
-                   AND ua_type = 'browser'
-                   AND ref_type = 'external'
-              GROUP BY ref_md5
-              ORDER BY cnt DESC, url
-                 LIMIT 20";
-        $result = $this->runSQL($sql);
+        $result = $this->sql_referer($this->tlimit,$this->start,15);
         $this->html_resulttable($result,array('Incoming Links','Count'));
         echo '</div>';
 
         // top countries today
         echo '<div>';
         echo '<h2>Visitor\'s top countries</h2>';
-        $sql = "SELECT B.code AS cflag, B.country, COUNT(*) as cnt
-                  FROM ".$this->getConf('db_prefix')."access as A,
-                       ".$this->getConf('db_prefix')."iplocation as B
-                 WHERE ".$this->tlimit."
-                   AND A.ip = B.ip
-              GROUP BY B.country
-              ORDER BY cnt DESC, B.country
-                 LIMIT 20";
-        $result = $this->runSQL($sql);
-        $this->html_resulttable($result,array('','Countries','Count'));
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+//        $result = $this->sql_countries($this->tlimit,$this->start,15);
+//        $this->html_resulttable($result,array('','Countries','Count'));
         echo '</div>';
 
         echo '</div>';
@@ -220,7 +202,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 }elseif($k == 'html'){
                     echo $v;
                 }elseif($k == 'cflag'){
-                    echo '<img src="'.DOKU_BASE.'lib/plugin/statistics/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12"/>';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12"/>';
                 }else{
                     echo hsc($v);
                 }
@@ -231,6 +213,93 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '</table>';
     }
 
+    /**
+     * Create an image
+     */
+    function img_build($img){
+        include(dirname(__FILE__).'/inc/AGC.class.php');
+
+        switch($img){
+            case 'country':
+                // build top countries + other
+                $result = $this->sql_countries($this->tlimit,$this->start,0);
+                $data = array();
+                $top = 0;
+                foreach($result as $row){
+                    if($top < 7){
+                        $data[$row['country']] = $row['cnt'];
+                    }else{
+                        $data['other'] += $row['cnt'];
+                    }
+                    $top++;
+                }
+                $pie = new AGC(300, 200);
+                $pie->setProp("showkey",true);
+                $pie->setProp("showval",false);
+                $pie->setProp("showgrid",false);
+                $pie->setProp("type","pie");
+                $pie->setProp("keyinfo",1);
+                $pie->setProp("keysize",8);
+                $pie->setProp("keywidspc",-50);
+                $pie->setProp("key",array_keys($data));
+                $pie->addBulkPoints(array_values($data));
+                @$pie->graph();
+                $pie->showGraph();
+                break;
+            default:
+                $this->sendGIF();
+        }
+    }
+
+
+    function sql_pages($tlimit,$start=0,$limit=20){
+        $sql = "SELECT page, COUNT(*) as cnt
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+              GROUP BY page
+              ORDER BY cnt DESC, page".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_referer($tlimit,$start=0,$limit=20){
+        $sql = "SELECT ref as url, COUNT(*) as cnt
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+                   AND ref_type = 'external'
+              GROUP BY ref_md5
+              ORDER BY cnt DESC, url".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_countries($tlimit,$start=0,$limit=20){
+        $sql = "SELECT B.code AS cflag, B.country, COUNT(*) as cnt
+                  FROM ".$this->getConf('db_prefix')."access as A,
+                       ".$this->getConf('db_prefix')."iplocation as B
+                 WHERE $tlimit
+                   AND A.ip = B.ip
+              GROUP BY B.country
+              ORDER BY cnt DESC, B.country".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    /**
+     * Builds a limit clause
+     */
+    function sql_limit($start,$limit){
+        $start = (int) $start;
+        $limit = (int) $limit;
+        if($limit){
+            return " LIMIT $start,$limit";
+        }elseif($start){
+            return " OFFSET $start";
+        }
+        return '';
+    }
 
     /**
      * Return a link to the DB, opening the connection if needed
