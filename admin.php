@@ -69,14 +69,28 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     function html_dashboard(){
 
+        // top pages today
         $sql = "SELECT page, COUNT(*) as cnt
                   FROM ".$this->getConf('db_prefix')."access
                  WHERE DATE(dt) = CURDATE()
+                   AND ua_type = 'browser'
               GROUP BY page
               ORDER BY cnt DESC, page
                  LIMIT 20";
         $result = $this->runSQL($sql);
-        $this->html_resulttable($result,array('Page','Count'));
+        $this->html_resulttable($result,array('Pages','Count'));
+
+        // top referer today
+        $sql = "SELECT ref as url, COUNT(*) as cnt
+                  FROM ".$this->getConf('db_prefix')."access
+                 WHERE DATE(dt) = CURDATE()
+                   AND ua_type = 'browser'
+                   AND ref_type = 'external'
+              GROUP BY ref_md5
+              ORDER BY cnt DESC, url
+                 LIMIT 20";
+        $result = $this->runSQL($sql);
+        $this->html_resulttable($result,array('Incoming Links','Count'));
     }
 
     /**
