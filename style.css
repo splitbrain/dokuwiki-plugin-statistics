@@ -14,6 +14,17 @@ div.dokuwiki div.plg_stats_timeselect input {
     margin: 0 1em 0 0;
 }
 
+div.dokuwiki div.plg_stats_timeselect input.edit {
+    width: 8em;
+}
+
+div.dokuwiki div.plg_stats_timeselect {
+    margin-bottom: 1em;
+}
+
+div.dokuwiki div.plg_stats_dashboard {
+    clear: both;
+}
 div.dokuwiki div.plg_stats_dashboard div table {
     width: 100%;
 }
@@ -32,6 +43,21 @@ div.dokuwiki div.plg_stats_full h2 {
     padding-top: 0;
 }
 
+
+div.dokuwiki div.plg_stats_dashboard div.plg_stats_top ul,
+div.dokuwiki div.plg_stats_dashboard div.plg_stats_top ul li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    color: __text__;
+    font-size: 120%;
+}
+
+div.dokuwiki div.plg_stats_dashboard div.plg_stats_top ul li span {
+    font-weight: bold;
+    font-size: 120%;
+}
+
 div.dokuwiki div.plg_stats_full{
     margin: 2em 230px 1em 2em;
     padding: 1em;
@@ -41,4 +67,13 @@ div.dokuwiki div.plg_stats_full{
 div.dokuwiki div.plg_stats_full table {
     margin: 1em 0 0 2em;
     width: 100%;
+}
+
+div.dokuwiki div.plg_stats_full p {
+    margin: 1em;
+}
+
+div.dokuwiki td.plg_stats_Xcnt {
+    text-align: right;
+    padding-right: 1em;
 }

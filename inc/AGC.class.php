@@ -500,17 +500,13 @@ class AGC {
         }
     }
 
-    function drawBar($x1,$y1,$x2,$y2,$ccol){
+    function drawBar($x1,$y1,$x2,$y2,$ccol,$ex){
         $mode = $this->getProp("barstyle",0);
         $colorlist = $this->getProp("colorlist",false);
         if($colorlist === true || $colorlist === 1 || $colorlist === "true")
             $colorlist = array(array(255, 203, 3),array(220, 101, 29),array(189, 24, 51),array(214, 0, 127),array(98, 1, 96),array(0, 62, 136),array(0, 102, 179),array(0, 145, 195),array(0, 115, 106),array(178, 210, 52),array(137, 91, 74),array(82, 56, 47));
-        if($colorlist)
-            $color = $colorlist[$ccol];
-            if(!isset($color[3]))
-                $color[3] = 0;
-        else
-            $color = $this->getProp("color",array(0,0,255,0));
+        if($colorlist) $color = $colorlist[$ccol];
+        if(!isset($color[3])) $color = $this->getProp("color",array(0,0,255,0),$ex);
         $bord = $this->getProp("bordercolor",array(0,0,0,0));
         switch($mode){
             case 0:
@@ -736,7 +732,7 @@ class AGC {
                 }
             elseif($this->getProp("type","line")=="bar")
                 for($i=0;$i<$this->numPoints[$ex];$i++)
-                    $this->drawBar($g*$i+($i==0?$g*(1-$this->getProp("barwidth",1)):0),$this->height-$yPts[$i],$g*$i+$this->getProp("barwidth",1)*$g,$this->height-1,$i);
+                    $this->drawBar($g*$i+($i==0?$g*(1-$this->getProp("barwidth",1)):0),$this->height-$yPts[$i],$g*$i+$this->getProp("barwidth",1)*$g,$this->height-1,$i,$ex);
             elseif($this->getProp("type","line")=="pie")
                 $this->drawPie($ex);
             elseif($this->getProp("type","line")!="dot")

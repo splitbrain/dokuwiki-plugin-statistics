@@ -177,21 +177,37 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Print an introductionary screen
      */
     function html_dashboard(){
+        echo '<p>This page gives you a quick overview on what is happening in your Wiki. For detailed lists
+              choose a topic from the list.</p>';
+
+
         echo '<div class="plg_stats_dashboard">';
+
+        // general info
+        echo '<div class="plg_stats_top">';
+        $result = $this->sql_aggregate($this->tlimit);
+        echo '<ul>';
+        echo '<li><span>'.$result['pageviews'].'</span> page views</li>';
+        echo '<li><span>'.$result['sessions'].'</span> visitors (sessions)</li>';
+        echo '<li><span>'.$result['users'].'</span> logged in users</li>';
+
+        echo '</ul>';
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=trend&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        echo '</div>';
 
 
         // top pages today
         echo '<div>';
         echo '<h2>Most popular pages</h2>';
         $result = $this->sql_pages($this->tlimit,$this->start,15);
-        $this->html_resulttable($result,array('Pages','Count'));
+        $this->html_resulttable($result);
         echo '</div>';
 
         // top referer today
         echo '<div>';
         echo '<h2>Top incoming links</h2>';
         $result = $this->sql_referer($this->tlimit,$this->start,15);
-        $this->html_resulttable($result,array('Incoming Links','Count'));
+        $this->html_resulttable($result);
         echo '</div>';
 
         // top countries today
@@ -209,7 +225,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_full">';
         echo '<h2>Visitor\'s Countries</h2>';
         $result = $this->sql_countries($this->tlimit,$this->start,150);
-        $this->html_resulttable($result,array('','Countries','Count'));
+        $this->html_resulttable($result);
         echo '</div>';
     }
 
@@ -217,15 +233,25 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_full">';
         echo '<h2>Popular Pages</h2>';
         $result = $this->sql_pages($this->tlimit,$this->start,150);
-        $this->html_resulttable($result,array('Page','Count'));
+        $this->html_resulttable($result);
         echo '</div>';
     }
 
     function html_referer(){
         echo '<div class="plg_stats_full">';
         echo '<h2>Incoming Links</h2>';
+        $result = $this->sql_aggregate($this->tlimit);
+
+        $all    = $result['search']+$result['external']+$result['direct'];
+
+        printf("<p>Of all %d external visits, %d (%.1f%%) were bookmarked (direct) accesses,
+                %d (%.1f%%) came from search engines and %d (%.1f%%) were referred through
+                links from other pages.</p>",$all,$result['direct'],(100*$result['direct']/$all),
+                $result['search'],(100*$result['search']/$all),$result['external'],
+                (100*$result['external']/$all));
+
         $result = $this->sql_referer($this->tlimit,$this->start,150);
-        $this->html_resulttable($result,array('Incoming Link','Count'));
+        $this->html_resulttable($result);
         echo '</div>';
     }
 
@@ -234,26 +260,28 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     /**
      * Display a result in a HTML table
      */
-    function html_resulttable($result,$header){
+    function html_resulttable($result,$header=''){
         echo '<table>';
-        echo '<tr>';
-        foreach($header as $h){
-            echo '<th>'.hsc($h).'</th>';
+        if(is_array($header)){
+            echo '<tr>';
+            foreach($header as $h){
+                echo '<th>'.hsc($h).'</th>';
+            }
+            echo '</tr>';
         }
-        echo '</tr>';
 
         foreach($result as $row){
             echo '<tr>';
             foreach($row as $k => $v){
-                echo '<td class="stats_'.$k.'">';
+                echo '<td class="plg_stats_X'.$k.'">';
                 if($k == 'page'){
                     echo '<a href="'.wl($v).'" class="wikilink1">';
                     echo hsc($v);
                     echo '</a>';
                 }elseif($k == 'url'){
                     $url = hsc($v);
-                    if(strlen($url) > 50){
-                        $url = substr($url,0,30).' &hellip; '.substr($url,-20);
+                    if(strlen($url) > 45){
+                        $url = substr($url,0,30).' &hellip; '.substr($url,-15);
                     }
                     echo '<a href="'.$v.'" class="urlextern">';
                     echo $url;
@@ -305,14 +333,118 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 @$pie->graph();
                 $pie->showGraph();
                 break;
+            case 'trend':
+                $hours  = ($this->from == $this->to);
+                $result = $this->sql_trend($this->tlimit,$hours);
+                $data1   = array();
+                $data2   = array();
+
+                $graph = new AGC(400, 150);
+                $graph->setProp("type","bar");
+                $graph->setProp("showgrid",false);
+                $graph->setProp("barwidth",.8);
+                $graph->setColor('color',0,'blue');
+                $graph->setColor('color',1,'red');
+
+                if($hours){
+                    //preset $hours
+                    for($i=0;$i<24;$i++){
+                        $data1[$i] = 0;
+                        $data2[$i] = 0;
+                        $graph->setProp("scale",array(' 0h','   4h','   8h','    12h','    16h','    20h','    24h'));
+                    }
+                }else{
+                    $graph->setProp("scale",array(next(array_keys($data1)),$this->to));
+                }
+
+                foreach($result as $row){
+                    $data1[$row['time']] = $row['pageviews'];
+                    $data2[$row['time']] = $row['sessions'];
+                }
+
+                foreach($data1 as $key => $val){
+                    $graph->addPoint($val,$key,0);
+                }
+                foreach($data2 as $key => $val){
+                    $graph->addPoint($val,$key,1);
+                }
+
+                @$graph->graph();
+                $graph->showGraph();
+
             default:
                 $this->sendGIF();
         }
     }
 
 
+    /**
+     * Return some aggregated statistics
+     */
+    function sql_aggregate($tlimit){
+        $data = array();
+
+        $sql = "SELECT ref_type, COUNT(*) as cnt
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+              GROUP BY ref_type";
+        $result = $this->runSQL($sql);
+
+        foreach($result as $row){
+            if($row['ref_type'] == 'search')   $data['search']   = $row['cnt'];
+            if($row['ref_type'] == 'external') $data['external'] = $row['cnt'];
+            if($row['ref_type'] == 'internal') $data['internal'] = $row['cnt'];
+            if($row['ref_type'] == '')         $data['direct']   = $row['cnt'];
+        }
+
+        $sql = "SELECT COUNT(DISTINCT session) as sessions,
+                       COUNT(session) as views,
+                       COUNT(DISTINCT user) as users
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'";
+        $result = $this->runSQL($sql);
+
+        $data['users']     = $result[0]['users'] - 1; // subtract empty user
+        $data['sessions']  = $result[0]['sessions'];
+        $data['pageviews'] = $result[0]['views'];
+
+        $sql = "SELECT COUNT(id) as robots
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'robot'";
+        $result = $this->runSQL($sql);
+        $data['robots'] = $result[0]['robots'];
+
+        return $data;
+    }
+
+    function sql_trend($tlimit,$hours=false){
+        if($hours){
+            $sql = "SELECT HOUR(dt) as time,
+                           COUNT(DISTINCT session) as sessions,
+                           COUNT(session) as pageviews
+                      FROM ".$this->getConf('db_prefix')."access as A
+                     WHERE $tlimit
+                       AND ua_type = 'browser'
+                  GROUP BY HOUR(dt)
+                  ORDER BY time";
+        }else{
+            $sql = "SELECT DATE(dt) as time,
+                           COUNT(DISTINCT session) as sessions,
+                           COUNT(session) as pageviews
+                      FROM ".$this->getConf('db_prefix')."access as A
+                     WHERE $tlimit
+                       AND ua_type = 'browser'
+                  GROUP BY DATE(dt)
+                  ORDER BY time";
+        }
+        return $this->runSQL($sql);
+    }
+
     function sql_pages($tlimit,$start=0,$limit=20){
-        $sql = "SELECT page, COUNT(*) as cnt
+        $sql = "SELECT COUNT(*) as cnt, page
                   FROM ".$this->getConf('db_prefix')."access as A
                  WHERE $tlimit
                    AND ua_type = 'browser'
@@ -323,7 +455,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function sql_referer($tlimit,$start=0,$limit=20){
-        $sql = "SELECT ref as url, COUNT(*) as cnt
+        $sql = "SELECT COUNT(*) as cnt, ref as url
                   FROM ".$this->getConf('db_prefix')."access as A
                  WHERE $tlimit
                    AND ua_type = 'browser'
@@ -335,7 +467,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function sql_countries($tlimit,$start=0,$limit=20){
-        $sql = "SELECT B.code AS cflag, B.country, COUNT(*) as cnt
+        $sql = "SELECT COUNT(*) as cnt, B.code AS cflag, B.country
                   FROM ".$this->getConf('db_prefix')."access as A,
                        ".$this->getConf('db_prefix')."iplocation as B
                  WHERE $tlimit
@@ -390,7 +522,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         $result = mysql_db_query($this->conf['db_database'],$sql_string,$link);
         if(!$result){
-            msg('DB Error: '.mysql_error($link),-1);
+            msg('DB Error: '.mysql_error($link).' '.hsc($sql_string),-1);
             return null;
         }
 
