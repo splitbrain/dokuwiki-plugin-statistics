@@ -370,6 +370,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '</a>';
                 }elseif($k == 'url'){
                     $url = hsc($v);
+                    $url = preg_replace('/^https?:\/\/(www\.)?/','',$url);
                     if(strlen($url) > 45){
                         $url = substr($url,0,30).' &hellip; '.substr($url,-15);
                     }
