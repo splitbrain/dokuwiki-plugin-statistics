@@ -284,11 +284,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         $all    = $result['search']+$result['external']+$result['direct'];
 
-        printf("<p>Of all %d external visits, %d (%.1f%%) were bookmarked (direct) accesses,
-                %d (%.1f%%) came from search engines and %d (%.1f%%) were referred through
-                links from other pages.</p>",$all,$result['direct'],(100*$result['direct']/$all),
-                $result['search'],(100*$result['search']/$all),$result['external'],
-                (100*$result['external']/$all));
+        if($all){
+            printf("<p>Of all %d external visits, %d (%.1f%%) were bookmarked (direct) accesses,
+                    %d (%.1f%%) came from search engines and %d (%.1f%%) were referred through
+                    links from other pages.</p>",$all,$result['direct'],(100*$result['direct']/$all),
+                    $result['search'],(100*$result['search']/$all),$result['external'],
+                    (100*$result['external']/$all));
+        }
 
         $result = $this->sql_referer($this->tlimit,$this->start,150);
         $this->html_resulttable($result);
