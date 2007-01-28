@@ -59,3 +59,7 @@ CREATE TABLE `stats_iplocation` (
   KEY `code` (`code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--- added 2007-01-28
+ALTER TABLE `stats_access` CHANGE `dt` `dt` DATETIME NOT NULL ;
+ALTER TABLE `stats_access` ADD `js` TINYINT( 1 ) NOT NULL AFTER `view_y` ;
+UPDATE `stats_access` SET js = 1 ;

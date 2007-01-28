@@ -48,7 +48,8 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                                                    '&sx='+screen.width+
                                                    '&sy='+screen.height+
                                                    '&vx='+window.innerWidth+
-                                                   '&vy='+window.innerHeight;";
+                                                   '&vy='+window.innerHeight+
+                                                   '&js=1';";
 
         $event->data['script'][] = array( 'type'=>'text/javascript', 'charset'=>'utf-8', '_data'=>$data);
     }

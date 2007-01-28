@@ -82,6 +82,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             case 'page':
                 $this->html_page();
                 break;
+            case 'browser':
+                $this->html_browser();
+                break;
             case 'referer':
                 $this->html_referer();
                 break;
@@ -108,6 +111,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=referer&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Incoming Links</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=browser&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Browsers</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
@@ -237,6 +244,17 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '</div>';
     }
 
+    function html_browser(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Browser Shootout</h2>';
+
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+
+        $result = $this->sql_browsers($this->tlimit,$this->start,150,true);
+        $this->html_resulttable($result);
+        echo '</div>';
+    }
+
     function html_referer(){
         echo '<div class="plg_stats_full">';
         echo '<h2>Incoming Links</h2>';
@@ -286,10 +304,16 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '<a href="'.$v.'" class="urlextern">';
                     echo $url;
                     echo '</a>';
+                }elseif($k == 'browser'){
+                    include_once(dirname(__FILE__).'/inc/browsers.php');
+                    echo $BrowsersHashIDLib[$v];
+                }elseif($k == 'bflag'){
+                    include_once(dirname(__FILE__).'/inc/browsers.php');
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/browser/'.$BrowsersHashIcon[$v].'.png" alt="'.hsc($v).'" />';
+                }elseif($k == 'cflag'){
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12" />';
                 }elseif($k == 'html'){
                     echo $v;
-                }elseif($k == 'cflag'){
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12"/>';
                 }else{
                     echo hsc($v);
                 }
@@ -333,6 +357,34 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 @$pie->graph();
                 $pie->showGraph();
                 break;
+            case 'browser':
+                // build top browsers + other
+                include_once(dirname(__FILE__).'/inc/browsers.php');
+
+                $result = $this->sql_browsers($this->tlimit,$this->start,0,false);
+                $data = array();
+                $top = 0;
+                foreach($result as $row){
+                    if($top < 5){
+                        $data[strip_tags($BrowsersHashIDLib[$row['ua_info']])] = $row['cnt'];
+                    }else{
+                        $data['other'] += $row['cnt'];
+                    }
+                    $top++;
+                }
+                $pie = new AGC(300, 200);
+                $pie->setProp("showkey",true);
+                $pie->setProp("showval",false);
+                $pie->setProp("showgrid",false);
+                $pie->setProp("type","pie");
+                $pie->setProp("keyinfo",1);
+                $pie->setProp("keysize",8);
+                $pie->setProp("keywidspc",-50);
+                $pie->setProp("key",array_keys($data));
+                $pie->addBulkPoints(array_values($data));
+                @$pie->graph();
+                $pie->showGraph();
+                break;
             case 'trend':
                 $hours  = ($this->from == $this->to);
                 $result = $this->sql_trend($this->tlimit,$hours);
@@ -343,6 +395,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 $graph->setProp("type","bar");
                 $graph->setProp("showgrid",false);
                 $graph->setProp("barwidth",.8);
+
                 $graph->setColor('color',0,'blue');
                 $graph->setColor('color',1,'red');
 
@@ -406,7 +459,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                    AND ua_type = 'browser'";
         $result = $this->runSQL($sql);
 
-        $data['users']     = $result[0]['users'] - 1; // subtract empty user
+        $data['users']     = max($result[0]['users'] - 1,0); // subtract empty user
         $data['sessions']  = $result[0]['sessions'];
         $data['pageviews'] = $result[0]['views'];
 
@@ -477,6 +530,26 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
               $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
     }
+
+    function sql_browsers($tlimit,$start=0,$limit=20,$ext=true){
+        if($ext){
+            $sel = 'ua_info as bflag, ua_info as browser, ua_ver';
+            $grp = 'ua_info, ua_ver';
+        }else{
+            $grp = 'ua_info';
+            $sel = 'ua_info';
+        }
+
+        $sql = "SELECT COUNT(*) as cnt, $sel
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+              GROUP BY $grp
+              ORDER BY cnt DESC, ua_info".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
 
     /**
      * Builds a limit clause
@@ -601,6 +674,18 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 }
             }
         }
+
+        // check versions for Safari and Opera
+        if($name == 'safari'){
+            if(preg_match('/safari\/([\d\.]*)/i',$ua,$match)){
+                $ver = $BrowsersSafariBuildToVersionHash[$match[1]];
+            }
+        }elseif($name == 'opera'){
+            if(preg_match('/opera[\/ ]([\d\.]*)/i',$ua,$match)){
+                $ver = $match[1];
+            }
+        }
+
 
         // check OS for browsers
         if($type == 'browser'){
@@ -730,11 +815,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $sy      = (int) $_REQUEST['sy'];
         $vx      = (int) $_REQUEST['vx'];
         $vy      = (int) $_REQUEST['vy'];
+        $js      = (int) $_REQUEST['js'];
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
 
         $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."access
-                    SET page     = '$page',
+                    SET dt       = NOW(),
+                        page     = '$page',
                         ip       = '$ip',
                         ua       = '$ua',
                         ua_info  = '$ua_info',
@@ -748,6 +835,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                         screen_y = '$sy',
                         view_x   = '$vx',
                         view_y   = '$vy',
+                        js       = '$js',
                         user     = '$user',
                         session  = '$session'";
         $ok = $this->runSQL($sql);

@@ -661,6 +661,11 @@ class AGC {
         $back = imagecolorallocate($this->img,$backcolor[0],$backcolor[1],$backcolor[2]);
         $grid = imagecolorallocate($this->img,$grids[0],$grids[1],$grids[2]);
         imagefill($this->img,0,0,$back);//Fill with back color
+
+        if($this->getProp("transparent",false)){
+            imagecolortransparent($this->img,$back);
+        }
+
         if($this->getProp("showgrid",true)){
             for($i=0;$i<round($this->getProp("sclline")*$this->getProp("onfreq"),0);$i++)//Create grid line style
                 $style[] = $grid;
