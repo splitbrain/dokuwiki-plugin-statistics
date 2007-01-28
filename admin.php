@@ -91,6 +91,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             case 'referer':
                 $this->html_referer();
                 break;
+            case 'newreferer':
+                $this->html_newreferer();
+                break;
             default:
                 $this->html_dashboard();
         }
@@ -114,6 +117,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=referer&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Incoming Links</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">New Incoming Links</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
@@ -219,8 +226,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         // top referer today
         echo '<div>';
-        echo '<h2>Top incoming links</h2>';
-        $result = $this->sql_referer($this->tlimit,$this->start,15);
+        echo '<h2>Newest incoming links</h2>';
+        $result = $this->sql_newreferer($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
         echo '</div>';
 
@@ -284,6 +291,17 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 (100*$result['external']/$all));
 
         $result = $this->sql_referer($this->tlimit,$this->start,150);
+        $this->html_resulttable($result);
+        echo '</div>';
+    }
+
+    function html_newreferer(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>New Incoming Links</h2>';
+        echo '<p>The following incoming links where first logged in the selected time frame,
+              and have never been seen before.</p>';
+
+        $result = $this->sql_newreferer($this->tlimit,$this->start,150);
         $this->html_resulttable($result);
         echo '</div>';
     }
@@ -542,6 +560,19 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                    AND ua_type = 'browser'
                    AND ref_type = 'external'
               GROUP BY ref_md5
+              ORDER BY cnt DESC, url".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_newreferer($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(*) as cnt, ref as url
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE ua_type = 'browser'
+                   AND ref_type = 'external'
+              GROUP BY ref_md5
+                HAVING DATE(MIN(dt)) >= DATE('".$this->from."')
+                   AND DATE(MIN(dt)) <= DATE('".$this->to."')
               ORDER BY cnt DESC, url".
               $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
