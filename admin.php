@@ -108,35 +108,50 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<ul class="toc">';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Dashboard</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=&amp;f='.$this->from.'&amp;t='.$this->to.'">Dashboard</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Pages</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'">Pages</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=referer&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Incoming Links</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=referer&amp;f='.$this->from.'&amp;t='.$this->to.'">Incoming Links</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">New Incoming Links</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'">New Incoming Links</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=browser&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Browsers</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=browser&amp;f='.$this->from.'&amp;t='.$this->to.'">Browsers</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=os&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Operating Systems</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=os&amp;f='.$this->from.'&amp;t='.$this->to.'">Operating Systems</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Countries</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'">Countries</a>';
         echo '</div></li>';
 
         echo '</ul>';
         echo '</div>';
+        echo '</div>';
+    }
+
+    function html_pager($limit,$next){
+        echo '<div class="plg_stats_pager">';
+
+        if($this->start > 0){
+            $go = max($this->start - $limit, 0);
+            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$go.'" class="prev">previous page</a>';
+        }
+
+        if($next){
+            $go = $this->start + $limit;
+            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$go.'" class="next">next page</a>';
+        }
         echo '</div>';
     }
 
@@ -154,25 +169,25 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<ul>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$now.'&amp;t='.$now.'&amp;s='.$this->start.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$now.'&amp;t='.$now.'">';
         echo 'today';
         echo '</a>';
         echo '</li>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$yday.'&amp;t='.$yday.'&amp;s='.$this->start.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$yday.'&amp;t='.$yday.'">';
         echo 'yesterday';
         echo '</a>';
         echo '</li>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$week.'&amp;t='.$now.'&amp;s='.$this->start.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$week.'&amp;t='.$now.'">';
         echo 'last 7 days';
         echo '</a>';
         echo '</li>';
 
         echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$month.'&amp;t='.$now.'&amp;s='.$this->start.'">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$month.'&amp;t='.$now.'">';
         echo 'last 30 days';
         echo '</a>';
         echo '</li>';
@@ -184,7 +199,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<input type="hidden" name="do" value="admin" />';
         echo '<input type="hidden" name="page" value="statistics" />';
         echo '<input type="hidden" name="opt" value="'.$this->opt.'" />';
-        echo '<input type="hidden" name="s" value="'.$this->start.'" />';
         echo '<input type="text" name="f" value="'.$this->from.'" class="edit" />';
         echo '<input type="text" name="t" value="'.$this->to.'" class="edit" />';
         echo '<input type="submit" value="go" class="button" />';
@@ -222,6 +236,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>Most popular pages</h2>';
         $result = $this->sql_pages($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
         echo '</div>';
 
         // top referer today
@@ -229,14 +244,14 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>Newest incoming links</h2>';
         $result = $this->sql_newreferer($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
         echo '</div>';
 
         // top countries today
         echo '<div>';
         echo '<h2>Visitor\'s top countries</h2>';
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
-//        $result = $this->sql_countries($this->tlimit,$this->start,15);
-//        $this->html_resulttable($result,array('','Countries','Count'));
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
         echo '</div>';
 
         echo '</div>';
@@ -247,7 +262,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>Visitor\'s Countries</h2>';
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->sql_countries($this->tlimit,$this->start,150);
-        $this->html_resulttable($result);
+        $this->html_resulttable($result,'',150);
         echo '</div>';
     }
 
@@ -255,7 +270,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_full">';
         echo '<h2>Popular Pages</h2>';
         $result = $this->sql_pages($this->tlimit,$this->start,150);
-        $this->html_resulttable($result);
+        $this->html_resulttable($result,'',150);
         echo '</div>';
     }
 
@@ -264,16 +279,15 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>Browser Shootout</h2>';
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->sql_browsers($this->tlimit,$this->start,150,true);
-        $this->html_resulttable($result);
+        $this->html_resulttable($result,'',150);
         echo '</div>';
     }
 
     function html_os(){
         echo '<div class="plg_stats_full">';
         echo '<h2>Operating Systems</h2>';
-//        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->sql_os($this->tlimit,$this->start,150,true);
-        $this->html_resulttable($result);
+        $this->html_resulttable($result,'',150);
         echo '</div>';
     }
 
@@ -293,7 +307,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
 
         $result = $this->sql_referer($this->tlimit,$this->start,150);
-        $this->html_resulttable($result);
+        $this->html_resulttable($result,'',150);
         echo '</div>';
     }
 
@@ -304,7 +318,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
               and have never been seen before.</p>';
 
         $result = $this->sql_newreferer($this->tlimit,$this->start,150);
-        $this->html_resulttable($result);
+        $this->html_resulttable($result,'',150);
         echo '</div>';
     }
 
@@ -313,7 +327,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     /**
      * Display a result in a HTML table
      */
-    function html_resulttable($result,$header=''){
+    function html_resulttable($result,$header='',$pager=0){
         echo '<table>';
         if(is_array($header)){
             echo '<tr>';
@@ -323,6 +337,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             echo '</tr>';
         }
 
+        $count = 0;
         foreach($result as $row){
             echo '<tr>';
             foreach($row as $k => $v){
@@ -364,8 +379,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 echo '</td>';
             }
             echo '</tr>';
+
+            if($pager && ($count == $pager)) break;
+            $count++;
         }
         echo '</table>';
+
+        if($pager) $this->html_pager($pager,count($result) > $pager);
     }
 
     /**
@@ -630,6 +650,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $start = (int) $start;
         $limit = (int) $limit;
         if($limit){
+            $limit += 1;
             return " LIMIT $start,$limit";
         }elseif($start){
             return " OFFSET $start";

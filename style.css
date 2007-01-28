@@ -73,6 +73,18 @@ div.dokuwiki div.plg_stats_full p {
     margin: 1em;
 }
 
+div.dokuwiki div.plg_stats_full div.plg_stats_pager {
+    height: 2em;
+}
+
+div.dokuwiki div.plg_stats_full div.plg_stats_pager a.next {
+    float: right;
+}
+
+div.dokuwiki div.plg_stats_full div.plg_stats_pager a.prev {
+    float: left;
+}
+
 div.dokuwiki td.plg_stats_Xcnt {
     text-align: right;
     padding-right: 1em;
