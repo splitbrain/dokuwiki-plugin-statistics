@@ -85,6 +85,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             case 'browser':
                 $this->html_browser();
                 break;
+            case 'os':
+                $this->html_os();
+                break;
             case 'referer':
                 $this->html_referer();
                 break;
@@ -115,6 +118,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=browser&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Browsers</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=os&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$this->start.'">Operating Systems</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
@@ -231,6 +238,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     function html_country(){
         echo '<div class="plg_stats_full">';
         echo '<h2>Visitor\'s Countries</h2>';
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->sql_countries($this->tlimit,$this->start,150);
         $this->html_resulttable($result);
         echo '</div>';
@@ -247,10 +255,17 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     function html_browser(){
         echo '<div class="plg_stats_full">';
         echo '<h2>Browser Shootout</h2>';
-
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
-
         $result = $this->sql_browsers($this->tlimit,$this->start,150,true);
+        $this->html_resulttable($result);
+        echo '</div>';
+    }
+
+    function html_os(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Operating Systems</h2>';
+//        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        $result = $this->sql_os($this->tlimit,$this->start,150,true);
         $this->html_resulttable($result);
         echo '</div>';
     }
@@ -310,6 +325,15 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 }elseif($k == 'bflag'){
                     include_once(dirname(__FILE__).'/inc/browsers.php');
                     echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/browser/'.$BrowsersHashIcon[$v].'.png" alt="'.hsc($v).'" />';
+                }elseif($k == 'os'){
+                    if(empty($v)){
+                        echo 'unknown';
+                    }else{
+                        include_once(dirname(__FILE__).'/inc/operating_systems.php');
+                        echo $OSHashLib[$v];
+                    }
+                }elseif($k == 'osflag'){
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/os/'.hsc($v).'.png" alt="'.hsc($v).'" />';
                 }elseif($k == 'cflag'){
                     echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12" />';
                 }elseif($k == 'html'){
@@ -473,6 +497,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         return $data;
     }
 
+    /**
+     * standard statistics follow, only accesses made by browsers are counted
+     * for general stats like browser or OS only visitors not pageviews are counted
+     */
     function sql_trend($tlimit,$hours=false){
         if($hours){
             $sql = "SELECT HOUR(dt) as time,
@@ -520,7 +548,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function sql_countries($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(*) as cnt, B.code AS cflag, B.country
+        $sql = "SELECT COUNT(DISTINCT session) as cnt, B.code AS cflag, B.country
                   FROM ".$this->getConf('db_prefix')."access as A,
                        ".$this->getConf('db_prefix')."iplocation as B
                  WHERE $tlimit
@@ -540,12 +568,23 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             $sel = 'ua_info';
         }
 
-        $sql = "SELECT COUNT(*) as cnt, $sel
+        $sql = "SELECT COUNT(DISTINCT session) as cnt, $sel
                   FROM ".$this->getConf('db_prefix')."access as A
                  WHERE $tlimit
                    AND ua_type = 'browser'
               GROUP BY $grp
               ORDER BY cnt DESC, ua_info".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_os($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(DISTINCT session) as cnt, os as osflag, os
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+              GROUP BY os
+              ORDER BY cnt DESC, os".
               $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
     }
