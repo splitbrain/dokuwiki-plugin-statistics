@@ -94,6 +94,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             case 'newreferer':
                 $this->html_newreferer();
                 break;
+            case 'resolution':
+                $this->html_resolution();
+                break;
             default:
                 $this->html_dashboard();
         }
@@ -133,6 +136,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'">Countries</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=resolution&amp;f='.$this->from.'&amp;t='.$this->to.'">Resolution</a>';
         echo '</div></li>';
 
         echo '</ul>';
@@ -322,6 +329,21 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '</div>';
     }
 
+    function html_resolution(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Resolution</h2>';
+        $result = $this->sql_resolution($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+
+        echo '<p>While the data above gives you some info about the resolution your visitors use, it does not tell you
+              much about about the real size of their browser windows. The graphic below shows the size distribution of
+              the view port (document area) of your visitor\'s browsers. Please note that this data can not be logged
+              in all browsers. Because users may resize their browser window while browsing your site the statistics may
+              be flawed. Take it with a grain of salt.</p>';
+
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=view&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        echo '</div>';
+    }
 
 
     /**
@@ -448,6 +470,29 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 $pie->addBulkPoints(array_values($data));
                 @$pie->graph();
                 $pie->showGraph();
+                break;
+            case 'view':
+
+                $graph = new AGC(400, 200);
+                $graph->setColor('color',0,'blue');
+                $graph->setColor('color',1,'red');
+                $graph->setProp("showkey",true);
+                $graph->setProp("key",'view port width',0);
+                $graph->setProp("key",'view port height',1);
+
+                $result = $this->sql_viewport($this->tlimit,0,0,true);
+                foreach($result as $row){
+                    $graph->addPoint($row['cnt'],$row['res_x'],0);
+                }
+
+                $result = $this->sql_viewport($this->tlimit,0,0,false);
+                foreach($result as $row){
+                    $graph->addPoint($row['cnt'],$row['res_y'],1);
+                }
+
+                @$graph->graph();
+                $graph->showGraph();
+
                 break;
             case 'trend':
                 $hours  = ($this->from == $this->to);
@@ -638,6 +683,39 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                    AND ua_type = 'browser'
               GROUP BY os
               ORDER BY cnt DESC, os".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_resolution($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(DISTINCT session) as cnt, CONCAT(screen_x,'x',screen_y) as res
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type  = 'browser'
+                   AND screen_x != 0
+              GROUP BY screen_x, screen_y
+              ORDER BY cnt DESC, screen_x".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_viewport($tlimit,$start=0,$limit=20,$x=true){
+        if($x){
+            $col = 'view_x';
+            $res = 'res_x';
+        }else{
+            $col = 'view_y';
+            $res = 'res_y';
+        }
+
+        $sql = "SELECT COUNT(*) as cnt,
+                       ROUND($col/10)*10 as $res
+                  FROM ".$this->getConf('db_prefix')."access as A
+                 WHERE $tlimit
+                   AND ua_type  = 'browser'
+                   AND $col != 0
+              GROUP BY $res
+              ORDER BY cnt DESC, $res".
               $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
     }
