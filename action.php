@@ -44,11 +44,20 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
 
         // we create an image object and load the logger here
         $data = "var plugin_statistics_image = new Image();
+                 var plugin_statistics_uid   = DokuCookie.getValue('plgstats');
+                 if(!plugin_statistics_uid){
+                    plugin_statistics_uid = new Date().getTime()+'-'+Math.floor(Math.random()*32000);
+                    DokuCookie.setValue('plgstats',plugin_statistics_uid);
+                    if(!DokuCookie.getCookie(DokuCookie.name)){
+                        plugin_statistics_uid = '';
+                    }
+                 }
                  plugin_statistics_image.src = '$url&r='+encodeURIComponent(document.referrer)+
                                                    '&sx='+screen.width+
                                                    '&sy='+screen.height+
                                                    '&vx='+window.innerWidth+
                                                    '&vy='+window.innerHeight+
+                                                   '&uid='+plugin_statistics_uid+
                                                    '&js=1';";
 
         $event->data['script'][] = array( 'type'=>'text/javascript', 'charset'=>'utf-8', '_data'=>$data);

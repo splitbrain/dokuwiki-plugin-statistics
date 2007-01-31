@@ -230,7 +230,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $result = $this->sql_aggregate($this->tlimit);
         echo '<ul>';
         echo '<li><span>'.$result['pageviews'].'</span> page views</li>';
-        echo '<li><span>'.$result['sessions'].'</span> visitors (sessions)</li>';
+        echo '<li><span>'.$result['sessions'].'</span> visits (sessions)</li>';
+        echo '<li><span>'.$result['visitors'].'</span> unique visitors</li>';
         echo '<li><span>'.$result['users'].'</span> logged in users</li>';
 
         echo '</ul>';
@@ -508,12 +509,14 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
                 $graph->setColor('color',0,'blue');
                 $graph->setColor('color',1,'red');
+                $graph->setColor('color',2,'yellow');
 
                 if($hours){
                     //preset $hours
                     for($i=0;$i<24;$i++){
                         $data1[$i] = 0;
                         $data2[$i] = 0;
+                        $data3[$i] = 0;
                         $graph->setProp("scale",array(' 0h','   4h','   8h','    12h','    16h','    20h','    24h'));
                     }
                 }else{
@@ -523,6 +526,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 foreach($result as $row){
                     $data1[$row['time']] = $row['pageviews'];
                     $data2[$row['time']] = $row['sessions'];
+                    $data3[$row['time']] = $row['visitors'];
                 }
 
                 foreach($data1 as $key => $val){
@@ -530,6 +534,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 }
                 foreach($data2 as $key => $val){
                     $graph->addPoint($val,$key,1);
+                }
+                foreach($data3 as $key => $val){
+                    $graph->addPoint($val,$key,2);
                 }
 
                 @$graph->graph();
@@ -563,7 +570,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         $sql = "SELECT COUNT(DISTINCT session) as sessions,
                        COUNT(session) as views,
-                       COUNT(DISTINCT user) as users
+                       COUNT(DISTINCT user) as users,
+                       COUNT(DISTINCT uid) as visitors
                   FROM ".$this->getConf('db_prefix')."access as A
                  WHERE $tlimit
                    AND ua_type = 'browser'";
@@ -572,6 +580,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $data['users']     = max($result[0]['users'] - 1,0); // subtract empty user
         $data['sessions']  = $result[0]['sessions'];
         $data['pageviews'] = $result[0]['views'];
+        $data['visitors']  = $result[0]['visitors'];
 
         $sql = "SELECT COUNT(id) as robots
                   FROM ".$this->getConf('db_prefix')."access as A
@@ -591,7 +600,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         if($hours){
             $sql = "SELECT HOUR(dt) as time,
                            COUNT(DISTINCT session) as sessions,
-                           COUNT(session) as pageviews
+                           COUNT(session) as pageviews,
+                           COUNT(DISTINCT uid) as visitors
                       FROM ".$this->getConf('db_prefix')."access as A
                      WHERE $tlimit
                        AND ua_type = 'browser'
@@ -600,7 +610,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }else{
             $sql = "SELECT DATE(dt) as time,
                            COUNT(DISTINCT session) as sessions,
-                           COUNT(session) as pageviews
+                           COUNT(session) as pageviews,
+                            COUNT(DISTINCT uid) as visitors
                       FROM ".$this->getConf('db_prefix')."access as A
                      WHERE $tlimit
                        AND ua_type = 'browser'
@@ -988,8 +999,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $vx      = (int) $_REQUEST['vx'];
         $vy      = (int) $_REQUEST['vy'];
         $js      = (int) $_REQUEST['js'];
+        $uid     = addslashes($_REQUEST['uid']);
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
+        if(!$uid) $uid = $session;
 
         $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."access
                     SET dt       = NOW(),
@@ -1009,7 +1022,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                         view_y   = '$vy',
                         js       = '$js',
                         user     = '$user',
-                        session  = '$session'";
+                        session  = '$session',
+                        uid      = '$uid'";
         $ok = $this->runSQL($sql);
         if(is_null($ok)){
             global $MSG;

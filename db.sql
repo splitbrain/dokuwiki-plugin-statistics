@@ -63,3 +63,6 @@ CREATE TABLE `stats_iplocation` (
 ALTER TABLE `stats_access` CHANGE `dt` `dt` DATETIME NOT NULL ;
 ALTER TABLE `stats_access` ADD `js` TINYINT( 1 ) NOT NULL AFTER `view_y` ;
 UPDATE `stats_access` SET js = 1 ;
+
+--- added 2007-01-31
+ALTER TABLE `stats_access` ADD `uid` VARCHAR( 50 ) NOT NULL ;
