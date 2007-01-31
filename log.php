@@ -13,9 +13,13 @@ require_once(DOKU_INC.'inc/auth.php');
 require_once(dirname(__FILE__).'/admin.php');
 session_write_close();
 
-// all feature are in the admin plugin
+// all features are in the admin plugin
 $plugin = new admin_plugin_statistics();
-$plugin->log_access();
+if($_REQUEST['ol']){
+    $plugin->log_outgoing();
+}else{
+    $plugin->log_access();
+}
 $plugin->sendGIF();
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :

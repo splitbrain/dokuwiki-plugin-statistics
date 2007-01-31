@@ -40,9 +40,12 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         global $ID;
         if($ACT != 'show') return; //only log page views for now
 
-        $url = DOKU_BASE.'lib/plugins/statistics/log.php?p='.rawurlencode($ID).'&rnd='.time();
+        $base = DOKU_BASE.'lib/plugins/statistics/log.php?rnd='.time();
+        $view = $base.'&p='.rawurlencode($ID);
 
-        // we create an image object and load the logger here
+        // we create an image object and load the logger here, we also attach the same logger
+        // to all external links - we won't use the JS dispatcher because we only want all this
+        // on the 'show' action
         $data = "var plugin_statistics_image = new Image();
                  var plugin_statistics_uid   = DokuCookie.getValue('plgstats');
                  if(!plugin_statistics_uid){
@@ -52,14 +55,24 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                         plugin_statistics_uid = '';
                     }
                  }
-                 plugin_statistics_image.src = '$url&r='+encodeURIComponent(document.referrer)+
-                                                   '&sx='+screen.width+
-                                                   '&sy='+screen.height+
-                                                   '&vx='+window.innerWidth+
-                                                   '&vy='+window.innerHeight+
-                                                   '&uid='+plugin_statistics_uid+
-                                                   '&js=1';";
-
+                 plugin_statistics_image.src = '$view&r='+encodeURIComponent(document.referrer)+
+                                                    '&sx='+screen.width+
+                                                    '&sy='+screen.height+
+                                                    '&vx='+window.innerWidth+
+                                                    '&vy='+window.innerHeight+
+                                                    '&uid='+plugin_statistics_uid+
+                                                    '&js=1';
+                addInitEvent(function(){
+                    var links = getElementsByClass('urlextern',null,'a');
+                    for(var i=0; i<links.length; i++){
+                        addEvent(links[i],'click',function(){
+                            var img = new Image();
+                            img.src = '$base&ol='+encodeURIComponent(this.href);
+                            return true;
+                        });
+                    }
+                });
+                ";
         $event->data['script'][] = array( 'type'=>'text/javascript', 'charset'=>'utf-8', '_data'=>$data);
     }
 

@@ -66,3 +66,14 @@ UPDATE `stats_access` SET js = 1 ;
 
 --- added 2007-01-31
 ALTER TABLE `stats_access` ADD `uid` VARCHAR( 50 ) NOT NULL ;
+
+
+CREATE TABLE `stats_outlinks` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `dt` datetime NOT NULL,
+  `session` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `link_md5` varchar(32) collate utf8_unicode_ci NOT NULL,
+  `link` text collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `link_md5` (`link_md5`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

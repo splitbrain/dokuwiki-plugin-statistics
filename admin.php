@@ -94,6 +94,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             case 'newreferer':
                 $this->html_newreferer();
                 break;
+            case 'outlinks':
+                $this->html_outlinks();
+                break;
             case 'resolution':
                 $this->html_resolution();
                 break;
@@ -124,6 +127,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'">New Incoming Links</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=outlinks&amp;f='.$this->from.'&amp;t='.$this->to.'">Outgoing Links</a>';
         echo '</div></li>';
 
         echo '<li><div class="li">';
@@ -229,9 +236,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_top">';
         $result = $this->sql_aggregate($this->tlimit);
         echo '<ul>';
-        echo '<li><span>'.$result['pageviews'].'</span> page views</li>';
-        echo '<li><span>'.$result['sessions'].'</span> visits (sessions)</li>';
-        echo '<li><span>'.$result['visitors'].'</span> unique visitors</li>';
+        echo '<li><span>'.$result['pageviews'].'</span> page views </li>';
+        echo '<li><span>'.$result['sessions'].'</span> visits (sessions) </li>';
+        echo '<li><span>'.$result['visitors'].'</span> unique visitors </li>';
         echo '<li><span>'.$result['users'].'</span> logged in users</li>';
 
         echo '</ul>';
@@ -329,6 +336,16 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $this->html_resulttable($result,'',150);
         echo '</div>';
     }
+
+    function html_outlinks(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Outgoing Links</h2>';
+
+        $result = $this->sql_outlinks($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+        echo '</div>';
+    }
+
 
     function html_resolution(){
         echo '<div class="plg_stats_full">';
@@ -618,6 +635,16 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                   GROUP BY DATE(dt)
                   ORDER BY time";
         }
+        return $this->runSQL($sql);
+    }
+
+    function sql_outlinks($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(*) as cnt, link as url
+                  FROM ".$this->getConf('db_prefix')."outlinks as A
+                 WHERE $tlimit
+              GROUP BY link
+              ORDER BY cnt DESC, link".
+              $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
     }
 
@@ -953,6 +980,30 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                             city    = '$city',
                             host    = '$host'";
             $this->runSQL($sql);
+        }
+    }
+
+    /**
+     * log a click on an external link
+     *
+     * called from log.php
+     */
+    function log_outgoing(){
+        if(!$_REQUEST['ol']) return;
+
+        $link_md5 = md5($link);
+        $link     = addslashes($_REQUEST['ol']);
+        $session  = addslashes(session_id());
+
+        $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."outlinks
+                    SET dt       = NOW(),
+                        session  = '$session',
+                        link_md5 = '$link_md5',
+                        link     = '$link'";
+        $ok = $this->runSQL($sql);
+        if(is_null($ok)){
+            global $MSG;
+            print_r($MSG);
         }
     }
 
