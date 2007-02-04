@@ -72,4 +72,4 @@ var plugin_statistics = {
             }
         }
     }
-}
+};
