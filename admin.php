@@ -100,6 +100,15 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             case 'resolution':
                 $this->html_resolution();
                 break;
+            case 'searchphrases':
+                $this->html_searchphrases();
+                break;
+            case 'searchwords':
+                $this->html_searchwords();
+                break;
+            case 'searchengines':
+                $this->html_searchengines();
+                break;
             default:
                 $this->html_dashboard();
         }
@@ -132,6 +141,19 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=outlinks&amp;f='.$this->from.'&amp;t='.$this->to.'">Outgoing Links</a>';
         echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'">Search Phrases</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchwords&amp;f='.$this->from.'&amp;t='.$this->to.'">Search Words</a>';
+        echo '</div></li>';
+
+        echo '<li><div class="li">';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchengines&amp;f='.$this->from.'&amp;t='.$this->to.'">Search Engines</a>';
+        echo '</div></li>';
+
 
         echo '<li><div class="li">';
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=browser&amp;f='.$this->from.'&amp;t='.$this->to.'">Browsers</a>';
@@ -346,6 +368,33 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '</div>';
     }
 
+    function html_searchphrases(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Search Phrases</h2>';
+
+        $result = $this->sql_searchphrases($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+        echo '</div>';
+    }
+
+    function html_searchwords(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Search Words</h2>';
+
+        $result = $this->sql_searchwords($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+        echo '</div>';
+    }
+
+    function html_searchengines(){
+        echo '<div class="plg_stats_full">';
+        echo '<h2>Search Engines</h2>';
+
+        $result = $this->sql_searchengines($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+        echo '</div>';
+    }
+
 
     function html_resolution(){
         echo '<div class="plg_stats_full">';
@@ -395,6 +444,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '<a href="'.$v.'" class="urlextern">';
                     echo $url;
                     echo '</a>';
+                }elseif($k == 'engine'){
+                    include_once(dirname(__FILE__).'/inc/search_engines.php');
+                    echo $SearchEnginesHashLib[$v];
                 }elseif($k == 'browser'){
                     include_once(dirname(__FILE__).'/inc/browsers.php');
                     echo $BrowsersHashIDLib[$v];
@@ -635,6 +687,38 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                   GROUP BY DATE(dt)
                   ORDER BY time";
         }
+        return $this->runSQL($sql);
+    }
+
+    function sql_searchengines($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(*) as cnt, engine
+                  FROM ".$this->getConf('db_prefix')."search as A
+                 WHERE $tlimit
+              GROUP BY engine
+              ORDER BY cnt DESC, engine".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_searchphrases($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(*) as cnt, query
+                  FROM ".$this->getConf('db_prefix')."search as A
+                 WHERE $tlimit
+              GROUP BY query
+              ORDER BY cnt DESC, query".
+              $this->sql_limit($start,$limit);
+        return $this->runSQL($sql);
+    }
+
+    function sql_searchwords($tlimit,$start=0,$limit=20){
+        $sql = "SELECT COUNT(*) as cnt, word
+                  FROM ".$this->getConf('db_prefix')."search as A,
+                       ".$this->getConf('db_prefix')."searchwords as B
+                 WHERE $tlimit
+                   AND A.id = B.sid
+              GROUP BY word
+              ORDER BY cnt DESC, word".
+              $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
     }
 
