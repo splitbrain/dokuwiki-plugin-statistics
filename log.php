@@ -13,6 +13,9 @@ require_once(DOKU_INC.'inc/auth.php');
 require_once(dirname(__FILE__).'/admin.php');
 session_write_close();
 
+# for tsting:
+#$_REQUEST['r'] = 'http://www.google.de/search?q=python+imdb+fetch&btnG=Suche&hl=de&client=firefox-a&rls=org.mozilla%3Ade%3Aofficial';
+
 // all features are in the admin plugin
 $plugin = new admin_plugin_statistics();
 if($_REQUEST['ol']){

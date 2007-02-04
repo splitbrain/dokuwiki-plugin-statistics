@@ -897,7 +897,7 @@ $SearchEnginesHashLib = array(
     '1klik' => '1Klik',
     'ofir' => 'Ofir',
     # Minor dutch search engines
-    'ilse' => 'Ilse'
+    'ilse' => 'Ilse',
     'vindex' => 'Vindex.nl',
     # Minor english search engines
     'askuk' => '<a href="http://uk.ask.com/" title="Search Engine Home Page [new window]" target="_blank">Ask UK</a>',

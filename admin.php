@@ -929,15 +929,15 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Log search queries
      */
     function log_search($referer,&$type){
-        $referer = strtr($referer,' +','__');
         $referer = strtolower($referer);
+        $ref     = strtr($referer,' +','__');
 
         include(dirname(__FILE__).'/inc/search_engines.php');
 
         foreach($SearchEnginesSearchIDOrder as $regex){
-            if(preg_match('/'.$regex.'/',$referer)){
+            if(preg_match('/'.$regex.'/',$ref)){
                 if(!$NotSearchEnginesKeys[$regex] ||
-                   !preg_match('/'.$NotSearchEnginesKeys[$regex].'/',$referer)){
+                   !preg_match('/'.$NotSearchEnginesKeys[$regex].'/',$ref)){
                     // it's a search engine!
                     $type = 'search';
                     break;
@@ -961,7 +961,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $query = preg_replace('/%0[ad]/',' ',$query);                  // LF CR
         $query = preg_replace('/%2[02789abc]/',' ',$query);            // space " ' ( ) * + ,
         $query = preg_replace('/%3a/',' ',$query);                     // :
-        $query = strtr('+\'()"*,:','        ',$query);                 // badly encoded
+        $query = strtr($query,'+\'()"*,:','        ');                 // badly encoded
         $query = preg_replace('/ +/',' ',$query);                      // ws compact
         $query = trim($query);
         $query = urldecode($query);
@@ -971,7 +971,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         // log it!
         $page  = addslashes($_REQUEST['p']);
         $query = addslashes($query);
-        $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."search
+        $sql  = "INSERT INTO ".$this->getConf('db_prefix')."search
                     SET dt       = NOW(),
                         page     = '$page',
                         query    = '$query',
@@ -986,6 +986,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         // log single keywords
         $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
         foreach($words as $word){
+            if(!$word) continue;
             $word = addslashes($word);
             $sql = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."searchwords
                        SET sid  = $id,
