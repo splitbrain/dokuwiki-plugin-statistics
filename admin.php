@@ -926,8 +926,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     /**
-     *
-     * @fixme: put search engine queries in seperate table here
+     * Log search queries
      */
     function log_search($referer,&$type){
         $referer = strtr($referer,' +','__');
@@ -947,7 +946,56 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
         if($type != 'search') return; // we're done here
 
-        #fixme now do the keyword magic!
+        // extract query
+        $engine = $SearchEnginesHashID[$regex];
+        $param = $SearchEnginesKnownUrl[$engine];
+        if($param && preg_match('/'.$param.'(.*?)[&$]/',$referer,$match)){
+            $query = array_pop($match);
+        }elseif(preg_match('/'.$WordsToExtractSearchUrl.'(.*?)[&$]/',$referer,$match)){
+            $query = array_pop($match);
+        }
+        if(!$query) return; // we failed
+
+        // clean the query
+        $query = preg_replace('/^(cache|related):[^\+]+/','',$query);  // non-search queries
+        $query = preg_replace('/%0[ad]/',' ',$query);                  // LF CR
+        $query = preg_replace('/%2[02789abc]/',' ',$query);            // space " ' ( ) * + ,
+        $query = preg_replace('/%3a/',' ',$query);                     // :
+        $query = strtr('+\'()"*,:','        ',$query);                 // badly encoded
+        $query = preg_replace('/ +/',' ',$query);                      // ws compact
+        $query = trim($query);
+        $query = urldecode($query);
+        if(!utf8_check($query)) $query = utf8_encode($query);          // assume latin1 if not utf8
+        $query = utf8_strtolower($query);
+
+        // log it!
+        $page  = addslashes($_REQUEST['p']);
+        $query = addslashes($query);
+        $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."search
+                    SET dt       = NOW(),
+                        page     = '$page',
+                        query    = '$query',
+                        engine   = '$engine'";
+        $id = $this->runSQL($sql);
+        if(is_null($id)){
+            global $MSG;
+            print_r($MSG);
+            return;
+        }
+
+        // log single keywords
+        $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
+        foreach($words as $word){
+            $word = addslashes($word);
+            $sql = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."searchwords
+                       SET sid  = $id,
+                           word = '$word'";
+            $ok = $this->runSQL($sql);
+            if(is_null($ok)){
+                global $MSG;
+                print_r($MSG);
+            }
+        }
     }
 
     /**

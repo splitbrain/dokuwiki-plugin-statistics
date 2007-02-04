@@ -81,4 +81,17 @@ CREATE TABLE `stats_outlinks` (
 --- added 2007-02-04
 ALTER TABLE `stats_outlinks` ADD `page` VARCHAR( 255 ) NOT NULL AFTER `dt` ;
 
+CREATE TABLE `stats_search` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `dt` datetime NOT NULL,
+  `page` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `query` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `engine` varchar(255) collate utf8_unicode_ci NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `stats_searchwords` (
+  `sid` BIGINT UNSIGNED NOT NULL ,
+  `word` VARCHAR( 255 ) NOT NULL ,
+  PRIMARY KEY ( `sid` , `word` )
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci;
