@@ -994,10 +994,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $link_md5 = md5($link);
         $link     = addslashes($_REQUEST['ol']);
         $session  = addslashes(session_id());
+        $page     = addslashes($_REQUEST['p']);
 
         $sql  = "INSERT DELAYED INTO ".$this->getConf('db_prefix')."outlinks
                     SET dt       = NOW(),
                         session  = '$session',
+                        page     = '$page',
                         link_md5 = '$link_md5',
                         link     = '$link'";
         $ok = $this->runSQL($sql);

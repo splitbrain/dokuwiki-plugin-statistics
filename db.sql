@@ -77,3 +77,8 @@ CREATE TABLE `stats_outlinks` (
   PRIMARY KEY  (`id`),
   KEY `link_md5` (`link_md5`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--- added 2007-02-04
+ALTER TABLE `stats_outlinks` ADD `page` VARCHAR( 255 ) NOT NULL AFTER `dt` ;
+
+

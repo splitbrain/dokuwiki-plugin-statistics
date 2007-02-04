@@ -53,7 +53,8 @@ var plugin_statistics = {
         var img = new Image();
         img.src = DOKU_BASE+'lib/plugins/statistics/log.php'+
                             '?rnd='+now.getTime()+
-                            '&ol='+encodeURIComponent(e.target.href);
+                            '&ol='+encodeURIComponent(e.target.href)+
+                            '&p='+plugin_statistics.id;
         plugin_statistics.pause(500);
         return true;
     },
