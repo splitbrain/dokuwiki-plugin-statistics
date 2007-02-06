@@ -50,21 +50,29 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     function handle() {
         $this->opt = preg_replace('/[^a-z]+/','',$_REQUEST['opt']);
-
         $this->start = (int) $_REQUEST['s'];
+        $this->setTimeframe($_REQUEST['f'],$_REQUEST['t']);
+    }
 
+    /**
+     * set limit clause
+     */
+    function setTimeframe($from,$to){
         // fixme add better sanity checking here:
-        $this->from = preg_replace('/[^\d\-]+/','',$_REQUEST['f']);
-        $this->to = preg_replace('/[^\d\-]+/','',$_REQUEST['t']);
-        if(!$this->from) $this->from = date('Y-m-d');
-        if(!$this->to) $this->to     = date('Y-m-d');
+        $from = preg_replace('/[^\d\-]+/','',$from);
+        $to   = preg_replace('/[^\d\-]+/','',$to);
+        if(!$from) $from = date('Y-m-d');
+        if(!$to)   $to   = date('Y-m-d');
 
         //setup limit clause
-        if($this->from != $this->to){
-            $this->tlimit = "DATE(A.dt) >= DATE('".$this->from."') AND DATE(A.dt) <= DATE('".$this->to."')";
+        if($from != $to){
+            $tlimit = "DATE(A.dt) >= DATE('".$from."') AND DATE(A.dt) <= DATE('".$to."')";
         }else{
-            $this->tlimit = "DATE(A.dt) = DATE('".$this->from."')";
+            $tlimit = "DATE(A.dt) = DATE('".$from."')";
         }
+        $this->tlimit = $tlimit;
+        $this->from   = $from;
+        $this->to     = $to;
     }
 
     /**
