@@ -73,3 +73,4 @@ var plugin_statistics = {
         }
     }
 };
+

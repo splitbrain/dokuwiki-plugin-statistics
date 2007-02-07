@@ -292,11 +292,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
         echo '</div>';
 
-        // top countries today
+        // top searches today
         echo '<div>';
-        echo '<h2>Visitor\'s top countries</h2>';
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
+        echo '<h2>Top search phrases</h2>';
+        $result = $this->sql_searchphrases($this->tlimit,$this->start,15);
+        $this->html_resulttable($result);
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
         echo '</div>';
 
         echo '</div>';
@@ -452,6 +453,19 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '<a href="'.$v.'" class="urlextern">';
                     echo $url;
                     echo '</a>';
+                }elseif($k == 'lookup'){
+                    echo '<a href="http://www.google.com/search?q='.rawurlencode($v).'">';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/google.png" alt="lookup in Google" border="0" />';
+                    echo '</a> ';
+
+                    echo '<a href="http://search.yahoo.com/search?p='.rawurlencode($v).'">';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/yahoo.png" alt="lookup in Yahoo" border="0" />';
+                    echo '</a> ';
+
+                    echo '<a href="http://search.msn.com/results.aspx?q='.rawurlencode($v).'">';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/msn.png" alt="lookup in MSN Live" border="0" />';
+                    echo '</a> ';
+
                 }elseif($k == 'engine'){
                     include_once(dirname(__FILE__).'/inc/search_engines.php');
                     echo $SearchEnginesHashLib[$v];
@@ -709,7 +723,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function sql_searchphrases($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(*) as cnt, query
+        $sql = "SELECT COUNT(*) as cnt, query, query as lookup
                   FROM ".$this->getConf('db_prefix')."search as A
                  WHERE $tlimit
               GROUP BY query
@@ -719,7 +733,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function sql_searchwords($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(*) as cnt, word
+        $sql = "SELECT COUNT(*) as cnt, word, word as lookup
                   FROM ".$this->getConf('db_prefix')."search as A,
                        ".$this->getConf('db_prefix')."searchwords as B
                  WHERE $tlimit
