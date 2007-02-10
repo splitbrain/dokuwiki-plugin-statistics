@@ -130,12 +130,12 @@ $SearchEnginesSearchIDOrder = array(
     'mywebsearch\.com',
     'as\.starware\.com',
     # Social Bookmarking Services
-    'del\.icio\.us',
-    'digg\.com',
-    'stumbleupon\.com',
-    'swik\.net',
-    'segnalo\.alice\.it',
-    'ineffabile\.it',
+    #'del\.icio\.us',
+    #'digg\.com',
+    #'stumbleupon\.com',
+    #'swik\.net',
+    #'segnalo\.alice\.it',
+    #'ineffabile\.it',
     # Minor Australian search engines
     'anzwers\.com\.au',
     # Minor brazilian search engines
@@ -336,12 +336,12 @@ $SearchEnginesHashID = array(
     'mywebsearch\.com' => 'mywebsearch',
     'as\.starware\.com' => 'comettoolbar',
     # Social Bookmarking Services
-    'del\.icio\.us' => 'delicious',
-    'digg\.com' => 'digg',
-    'stumbleupon\.com' => 'stumbleupon',
-    'swik\.net' => 'swik',
-    'segnalo\.alice\.it' => 'segnalo',
-    'ineffabile\.it' => 'ineffabile',
+    #'del\.icio\.us' => 'delicious',
+    #'digg\.com' => 'digg',
+    #'stumbleupon\.com' => 'stumbleupon',
+    #'swik\.net' => 'swik',
+    #'segnalo\.alice\.it' => 'segnalo',
+    #'ineffabile\.it' => 'ineffabile',
     # Minor Australian search engines
     'anzwers\.com\.au' => 'anzwers',
     # Minor brazilian search engines
@@ -597,12 +597,12 @@ $SearchEnginesKnownUrl = array(
     'mywebsearch' => 'searchfor=',
     'comettoolbar' => 'qry=',
     # Social Bookmarking Services
-    'delicious' => 'all=',
-    'digg' => 's=',
-    'stumbleupon' => '',
-    'swik' => 'swik\.net\/', # does not work. Keywords follow domain, e.g. http://swik.net/awstats+analytics
-    'segnalo' => '',
-    'ineffabile' => '',
+    #'delicious' => 'all=',
+    #'digg' => 's=',
+    #'stumbleupon' => '',
+    #'swik' => 'swik\.net\/', # does not work. Keywords follow domain, e.g. http://swik.net/awstats+analytics
+    #'segnalo' => '',
+    #'ineffabile' => '',
     # Minor Australian search engines
     'anzwers' => 'search=',
     # Minor brazilian search engines
@@ -860,12 +860,12 @@ $SearchEnginesHashLib = array(
     'mywebsearch' => '<a href="http://search.mywebsearch.com/" title="MyWebSearch home page [new window]" target="_blank">MyWebSearch</a>',
     'comettoolbar' => '<a href="http://as.starware.com/dp/search" title="Comet toolbar search home page [new window]" target="_blank">Comet toolbar search</a>',
     # Social Bookmarking Services
-    'delicious' => '<a href="http://del.icio.us/" title="del.icio.us home page [new window]" target="_blank">del.icio.us</a> (Social Bookmark)',
-    'digg' => '<a href="http://www.digg.com/" title="Digg home page [new window]" target="_blank">Digg</a> (Social Bookmark)',
-    'stumbleupon' => '<a href="http://www.stumbleupon.com/" title="Stumbleupon home page [new window]" target="_blank">Stumbleupon</a> (Social Bookmark)',
-    'swik' => '<a href="http://swik.net/" title="Swik home page [new window]" target="_blank">Swik</a> (Social Bookmark)',
-    'segnalo' => '<a href="http://segnalo.alice.it/" title="Segnalo home page [new window]" target="_blank">Segnalo</a> (Social Bookmark)',
-    'ineffabile' => '<a href="http://www.ineffabile.it/" title="Ineffabile.it home page [new window]" target="_blank">Ineffabile.it</a> (Social Bookmark)',
+    #'delicious' => '<a href="http://del.icio.us/" title="del.icio.us home page [new window]" target="_blank">del.icio.us</a> (Social Bookmark)',
+    #'digg' => '<a href="http://www.digg.com/" title="Digg home page [new window]" target="_blank">Digg</a> (Social Bookmark)',
+    #'stumbleupon' => '<a href="http://www.stumbleupon.com/" title="Stumbleupon home page [new window]" target="_blank">Stumbleupon</a> (Social Bookmark)',
+    #'swik' => '<a href="http://swik.net/" title="Swik home page [new window]" target="_blank">Swik</a> (Social Bookmark)',
+    #'segnalo' => '<a href="http://segnalo.alice.it/" title="Segnalo home page [new window]" target="_blank">Segnalo</a> (Social Bookmark)',
+    #'ineffabile' => '<a href="http://www.ineffabile.it/" title="Ineffabile.it home page [new window]" target="_blank">Ineffabile.it</a> (Social Bookmark)',
     # Minor Australian search engines
     'anzwers' => '<a href="http://anzwers.com.au/" title="anzwers.com.au home page [new window]" target="_blank">anzwers.com.au</a>',
     # Minor brazilian search engines

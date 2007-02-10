@@ -95,3 +95,11 @@ CREATE TABLE `stats_searchwords` (
   `word` VARCHAR( 255 ) NOT NULL ,
   PRIMARY KEY ( `sid` , `word` )
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+-- statistic fixes
+update stats_access set ref_type='external' where ref LIKE 'http://digg.com/%';
+update stats_access set ref_type='external' where ref LIKE 'http://del.icio.us/%';
+update stats_access set ref_type='external' where ref LIKE 'http://www.stumbleupon.com/%';
+update stats_access set ref_type='external' where ref LIKE 'http://swik.net/%';
+update stats_access set ref_type='external' where ref LIKE 'http://segnalo.alice.it/%';
+
