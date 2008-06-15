@@ -59,12 +59,12 @@ CREATE TABLE `stats_iplocation` (
   KEY `code` (`code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---- added 2007-01-28
+-- added 2007-01-28
 ALTER TABLE `stats_access` CHANGE `dt` `dt` DATETIME NOT NULL ;
 ALTER TABLE `stats_access` ADD `js` TINYINT( 1 ) NOT NULL AFTER `view_y` ;
 UPDATE `stats_access` SET js = 1 ;
 
---- added 2007-01-31
+-- added 2007-01-31
 ALTER TABLE `stats_access` ADD `uid` VARCHAR( 50 ) NOT NULL ;
 
 
@@ -103,7 +103,7 @@ update stats_access set ref_type='external' where ref LIKE 'http://www.stumbleup
 update stats_access set ref_type='external' where ref LIKE 'http://swik.net/%';
 update stats_access set ref_type='external' where ref LIKE 'http://segnalo.alice.it/%';
 
--- 2008-06-15
+-- added 2008-06-15
 CREATE TABLE `stats_refseen` (
   `ref_md5` varchar(32) collate utf8_unicode_ci NOT NULL,
   `dt` datetime NOT NULL,
