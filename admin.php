@@ -65,11 +65,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         if(!$to)   $to   = date('Y-m-d');
 
         //setup limit clause
-        if($from != $to){
-            $tlimit = "DATE(A.dt) >= DATE('".$from."') AND DATE(A.dt) <= DATE('".$to."')";
-        }else{
-            $tlimit = "DATE(A.dt) = DATE('".$from."')";
-        }
+        $tlimit = "A.dt >= '$from 00:00:00' AND A.dt <= '$to 23:59:59'";
         $this->tlimit = $tlimit;
         $this->from   = $from;
         $this->to     = $to;
@@ -436,7 +432,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
 
         $count = 0;
-        foreach($result as $row){
+        if(is_array($result)) foreach($result as $row){
             echo '<tr>';
             foreach($row as $k => $v){
                 echo '<td class="plg_stats_X'.$k.'">';
@@ -652,7 +648,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
               GROUP BY ref_type";
         $result = $this->runSQL($sql);
 
-        foreach($result as $row){
+        if(is_array($result)) foreach($result as $row){
             if($row['ref_type'] == 'search')   $data['search']   = $row['cnt'];
             if($row['ref_type'] == 'external') $data['external'] = $row['cnt'];
             if($row['ref_type'] == 'internal') $data['internal'] = $row['cnt'];
@@ -779,12 +775,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     function sql_newreferer($tlimit,$start=0,$limit=20){
         $sql = "SELECT COUNT(*) as cnt, ref as url
-                  FROM ".$this->getConf('db_prefix')."access as A
-                 WHERE ua_type = 'browser'
+                  FROM ".$this->getConf('db_prefix')."access as B,
+                       ".$this->getConf('db_prefix')."refseen as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
                    AND ref_type = 'external'
-              GROUP BY ref_md5
-                HAVING DATE(MIN(dt)) >= DATE('".$this->from."')
-                   AND DATE(MIN(dt)) <= DATE('".$this->to."')
+                   AND A.ref_md5 = B.ref_md5
+              GROUP BY A.ref_md5
               ORDER BY cnt DESC, url".
               $this->sql_limit($start,$limit);
         return $this->runSQL($sql);
@@ -1232,6 +1229,15 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                         user     = '$user',
                         session  = '$session',
                         uid      = '$uid'";
+        $ok = $this->runSQL($sql);
+        if(is_null($ok)){
+            global $MSG;
+            print_r($MSG);
+        }
+
+        $sql = "INSERT DELAYED IGNORE INTO ".$this->getConf('db_prefix')."refseen
+                   SET ref_md5  = '$ref_md5',
+                       dt       = NOW()";
         $ok = $this->runSQL($sql);
         if(is_null($ok)){
             global $MSG;

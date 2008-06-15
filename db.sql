@@ -78,7 +78,7 @@ CREATE TABLE `stats_outlinks` (
   KEY `link_md5` (`link_md5`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---- added 2007-02-04
+-- added 2007-02-04
 ALTER TABLE `stats_outlinks` ADD `page` VARCHAR( 255 ) NOT NULL AFTER `dt` ;
 
 CREATE TABLE `stats_search` (
@@ -103,3 +103,13 @@ update stats_access set ref_type='external' where ref LIKE 'http://www.stumbleup
 update stats_access set ref_type='external' where ref LIKE 'http://swik.net/%';
 update stats_access set ref_type='external' where ref LIKE 'http://segnalo.alice.it/%';
 
+-- 2008-06-15
+CREATE TABLE `stats_refseen` (
+  `ref_md5` varchar(32) collate utf8_unicode_ci NOT NULL,
+  `dt` datetime NOT NULL,
+  PRIMARY KEY ( `ref_md5` ),
+  KEY `dt` (`dt`)
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+-- This will take some time...
+INSERT INTO stats_refseen (ref_md5,dt) SELECT ref_md5, MIN(dt) FROM stats_access GROUP BY ref_md5;
