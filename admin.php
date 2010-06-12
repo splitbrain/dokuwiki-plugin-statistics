@@ -25,13 +25,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     var $tlimit = '';
 
     /**
-     * return some info
-     */
-    function getInfo(){
-        return confToHash(dirname(__FILE__).'/info.txt');
-    }
-
-    /**
      * Access for managers allowed
      */
     function forAdminOnly(){

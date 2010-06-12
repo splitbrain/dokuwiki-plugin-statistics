@@ -1,8 +1,8 @@
 # General Plugin Info do not edit
-
+base   statistics
 author Andreas Gohr
 email  andi@splitbrain.org
 date   2008-06-15
 name   Statistics Plugin
 desc   Gather usage/view statistics
-url    http://wiki.splitbrain.org/plugin:statistics
+url    http://www.dokuwiki.org/plugin:statistics
