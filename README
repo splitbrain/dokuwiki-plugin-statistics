@@ -1,7 +1,7 @@
 statistics Plugin for DokuWiki
 
 All documentation for this plugin can be found at
-http://www.dokuwiki.org/statistics
+http://www.dokuwiki.org/plugin:statistics
 
 If you install this plugin manually, make sure it is installed in
 lib/plugins/statistics/ - if the folder is called different it
