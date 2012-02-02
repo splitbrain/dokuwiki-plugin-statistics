@@ -68,7 +68,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * fixme build statistics here
      */
     function html() {
-        $this->html_toc();
         echo '<h1>Access Statistics</h1>';
         $this->html_timeselect();
 
@@ -111,66 +110,21 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
     }
 
-    function html_toc(){
-        echo '<div class="toc">';
-        echo '<div class="tocheader toctoggle" id="toc__header">';
-        echo 'Detailed Statistics';
-        echo '</div>';
-        echo '<div id="toc__inside">';
-        echo '<ul class="toc">';
+    function getTOC(){
+        $pages = array('dashboard','page','referer','newreferer','outlinks',
+                       'searchphrases','searchwords','searchengines','browser',
+                       'os','country','resolution');
 
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=&amp;f='.$this->from.'&amp;t='.$this->to.'">Dashboard</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'">Pages</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=referer&amp;f='.$this->from.'&amp;t='.$this->to.'">Incoming Links</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'">New Incoming Links</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=outlinks&amp;f='.$this->from.'&amp;t='.$this->to.'">Outgoing Links</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'">Search Phrases</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchwords&amp;f='.$this->from.'&amp;t='.$this->to.'">Search Words</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchengines&amp;f='.$this->from.'&amp;t='.$this->to.'">Search Engines</a>';
-        echo '</div></li>';
-
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=browser&amp;f='.$this->from.'&amp;t='.$this->to.'">Browsers</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=os&amp;f='.$this->from.'&amp;t='.$this->to.'">Operating Systems</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=country&amp;f='.$this->from.'&amp;t='.$this->to.'">Countries</a>';
-        echo '</div></li>';
-
-        echo '<li><div class="li">';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=resolution&amp;f='.$this->from.'&amp;t='.$this->to.'">Resolution</a>';
-        echo '</div></li>';
-
-        echo '</ul>';
-        echo '</div>';
-        echo '</div>';
+        $toc = array();
+        foreach($pages as $page){
+            $toc[] = array(
+                    'link'  => '?do=admin&amp;page=statistics&amp;opt='.$page.'&amp;f='.$this->from.'&amp;t='.$this->to,
+                    'title' => $this->getLang($page),
+                    'level' => 1,
+                    'type'  => 'ul'
+            );
+        }
+        return $toc;
     }
 
     function html_pager($limit,$next){
