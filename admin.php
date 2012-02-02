@@ -65,48 +65,17 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     /**
-     * fixme build statistics here
+     * Output the Statistics
      */
     function html() {
         echo '<h1>Access Statistics</h1>';
         $this->html_timeselect();
 
-        switch($this->opt){
-            case 'country':
-                $this->html_country();
-                break;
-            case 'page':
-                $this->html_page();
-                break;
-            case 'browser':
-                $this->html_browser();
-                break;
-            case 'os':
-                $this->html_os();
-                break;
-            case 'referer':
-                $this->html_referer();
-                break;
-            case 'newreferer':
-                $this->html_newreferer();
-                break;
-            case 'outlinks':
-                $this->html_outlinks();
-                break;
-            case 'resolution':
-                $this->html_resolution();
-                break;
-            case 'searchphrases':
-                $this->html_searchphrases();
-                break;
-            case 'searchwords':
-                $this->html_searchwords();
-                break;
-            case 'searchengines':
-                $this->html_searchengines();
-                break;
-            default:
-                $this->html_dashboard();
+        $method = 'html_'.$this->opt;
+        if(method_exists($this,$method)){
+            $this->$method();
+        }else{
+            $this->html_dashboard();
         }
     }
 
