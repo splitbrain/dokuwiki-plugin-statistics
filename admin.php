@@ -17,12 +17,20 @@ require_once(DOKU_PLUGIN.'admin.php');
  * need to inherit from this class
  */
 class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
-    var $dblink = null;
-    var $opt    = '';
-    var $from   = '';
-    var $to     = '';
-    var $start  = '';
-    var $tlimit = '';
+    public    $dblink = null;
+    protected $opt    = '';
+    protected $from   = '';
+    protected $to     = '';
+    protected $start  = '';
+    protected $tlimit = '';
+
+    /**
+     * Available statistic pages
+     */
+    protected $pages  = array('dashboard','page','referer','newreferer',
+                              'outlinks','searchphrases','searchwords',
+                              'searchengines','browser','os','country',
+                              'resolution');
 
     /**
      * Access for managers allowed
@@ -43,6 +51,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     function handle() {
         $this->opt = preg_replace('/[^a-z]+/','',$_REQUEST['opt']);
+        if(!in_array($this->opt,$this->pages)) $this->opt = 'dashboard';
+
         $this->start = (int) $_REQUEST['s'];
         $this->setTimeframe($_REQUEST['f'],$_REQUEST['t']);
     }
@@ -73,19 +83,16 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         $method = 'html_'.$this->opt;
         if(method_exists($this,$method)){
+            echo '<div class="plg_stats_'.$this->opt.'">';
+            echo '<h2>'.$this->getLang($this->opt).'</h2>';
             $this->$method();
-        }else{
-            $this->html_dashboard();
+            echo '</div>';
         }
     }
 
     function getTOC(){
-        $pages = array('dashboard','page','referer','newreferer','outlinks',
-                       'searchphrases','searchwords','searchengines','browser',
-                       'os','country','resolution');
-
         $toc = array();
-        foreach($pages as $page){
+        foreach($this->pages as $page){
             $toc[] = array(
                     'link'  => '?do=admin&amp;page=statistics&amp;opt='.$page.'&amp;f='.$this->from.'&amp;t='.$this->to,
                     'title' => $this->getLang($page),
@@ -171,9 +178,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<p>This page gives you a quick overview on what is happening in your Wiki. For detailed lists
               choose a topic from the list.</p>';
 
-
-        echo '<div class="plg_stats_dashboard">';
-
         // general info
         echo '<div class="plg_stats_top">';
         $result = $this->sql_aggregate($this->tlimit);
@@ -211,47 +215,31 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $this->html_resulttable($result);
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
         echo '</div>';
-
-        echo '</div>';
     }
 
     function html_country(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Visitor\'s Countries</h2>';
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->sql_countries($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_page(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Popular Pages</h2>';
         $result = $this->sql_pages($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_browser(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Browser Shootout</h2>';
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->sql_browsers($this->tlimit,$this->start,150,true);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_os(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Operating Systems</h2>';
         $result = $this->sql_os($this->tlimit,$this->start,150,true);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_referer(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Incoming Links</h2>';
         $result = $this->sql_aggregate($this->tlimit);
 
         $all    = $result['search']+$result['external']+$result['direct'];
@@ -266,60 +254,38 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         $result = $this->sql_referer($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_newreferer(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>New Incoming Links</h2>';
         echo '<p>The following incoming links where first logged in the selected time frame,
               and have never been seen before.</p>';
 
         $result = $this->sql_newreferer($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_outlinks(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Outgoing Links</h2>';
-
         $result = $this->sql_outlinks($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_searchphrases(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Search Phrases</h2>';
-
         $result = $this->sql_searchphrases($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_searchwords(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Search Words</h2>';
-
         $result = $this->sql_searchwords($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
     function html_searchengines(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Search Engines</h2>';
-
         $result = $this->sql_searchengines($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
-        echo '</div>';
     }
 
 
     function html_resolution(){
-        echo '<div class="plg_stats_full">';
-        echo '<h2>Resolution</h2>';
         $result = $this->sql_resolution($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
 
@@ -330,7 +296,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
               be flawed. Take it with a grain of salt.</p>';
 
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=view&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
-        echo '</div>';
     }
 
 
