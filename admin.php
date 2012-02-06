@@ -806,8 +806,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Returns a short name for a User Agent and sets type, version and os info
      */
     function ua_info($agent,&$type,&$version,&$os){
-        global $conf;
-        $bc = new DokuBrowscap($conf['cachedir']);
+        $bc = new DokuBrowscap();
         $ua = $bc->getBrowser($agent);
 
         $type = 'browser';

@@ -4,6 +4,12 @@ require dirname(__FILE__).'/Browscap.php';
 
 class DokuBrowscap extends Browscap {
 
+    public function __construct(){
+        global $conf;
+        $this->cacheDir        = $conf['cachedir'].'/';
+        $this->cacheFilename   = 'browscap.ini.php';
+    }
+
     protected function _getRemoteData($url){
         $http = new DokuHTTPClient($url);
         $file = $http->get($url);
