@@ -12,6 +12,8 @@ if(!defined('DOKU_INC')) die();
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'admin.php');
 
+require_once(DOKU_PLUGIN.'statistics/inc/DokuBrowscap.php');
+
 /**
  * All DokuWiki plugins to extend the admin function
  * need to inherit from this class
@@ -346,21 +348,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                 }elseif($k == 'engine'){
                     include_once(dirname(__FILE__).'/inc/search_engines.php');
                     echo $SearchEnginesHashLib[$v];
-                }elseif($k == 'browser'){
-                    include_once(dirname(__FILE__).'/inc/browsers.php');
-                    echo $BrowsersHashIDLib[$v];
                 }elseif($k == 'bflag'){
-                    include_once(dirname(__FILE__).'/inc/browsers.php');
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/browser/'.$BrowsersHashIcon[$v].'.png" alt="'.hsc($v).'" />';
-                }elseif($k == 'os'){
-                    if(empty($v)){
-                        echo 'unknown';
-                    }else{
-                        include_once(dirname(__FILE__).'/inc/operating_systems.php');
-                        echo $OSHashLib[$v];
-                    }
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/browser/'.strtolower(preg_replace('/[^\w]+/','',$v)).'.png" alt="'.hsc($v).'" />';
                 }elseif($k == 'osflag'){
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/os/'.hsc($v).'.png" alt="'.hsc($v).'" />';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/os/'.strtolower(preg_replace('/[^\w]+/','',$v)).'.png" alt="'.hsc($v).'" />';
                 }elseif($k == 'cflag'){
                     echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12" />';
                 }elseif($k == 'html'){
@@ -814,99 +805,18 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     /**
      * Returns a short name for a User Agent and sets type, version and os info
      */
-    function ua_info($ua,&$type,&$ver,&$os){
-        $ua = strtr($ua,' +','__');
-        $ua = strtolower($ua);
+    function ua_info($agent,&$type,&$version,&$os){
+        global $conf;
+        $bc = new DokuBrowscap($conf['cachedir']);
+        $ua = $bc->getBrowser($agent);
 
-        // common browsers
-        $regvermsie     = '/msie([+_ ]|)([\d\.]*)/i';
-        $regvernetscape = '/netscape.?\/([\d\.]*)/i';
-        $regverfirefox  = '/firefox\/([\d\.]*)/i';
-        $regversvn      = '/svn\/([\d\.]*)/i';
-        $regvermozilla  = '/mozilla(\/|)([\d\.]*)/i';
-        $regnotie       = '/webtv|omniweb|opera/i';
-        $regnotnetscape = '/gecko|compatible|opera|galeon|safari/i';
+        $type = 'browser';
+        if($ua->Crawler) $type = 'robot';
+        if($ua->isSyndicationReader) $type = 'feedreader';
 
-        $name = '';
-        # IE ?
-        if(preg_match($regvermsie,$ua,$m) && !preg_match($regnotie,$ua)){
-            $type = 'browser';
-            $ver  = $m[2];
-            $name = 'msie';
-        }
-        # Firefox ?
-        elseif (preg_match($regverfirefox,$ua,$m)){
-            $type = 'browser';
-            $ver  = $m[1];
-            $name = 'firefox';
-        }
-        # Subversion ?
-        elseif (preg_match($regversvn,$ua,$m)){
-            $type = 'rcs';
-            $ver  = $m[1];
-            $name = 'svn';
-        }
-        # Netscape 6.x, 7.x ... ?
-        elseif (preg_match($regvernetscape,$ua,$m)){
-            $type = 'browser';
-            $ver  = $m[1];
-            $name = 'netscape';
-        }
-        # Netscape 3.x, 4.x ... ?
-        elseif(preg_match($regvermozilla,$ua,$m) && !preg_match($regnotnetscape,$ua)){
-            $type = 'browser';
-            $ver  = $m[2];
-            $name = 'netscape';
-        }else{
-            include(dirname(__FILE__).'/inc/browsers.php');
-            foreach($BrowsersSearchIDOrder as $regex){
-                if(preg_match('/'.$regex.'/',$ua)){
-                    // it's a browser!
-                    $type = 'browser';
-                    $name = strtolower($regex);
-                    break;
-                }
-            }
-        }
-
-        // check versions for Safari and Opera
-        if($name == 'safari'){
-            if(preg_match('/safari\/([\d\.]*)/i',$ua,$match)){
-                $ver = $BrowsersSafariBuildToVersionHash[$match[1]];
-            }
-        }elseif($name == 'opera'){
-            if(preg_match('/opera[\/ ]([\d\.]*)/i',$ua,$match)){
-                $ver = $match[1];
-            }
-        }
-
-
-        // check OS for browsers
-        if($type == 'browser'){
-            include(dirname(__FILE__).'/inc/operating_systems.php');
-            foreach($OSSearchIDOrder as $regex){
-                if(preg_match('/'.$regex.'/',$ua)){
-                    $os = $OSHashID[$regex];
-                    break;
-                }
-            }
-
-        }
-
-        // are we done now?
-        if($name) return $name;
-
-        include(dirname(__FILE__).'/inc/robots.php');
-        foreach($RobotsSearchIDOrder as $regex){
-            if(preg_match('/'.$regex.'/',$ua)){
-                    // it's a robot!
-                    $type = 'robot';
-                    return strtolower($regex);
-            }
-        }
-
-        // dunno
-        return '';
+        $version = $ua->Version;
+        $os      = $ua->Platform;
+        return $ua->Browser;
     }
 
     /**
