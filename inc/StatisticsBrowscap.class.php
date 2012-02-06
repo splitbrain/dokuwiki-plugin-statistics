@@ -1,15 +1,26 @@
 <?php
-
 require dirname(__FILE__).'/Browscap.php';
 
-class DokuBrowscap extends Browscap {
+/**
+ * Overwrites some methods from the original upstream Browscap class
+ */
+class StatisticsBrowscap extends Browscap {
 
+    /**
+     * Defines our own cache locations and names
+     */
     public function __construct(){
         global $conf;
         $this->cacheDir        = $conf['cachedir'].'/';
         $this->cacheFilename   = 'browscap.ini.php';
     }
 
+    /**
+     * Use DokuWiki's HTTP Clients for downloading
+     *
+     * @param string $url
+     * @return string
+     */
     protected function _getRemoteData($url){
         $http = new DokuHTTPClient($url);
         $file = $http->get($url);
