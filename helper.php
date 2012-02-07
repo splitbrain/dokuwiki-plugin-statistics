@@ -20,6 +20,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
      * @return object
      */
     public function Query(){
+        $this->prefix = $this->getConf('db_prefix');
         if(is_null($this->oQuery)){
             require dirname(__FILE__).'/inc/StatisticsQuery.class.php';
             $this->oQuery = new StatisticsQuery($this);
@@ -33,6 +34,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
      * @return object
      */
     public function Logger(){
+        $this->prefix = $this->getConf('db_prefix');
         if(is_null($this->oLogger)){
             require dirname(__FILE__).'/inc/StatisticsLogger.class.php';
             $this->oLogger = new StatisticsLog($this);
@@ -46,6 +48,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
      * @return object
      */
     public function Graph(){
+        $this->prefix = $this->getConf('db_prefix');
         if(is_null($this->oGraph)){
             require dirname(__FILE__).'/inc/StatisticsGraph.class.php';
             $this->oGraph = new StatisticsGraph($this);
@@ -59,7 +62,6 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     protected function dbLink(){
         // connect to DB if needed
         if(!$this->dblink){
-            $this->prefix = $this->getConf('db_prefix');
             $this->dblink = mysql_connect($this->getConf('db_server'),
                                           $this->getConf('db_user'),
                                           $this->getConf('db_password'));
