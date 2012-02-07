@@ -108,20 +108,23 @@ class StatisticsGraph {
         $this->PieChart($data);
     }
 
-    public function view(){
+    public function resolution(){
 
-        $graph = new AGC(400, 200);
-        $graph->setColor('color',0,'blue');
-        $graph->setColor('color',1,'red');
-        $graph->setProp("showkey",true);
-        $graph->setProp("key",'view port width',0);
-        $graph->setProp("key",'view port height',1);
+        //$graph->setProp("key",'view port width',0);
+        //$graph->setProp("key",'view port height',1);
 
         $result = $this->hlp->Query()->viewport($this->tlimit,0,0,true);
+        $data1 = array();
+        $data2 = array();
+
         foreach($result as $row){
-            $graph->addPoint($row['cnt'],$row['res_x'],0);
+            $data1[] = $row['res_x'];
+            $data2[] = $row['res_y'];
+            $data3[] = $row['cnt'];
+#            $graph->addPoint($row['cnt'],$row['res_x'],0);
         }
 
+/*
         $result = $this->hlp->Query()->viewport($this->tlimit,0,0,false);
         foreach($result as $row){
             $graph->addPoint($row['cnt'],$row['res_y'],1);
@@ -129,6 +132,28 @@ class StatisticsGraph {
 
         @$graph->graph();
         $graph->showGraph();
+*/
+/*
+dbg($result);
+exit;
+*/
+        $DataSet = new pData;
+        $DataSet->AddPoints($data1,'Serie1');
+        $DataSet->AddPoints($data2,'Serie2');
+        $DataSet->AddPoints($data3,'Serie3');
+        $DataSet->AddAllSeries();
+
+        $Canvas = new GDCanvas(700, 500);
+        $Chart  = new pChart(700,500,$Canvas);
+
+        $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
+        $Chart->setGraphArea(50,30,680,480);
+        $Chart->drawXYScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
+                            'Serie2','Serie1');
+
+        $Chart->drawXYPlotGraph($DataSet->getData(),'Serie2','Serie1');
+        header('Content-Type: image/png');
+        $Chart->Render('');
     }
 
     public function trend(){
@@ -137,37 +162,44 @@ class StatisticsGraph {
         $data1  = array();
         $data2  = array();
         $data3  = array();
-        $data4  = array();
+        $times  = array();
 
         foreach($result as $row){
             $data1[] = $row['pageviews'];
             $data2[] = $row['sessions'];
             $data3[] = $row['visitors'];
-            $data4[] = $row['time'].($hours?'h':'');
+            $times[] = $row['time'].($hours?'h':'');
         }
 
         $DataSet = new pData();
+        $DataSet->AddPoints($data1,'Serie1');
         $DataSet->AddPoints($data2,'Serie2');
         $DataSet->AddPoints($data3,'Serie3');
-        $DataSet->AddPoints($data1,'Serie1');
-        $DataSet->AddPoints($data4,'Serie4');
+        $DataSet->AddPoints($times,'Times');
         $DataSet->AddAllSeries();
-        $DataSet->SetAbscissaLabelSeries('Serie4');
+        $DataSet->SetAbscissaLabelSeries('Times');
 
         $DataSet->SetSeriesName('Views','Serie1');
         $DataSet->SetSeriesName('Sessions','Serie2');
         $DataSet->SetSeriesName('Visitors','Serie3');
 
-        $Canvas = new GDCanvas(500, 280);
-        $Chart  = new pChart(500,280,$Canvas);
+        $Canvas = new GDCanvas(700, 280);
+        $Chart  = new pChart(700,280,$Canvas);
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
-        $Chart->setGraphArea(50,30,480,200);
+        $Chart->setGraphArea(50,30,680,200);
         $Chart->drawScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
                           ($hours?0:45), 1, false, round(count($data1)/12) );
         $Chart->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
 
-        header('Content-Type: image:png');
+        $DataSet->removeSeries('Times');
+        $DataSet->removeSeriesName('Times');
+        $Chart->drawLegend(
+            230, 15,
+            $DataSet->GetDataDescription(),
+            new Color(250));
+
+        header('Content-Type: image/png');
         $Chart->Render('');
     }
 

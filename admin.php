@@ -235,8 +235,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '</div>';
     }
 
-    function html_country(){
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=country&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+    function html_countries(){
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=countries&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->hlp->Query()->countries($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }

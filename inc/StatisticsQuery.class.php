@@ -223,14 +223,17 @@ class StatisticsQuery {
         }
 
         $sql = "SELECT COUNT(*) as cnt,
-                       ROUND($col/10)*10 as $res
+                       ROUND(view_x/100)*100 as res_x,
+                       ROUND(view_y/100)*100 as res_y
                   FROM ".$this->hlp->prefix."access as A
                  WHERE $tlimit
                    AND ua_type  = 'browser'
-                   AND $col != 0
-              GROUP BY $res
-              ORDER BY cnt DESC, $res".
+                   AND view_x != 0
+                   AND view_y != 0
+              GROUP BY res_x, res_y
+              ORDER BY cnt".
               $this->mklimit($start,$limit);
+
         return $this->hlp->runSQL($sql);
     }
 
