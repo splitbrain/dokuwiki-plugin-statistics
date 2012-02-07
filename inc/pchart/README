@@ -1,0 +1,19 @@
+This is the lib directory from a checkout of the PHP5 port of the pChart
+1.x library. We can't use the pChart 2.x library because of unclear license
+conditions.
+
+For the same reasons we do not include the orginal fonts, but use the DroidSans
+font which is licensed under the Apache License.
+
+We're currently at this commit (master branch):
+https://github.com/sebix/pChart/commit/52ad6a2612d1a9a9e6999c1a6b6aaeec94d5ab70
+
+This seems to be the most up-to-date version of the library today (2012-02-07).
+When updating later, make sure to have a look at the current state of forks.
+
+This is how it looks like currently
+
+http://pchart.sourceforge.net/
+-> https://github.com/aweiland/pChart-php5
+   -> https://github.com/timmartin/pChart-php5
+      -> https://github.com/sebix/pChart/

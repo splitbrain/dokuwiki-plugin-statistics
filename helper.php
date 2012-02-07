@@ -108,4 +108,23 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
         return $resultarray;
     }
 
+
+    /**
+     * Just send a 1x1 pixel blank gif to the browser
+     *
+     * @called from log.php
+     *
+     * @author Andreas Gohr <andi@splitbrain.org>
+     * @author Harry Fuecks <fuecks@gmail.com>
+     */
+    function sendGIF(){
+        $img = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7');
+        header('Content-Type: image/gif');
+        header('Content-Length: '.strlen($img));
+        header('Connection: Close');
+        print $img;
+        flush();
+        // Browser should drop connection after this
+        // Thinks it's got the whole image
+    }
 }

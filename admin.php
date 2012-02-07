@@ -27,7 +27,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     protected $pages  = array('dashboard','page','referer','newreferer',
                               'outlinks','searchphrases','searchwords',
-                              'searchengines','browser','os','country',
+                              'searchengines','browsers','os','countries',
                               'resolution');
 
     /**
@@ -246,8 +246,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $this->html_resulttable($result,'',150);
     }
 
-    function html_browser(){
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browser&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+    function html_browsers(){
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browsers&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         $result = $this->hlp->Query()->browsers($this->tlimit,$this->start,150,true);
         $this->html_resulttable($result,'',150);
     }
@@ -385,37 +385,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '</table>';
 
         if($pager) $this->html_pager($pager,count($result) > $pager);
-    }
-
-    /**
-     * Create an image
-     */
-    function img_build($img){
-        include(dirname(__FILE__).'/inc/AGC.class.php');
-
-        switch($img){
-            default:
-                $this->sendGIF();
-        }
-    }
-
-    /**
-     * Just send a 1x1 pixel blank gif to the browser
-     *
-     * @called from log.php
-     *
-     * @author Andreas Gohr <andi@splitbrain.org>
-     * @author Harry Fuecks <fuecks@gmail.com>
-     */
-    function sendGIF(){
-        $img = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7');
-        header('Content-Type: image/gif');
-        header('Content-Length: '.strlen($img));
-        header('Connection: Close');
-        print $img;
-        flush();
-        // Browser should drop connection after this
-        // Thinks it's got the whole image
     }
 
 }
