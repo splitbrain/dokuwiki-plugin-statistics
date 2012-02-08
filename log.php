@@ -15,6 +15,8 @@ session_write_close();
 $plugin = plugin_load('helper','statistics');
 if($_REQUEST['ol']){
     $plugin->Logger()->log_outgoing();
+}elseif($_REQUEST['se']){
+    $plugin->Logger()->log_session();
 }else{
     $plugin->Logger()->log_access();
 }

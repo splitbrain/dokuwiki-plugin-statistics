@@ -96,6 +96,23 @@ class StatisticsLogger {
     }
 
     /**
+     * Log that the session was seen
+     *
+     * This is used to calculate the time people spend on the whole site
+     * during their session
+     */
+    public function log_session(){
+        $session = addslashes(session_id());
+        $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."session
+                   SET session = '$session',
+                       begin   = NOW(),
+                       end     = NOW()
+                ON DUPLICATE KEY UPDATE
+                       end     = NOW()";
+        $this->hlp->runSQL($sql);
+    }
+
+    /**
      * Resolve IP to country/city
      */
     public function log_ip($ip){

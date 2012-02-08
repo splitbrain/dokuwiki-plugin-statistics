@@ -86,6 +86,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
 
         $result = mysql_db_query($this->conf['db_database'],$sql_string,$link);
         if(!$result){
+            dbglog('DB Error: '.mysql_error($link).' '.hsc($sql_string),-1);
             msg('DB Error: '.mysql_error($link).' '.hsc($sql_string),-1);
             return null;
         }

@@ -129,3 +129,9 @@ CREATE TABLE `stats_edits` (
 ALTER TABLE `stats_access` CHANGE `ip` `ip` varchar(40);
 
 ALTER TABLE `stats_search` ADD INDEX `engine` (`engine`);
+
+CREATE TABLE `stats_session` (
+  `session` varchar(255) NOT NULL PRIMARY KEY,
+  `begin` datetime NOT NULL,
+  `end` datetime NOT NULL
+) COMMENT='' ENGINE='MyISAM' COLLATE 'utf8_general_ci';
