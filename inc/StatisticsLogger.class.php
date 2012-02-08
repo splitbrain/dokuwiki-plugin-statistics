@@ -265,7 +265,7 @@ class StatisticsLogger {
      * Returns a short name for a User Agent and sets type, version and os info
      */
     private function ua_info($agent,&$type,&$version,&$os){
-        $bc = new DokuBrowscap();
+        $bc = new StatisticsBrowscap();
         $ua = $bc->getBrowser($agent);
 
         $type = 'browser';
