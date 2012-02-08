@@ -113,3 +113,17 @@ CREATE TABLE `stats_refseen` (
 
 -- This will take some time...
 INSERT INTO stats_refseen (ref_md5,dt) SELECT ref_md5, MIN(dt) FROM stats_access GROUP BY ref_md5;
+
+-- added 2012-02-08
+CREATE TABLE `stats_edits` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `dt` datetime NOT NULL,
+  `ip` varchar(40) NOT NULL,
+  `user` varchar(255) NOT NULL,
+  `session` varchar(255) NOT NULL,
+  `uid` varchar(50) NOT NULL,
+  `page` varchar(255) NOT NULL,
+  `type` char(1) COLLATE 'ascii_bin' NOT NULL
+) ENGINE='MyISAM' COLLATE 'utf8_general_ci';
+
+ALTER TABLE `stats_access` CHANGE `ip` `ip` varchar(40);

@@ -37,7 +37,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
         $this->prefix = $this->getConf('db_prefix');
         if(is_null($this->oLogger)){
             require dirname(__FILE__).'/inc/StatisticsLogger.class.php';
-            $this->oLogger = new StatisticsLog($this);
+            $this->oLogger = new StatisticsLogger($this);
         }
         return $this->oLogger;
     }

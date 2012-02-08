@@ -23,6 +23,11 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                                    $this,
                                    'handle_metaheaders',
                                    array());
+        $controller->register_hook('IO_WIKIPAGE_WRITE',
+                                   'BEFORE',
+                                   $this,
+                                   'logedits',
+                                   array());
     }
 
     /**
@@ -47,6 +52,28 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                '&amp;r='.rawurlencode($_SERVER['HTTP_REFERER']).'&rnd='.time();
 
         echo '<noscript><img src="'.$url.'" width="1" height="1" /></noscript>';
+    }
+
+
+    /**
+     * Log edits and creates
+     *
+     * @fixme handle deletions
+     */
+    function logedits(&$event, $param){
+        if($event->data[3]) return; // no revision
+
+        if(file_exists($event->data[0][0])){
+            if($event->data[0][1] == ''){
+                $type = 'D';
+            }else{
+                $type = 'E';
+            }
+        }else{
+            $type = 'C';
+        }
+        $hlp = plugin_load('helper','statistics');
+        $hlp->Logger()->log_edit(cleanID($event->data[1].':'.$event->data[2]), $type);
     }
 }
 

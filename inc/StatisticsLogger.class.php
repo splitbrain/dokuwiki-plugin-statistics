@@ -9,6 +9,15 @@ class StatisticsLogger {
         $this->hlp = $hlp;
     }
 
+    /**
+     * get the unique user ID
+     */
+    private function getUID(){
+        $uid = $_REQUEST['uid'];
+        if(!$uid) $uid = get_doku_pref('plgstats',false);
+        if(!$uid) $uid = session_id();
+        return $uid;
+    }
 
     /**
      * Log search queries
@@ -180,16 +189,15 @@ class StatisticsLogger {
         $ua_info = addslashes($this->ua_info($agent,$ua_type,$ua_ver,$os));
 
         $page    = addslashes($_REQUEST['p']);
-        $ip      = addslashes($_SERVER['REMOTE_ADDR']);
+        $ip      = addslashes(clientIP(true));
         $sx      = (int) $_REQUEST['sx'];
         $sy      = (int) $_REQUEST['sy'];
         $vx      = (int) $_REQUEST['vx'];
         $vy      = (int) $_REQUEST['vy'];
         $js      = (int) $_REQUEST['js'];
-        $uid     = addslashes($_REQUEST['uid']);
+        $uid     = addslashes($this->getUID());
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
-        if(!$uid) $uid = $session;
 
         $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."access
                     SET dt       = NOW(),
@@ -227,8 +235,31 @@ class StatisticsLogger {
         }
 
         // resolve the IP
-        $this->log_ip($_SERVER['REMOTE_ADDR']);
+        $this->log_ip(clientIP(true));
     }
+
+    /**
+     * Log edits
+     */
+    public function log_edit($page, $type){
+        $ip      = addslashes(clientIP(true));
+        $user    = addslashes($_SERVER['REMOTE_USER']);
+        $session = addslashes(session_id());
+        $uid     = addslashes($this->getUID());
+        $page    = addslashes($page);
+        $type    = addslashes($type);
+
+        $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."edits
+                    SET dt       = NOW(),
+                        page     = '$page',
+                        type     = '$type',
+                        ip       = '$ip',
+                        user     = '$user',
+                        session  = '$session',
+                        uid      = '$uid'";
+        $this->hlp->runSQL($sql);
+    }
+
 
     /**
      * Returns a short name for a User Agent and sets type, version and os info
