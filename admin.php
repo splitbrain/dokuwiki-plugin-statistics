@@ -26,9 +26,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Available statistic pages
      */
     protected $pages  = array('dashboard','page','referer','newreferer',
-                              'outlinks','searchphrases','searchwords',
-                              'searchengines','browsers','os','countries',
-                              'resolution');
+                              'outlinks','searchengines','searchphrases',
+                              'searchwords', 'internalsearchphrases',
+                              'internalsearchwords','browsers','os',
+                              'countries','resolution');
 
     /**
      * Initialize the helper
@@ -288,12 +289,22 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function html_searchphrases(){
-        $result = $this->hlp->Query()->searchphrases($this->tlimit,$this->start,150);
+        $result = $this->hlp->Query()->searchphrases(true,$this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_searchwords(){
-        $result = $this->hlp->Query()->searchwords($this->tlimit,$this->start,150);
+        $result = $this->hlp->Query()->searchwords(true,$this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+    }
+
+    function html_internalsearchphrases(){
+        $result = $this->hlp->Query()->searchphrases(false,$this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+    }
+
+    function html_internalsearchwords(){
+        $result = $this->hlp->Query()->searchwords(false,$this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
@@ -348,6 +359,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '<a href="'.$v.'" class="urlextern">';
                     echo $url;
                     echo '</a>';
+                }elseif($k == 'ilookup'){
+                    echo '<a href="'.wl('',array('id'=>$v,'do'=>'search')).'">Search</a>';
                 }elseif($k == 'lookup'){
                     echo '<a href="http://www.google.com/search?q='.rawurlencode($v).'">';
                     echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/google.png" alt="lookup in Google" border="0" />';

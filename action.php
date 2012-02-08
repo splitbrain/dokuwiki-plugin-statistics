@@ -28,6 +28,11 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                                    $this,
                                    'logedits',
                                    array());
+        $controller->register_hook('SEARCH_QUERY_FULLPAGE',
+                                   'AFTER',
+                                   $this,
+                                   'logsearch',
+                                   array());
     }
 
     /**
@@ -56,9 +61,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
 
 
     /**
-     * Log edits and creates
-     *
-     * @fixme handle deletions
+     * Log page edits actions
      */
     function logedits(&$event, $param){
         if($event->data[3]) return; // no revision
@@ -74,6 +77,14 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         }
         $hlp = plugin_load('helper','statistics');
         $hlp->Logger()->log_edit(cleanID($event->data[1].':'.$event->data[2]), $type);
+    }
+
+    /**
+     * Log internal search
+     */
+    function logsearch(&$event, $param){
+        $hlp = plugin_load('helper','statistics');
+        $hlp->Logger()->log_search('',$event->data['query'],$event->data['highlight'],'dokuwiki');
     }
 }
 

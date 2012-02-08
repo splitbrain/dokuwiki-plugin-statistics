@@ -114,22 +114,38 @@ class StatisticsQuery {
         return $this->hlp->runSQL($sql);
     }
 
-    public function searchphrases($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(*) as cnt, query, query as lookup
+    public function searchphrases($extern,$tlimit,$start=0,$limit=20){
+        if($extern){
+            $WHERE = "engine != 'dokuwiki'";
+            $I = '';
+        }else{
+            $WHERE = "engine = 'dokuwiki'";
+            $I = 'i';
+        }
+        $sql = "SELECT COUNT(*) as cnt, query, query as ${I}lookup
                   FROM ".$this->hlp->prefix."search as A
                  WHERE $tlimit
+                   AND $WHERE
               GROUP BY query
               ORDER BY cnt DESC, query".
               $this->mklimit($start,$limit);
         return $this->hlp->runSQL($sql);
     }
 
-    public function searchwords($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(*) as cnt, word, word as lookup
+    public function searchwords($extern,$tlimit,$start=0,$limit=20){
+        if($extern){
+            $WHERE = "engine != 'dokuwiki'";
+            $I = '';
+        }else{
+            $WHERE = "engine = 'dokuwiki'";
+            $I = 'i';
+        }
+        $sql = "SELECT COUNT(*) as cnt, word, word as ${I}lookup
                   FROM ".$this->hlp->prefix."search as A,
                        ".$this->hlp->prefix."searchwords as B
                  WHERE $tlimit
                    AND A.id = B.sid
+                   AND $WHERE
               GROUP BY word
               ORDER BY cnt DESC, word".
               $this->mklimit($start,$limit);

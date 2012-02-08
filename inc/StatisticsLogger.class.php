@@ -20,9 +20,11 @@ class StatisticsLogger {
     }
 
     /**
-     * Log search queries
+     * Log external search queries
+     *
+     * Will not write anything if the referer isn't a search engine
      */
-    public function log_search($referer,&$type){
+    public function log_externalsearch($referer,&$type){
         $referer = strtolower($referer);
         $ref     = strtr($referer,' +','__');
 
@@ -63,22 +65,26 @@ class StatisticsLogger {
         $query = utf8_strtolower($query);
 
         // log it!
-        $page  = addslashes($_REQUEST['p']);
-        $query = addslashes($query);
+        $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
+        $this->log_search($_REQUEST['p'],$query,$words,$engine);
+    }
+
+    /**
+     * The given data to the search related tables
+     */
+    public function log_search($page,$query,$words,$engine){
+        $page   = addslashes($page);
+        $query  = addslashes($query);
+        $engine = addslashes($engine);
+
         $sql  = "INSERT INTO ".$this->hlp->prefix."search
                     SET dt       = NOW(),
                         page     = '$page',
                         query    = '$query',
                         engine   = '$engine'";
         $id = $this->hlp->runSQL($sql);
-        if(is_null($id)){
-            global $MSG;
-            print_r($MSG);
-            return;
-        }
+        if(is_null($id)) return;
 
-        // log single keywords
-        $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
         foreach($words as $word){
             if(!$word) continue;
             $word = addslashes($word);
@@ -86,10 +92,6 @@ class StatisticsLogger {
                        SET sid  = $id,
                            word = '$word'";
             $ok = $this->hlp->runSQL($sql);
-            if(is_null($ok)){
-                global $MSG;
-                print_r($MSG);
-            }
         }
     }
 
@@ -171,7 +173,7 @@ class StatisticsLogger {
                 $ref_type = 'internal';
             }else{
                 $ref_type = 'external';
-                $this->log_search($referer,$ref_type);
+                $this->log_externalsearch($referer,$ref_type);
             }
         }else{
             $ref      = '';

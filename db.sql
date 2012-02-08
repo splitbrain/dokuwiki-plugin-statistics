@@ -127,3 +127,5 @@ CREATE TABLE `stats_edits` (
 ) ENGINE='MyISAM' COLLATE 'utf8_general_ci';
 
 ALTER TABLE `stats_access` CHANGE `ip` `ip` varchar(40);
+
+ALTER TABLE `stats_search` ADD INDEX `engine` (`engine`);
