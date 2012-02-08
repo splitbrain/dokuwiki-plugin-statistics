@@ -55,29 +55,53 @@ class StatisticsQuery {
      * standard statistics follow, only accesses made by browsers are counted
      * for general stats like browser or OS only visitors not pageviews are counted
      */
+
+    /**
+     * Return some trend data about visits and edits in the wiki
+     */
     public function trend($tlimit,$hours=false){
         if($hours){
-            $sql = "SELECT HOUR(dt) as time,
-                           COUNT(DISTINCT session) as sessions,
-                           COUNT(session) as pageviews,
-                           COUNT(DISTINCT uid) as visitors
-                      FROM ".$this->hlp->prefix."access as A
-                     WHERE $tlimit
-                       AND ua_type = 'browser'
-                  GROUP BY HOUR(dt)
-                  ORDER BY time";
+            $TIME = 'HOUR(dt)';
         }else{
-            $sql = "SELECT DATE(dt) as time,
-                           COUNT(DISTINCT session) as sessions,
-                           COUNT(session) as pageviews,
-                            COUNT(DISTINCT uid) as visitors
-                      FROM ".$this->hlp->prefix."access as A
-                     WHERE $tlimit
-                       AND ua_type = 'browser'
-                  GROUP BY DATE(dt)
-                  ORDER BY time";
+            $TIME = 'DATE(dt)';
         }
-        return $this->hlp->runSQL($sql);
+
+        $data = array();
+
+        // access trends
+        $sql = "SELECT $TIME as time,
+                       COUNT(DISTINCT session) as sessions,
+                       COUNT(session) as pageviews,
+                       COUNT(DISTINCT uid) as visitors
+                  FROM ".$this->hlp->prefix."access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+              GROUP BY $TIME
+              ORDER BY time";
+        $result = $this->hlp->runSQL($sql);
+        foreach($result as $row){
+            $data[$row['time']]['sessions']  = $row['sessions'];
+            $data[$row['time']]['pageviews'] = $row['pageviews'];
+            $data[$row['time']]['visitors']  = $row['visitors'];
+        }
+
+        // edit trends
+        foreach(array('E','C','D') as $type){
+            $sql = "SELECT $TIME as time,
+                           COUNT(*) as cnt
+                      FROM ".$this->hlp->prefix."edits as A
+                     WHERE $tlimit
+                       AND type = '$type'
+                  GROUP BY $TIME
+                  ORDER BY time";
+            $result = $this->hlp->runSQL($sql);
+            foreach($result as $row){
+                $data[$row['time']][$type] = $row['cnt'];
+            }
+        }
+
+        ksort($data);
+        return $data;
     }
 
     public function searchengines($tlimit,$start=0,$limit=20){

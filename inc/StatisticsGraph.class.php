@@ -162,19 +162,28 @@ exit;
         $data1  = array();
         $data2  = array();
         $data3  = array();
+        $data4  = array();
+        $data5  = array();
+        $data6  = array();
         $times  = array();
 
-        foreach($result as $row){
-            $data1[] = $row['pageviews'];
-            $data2[] = $row['sessions'];
-            $data3[] = $row['visitors'];
-            $times[] = $row['time'].($hours?'h':'');
+        foreach($result as $time => $row){
+            $data1[] = (int) $row['pageviews'];
+            $data2[] = (int) $row['sessions'];
+            $data3[] = (int) $row['visitors'];
+            $data4[] = (int) $row['E'];
+            $data5[] = (int) $row['C'];
+            $data6[] = (int) $row['D'];
+            $times[] = $time.($hours?'h':'');
         }
 
         $DataSet = new pData();
         $DataSet->AddPoints($data1,'Serie1');
         $DataSet->AddPoints($data2,'Serie2');
         $DataSet->AddPoints($data3,'Serie3');
+        $DataSet->AddPoints($data4,'Serie4');
+        $DataSet->AddPoints($data5,'Serie5');
+        $DataSet->AddPoints($data6,'Serie6');
         $DataSet->AddPoints($times,'Times');
         $DataSet->AddAllSeries();
         $DataSet->SetAbscissaLabelSeries('Times');
@@ -182,6 +191,9 @@ exit;
         $DataSet->SetSeriesName('Views','Serie1');
         $DataSet->SetSeriesName('Sessions','Serie2');
         $DataSet->SetSeriesName('Visitors','Serie3');
+        $DataSet->SetSeriesName('Page Edits','Serie4');
+        $DataSet->SetSeriesName('Page Creations','Serie5');
+        $DataSet->SetSeriesName('Page Deletions','Serie6');
 
         $Canvas = new GDCanvas(700, 280);
         $Chart  = new pChart(700,280,$Canvas);
@@ -189,7 +201,7 @@ exit;
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
         $Chart->setGraphArea(50,30,680,200);
         $Chart->drawScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
-                          ($hours?0:45), 1, false, round(count($data1)/12) );
+                          ($hours?0:45), 1, false, ceil(count($times)/12) );
         $Chart->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
 
         $DataSet->removeSeries('Times');
