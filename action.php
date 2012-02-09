@@ -17,12 +17,11 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
      * register the eventhandlers and initialize some options
      */
     function register(&$controller){
+        global $JSINFO;
+        global $ACT;
+        $JSINFO['act'] = $ACT;
 
-        $controller->register_hook('TPL_METAHEADER_OUTPUT',
-                                   'BEFORE',
-                                   $this,
-                                   'handle_metaheaders',
-                                   array());
+
         $controller->register_hook('IO_WIKIPAGE_WRITE',
                                    'BEFORE',
                                    $this,
@@ -35,18 +34,6 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                                    array());
     }
 
-    /**
-     * Extend the meta headers
-     */
-    function handle_metaheaders(&$event, $param){
-        global $ACT;
-        global $ID;
-        if($ACT != 'show') return; //only log page views for now
-
-        $page = rawurlencode($ID);
-        $data = "plugin_statistics.init('$page');";
-        $event->data['script'][] = array( 'type'=>'text/javascript', 'charset'=>'utf-8', '_data'=>$data);
-    }
 
     /**
      * @fixme call this in the webbug call

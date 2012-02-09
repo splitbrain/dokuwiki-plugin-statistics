@@ -28,3 +28,11 @@ $lang['browsers']      = 'Browsers';
 $lang['os']            = 'Operating Systems';
 $lang['countries']     = 'Countries';
 $lang['resolution']    = 'Resolution';
+
+
+$lang['dash_pageviews'] = '%d Page Views';
+$lang['dash_sessions']  = '%d Visits (Sessions)';
+$lang['dash_visitors']  = '%d Unique Visitors';
+$lang['dash_users']     = '%d Logged in Users';
+$lang['dash_timespent'] = '%.2f Minutes spent in an avarage Session';
+

@@ -201,11 +201,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_top">';
         $result = $this->hlp->Query()->aggregate($this->tlimit);
         echo '<ul>';
-        echo '<li><span>'.$result['pageviews'].'</span> page views </li>';
-        echo '<li><span>'.$result['sessions'].'</span> visits (sessions) </li>';
-        echo '<li><span>'.$result['visitors'].'</span> unique visitors </li>';
-        echo '<li><span>'.$result['users'].'</span> logged in users</li>';
-
+        foreach(array('pageviews','sessions','visitors','users','timespent') as $name){
+            echo '<li><div class="li">'.sprintf($this->getLang('dash_'.$name),$result[$name]).'</div></li>';
+        }
         echo '</ul>';
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=trend&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         echo '</div>';

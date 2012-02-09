@@ -2,61 +2,77 @@
  * Statistics script
  */
 var plugin_statistics = {
-    id: null,
+    data: {},
 
     /**
      * initialize the script
      *
      * @param id string - urlencoded page id
      */
-    init: function(id){
-        plugin_statistics.id = id;
-        var now = new Date();
+    init: function(){
 
         // load visitor cookie
+        var now = new Date();
         var uid   = DokuCookie.getValue('plgstats');
         if(!uid){
             uid = now.getTime()+'-'+Math.floor(Math.random()*32000);
             DokuCookie.setValue('plgstats',uid);
-            if(!DokuCookie.getCookie(DokuCookie.name)){
-                uid = '';
-            }
+        }
+        plugin_statistics.data = {
+            uid: uid,
+            p: JSINFO['id'],
+            r: document.referrer,
+            sx: screen.width,
+            sy: screen.height,
+            vx: window.innerWidth,
+            vy: window.innerHeight,
+            js: 1,
+            rnd: now.getTime()
         }
 
-        // log the visit
-        var img = new Image();
-        img.src = DOKU_BASE+'lib/plugins/statistics/log.php'+
-                            '?rnd='+now.getTime()+
-                            '&p='+id+
-                            '&r='+encodeURIComponent(document.referrer)+
-                            '&sx='+screen.width+
-                            '&sy='+screen.height+
-                            '&vx='+window.innerWidth+
-                            '&vy='+window.innerHeight+
-                            '&uid='+uid+
-                            '&js=1';
+        // log access
+        if(JSINFO['act'] == 'show'){
+            plugin_statistics.log_view('v');
+        }else{
+            plugin_statistics.log_view('s');
+        }
 
-        // attach event
-        addInitEvent(function(){
-            var links = getElementsByClass('urlextern',null,'a');
-            for(var i=0; i<links.length; i++){
-                addEvent(links[i],'click',function(e){plugin_statistics.logExternal(e)});
-            }
-        });
+        // attach outgoing event
+        jQuery('a.urlextern').click(plugin_statistics.log_external);
+
+        // attach unload event
+        jQuery(window).bind('beforeunload',plugin_statistics.log_exit);
+    },
+
+    /**
+     * Log a view or session
+     *
+     * @param string act 'v' = view, 's' = session
+     */
+    log_view: function(act){
+        var params = jQuery.param(plugin_statistics.data);
+        var img = new Image();
+        img.src = DOKU_BASE+'lib/plugins/statistics/log.php?do='+act+'&'+params;
     },
 
     /**
      * Log clicks to external URLs
      */
-    logExternal: function(e){
-        var now = new Date();
+    log_external: function(){
+        var params = jQuery.param(plugin_statistics.data);
         var img = new Image();
-        img.src = DOKU_BASE+'lib/plugins/statistics/log.php'+
-                            '?rnd='+now.getTime()+
-                            '&ol='+encodeURIComponent(e.target.href)+
-                            '&p='+plugin_statistics.id;
+        img.src = DOKU_BASE+'lib/plugins/statistics/log.php?do=o&ol='+encodeURIComponent(this.href)+'&'+params;
         plugin_statistics.pause(500);
         return true;
+    },
+
+    /**
+     * Log any leaving action as session info
+     */
+    log_exit: function(){
+        var params = jQuery.param(plugin_statistics.data);
+        var url = DOKU_BASE+'lib/plugins/statistics/log.php?do=s&'+params;
+        jQuery.ajax(url,{async: false});
     },
 
     /**
@@ -74,3 +90,5 @@ var plugin_statistics = {
     }
 };
 
+
+jQuery(plugin_statistics.init);

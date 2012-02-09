@@ -132,6 +132,6 @@ ALTER TABLE `stats_search` ADD INDEX `engine` (`engine`);
 
 CREATE TABLE `stats_session` (
   `session` varchar(255) NOT NULL PRIMARY KEY,
-  `begin` datetime NOT NULL,
+  `dt` datetime NOT NULL,
   `end` datetime NOT NULL
 ) COMMENT='' ENGINE='MyISAM' COLLATE 'utf8_general_ci';

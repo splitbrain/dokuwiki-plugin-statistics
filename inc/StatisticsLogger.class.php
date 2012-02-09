@@ -105,7 +105,7 @@ class StatisticsLogger {
         $session = addslashes(session_id());
         $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."session
                    SET session = '$session',
-                       begin   = NOW(),
+                       dt      = NOW(),
                        end     = NOW()
                 ON DUPLICATE KEY UPDATE
                        end     = NOW()";
