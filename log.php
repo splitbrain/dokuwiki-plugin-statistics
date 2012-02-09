@@ -17,17 +17,16 @@ $plugin = plugin_load('helper','statistics');
 
 dbglog('Log '.$_SERVER['REQUEST_URI']);
 
-// always log session
-$plugin->Logger()->log_session();
-
-// log specifics
 switch ($_REQUEST['do']){
     case 'v':
         $plugin->Logger()->log_access();
+        $plugin->Logger()->log_session(1);
         break;
     case 'o':
         $plugin->Logger()->log_outgoing();
-        break;
+        //falltrough
+    default:
+        $plugin->Logger()->log_session();
 }
 
 // fixme move to top

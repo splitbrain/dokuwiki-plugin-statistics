@@ -27,6 +27,7 @@ class StatisticsQuery {
             if($row['ref_type'] == '')         $data['direct']   = $row['cnt'];
         }
 
+        // general user and session info
         $sql = "SELECT COUNT(DISTINCT session) as sessions,
                        COUNT(session) as views,
                        COUNT(DISTINCT user) as users,
@@ -40,6 +41,30 @@ class StatisticsQuery {
         $data['sessions']  = $result[0]['sessions'];
         $data['pageviews'] = $result[0]['views'];
         $data['visitors']  = $result[0]['visitors'];
+
+        // calculate bounce rate
+        if($data['sessions']){
+            // FIXME decide for SQL
+            $sql = "SELECT COUNT(*) as cnt
+                      FROM ".$this->hlp->prefix."session as A
+                     WHERE $tlimit
+                       AND views = 1";
+
+
+/*
+            $sql = "SELECT COUNT(*) as cnt FROM (
+                         SELECT COUNT(*) as cnt
+                                          FROM ".$this->hlp->prefix."access as A
+                                         WHERE $tlimit
+                                           AND ua_type = 'browser'
+                                      GROUP BY session
+                           HAVING cnt = 1
+                        ) as foo;";
+*/
+
+            $result = $this->hlp->runSQL($sql);
+            $data['bouncerate'] = $result[0]['cnt']*100/$data['sessions'];
+        }
 
 /* not used currently
         $sql = "SELECT COUNT(id) as robots

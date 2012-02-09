@@ -100,15 +100,22 @@ class StatisticsLogger {
      *
      * This is used to calculate the time people spend on the whole site
      * during their session
+     *
+     * Viewcounts are used for bounce calculation
+     *
+     * @param int $addview set to 1 to count a view
      */
-    public function log_session(){
+    public function log_session($addview=0){
+        $addview = addslashes($addview);
         $session = addslashes(session_id());
         $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."session
                    SET session = '$session',
                        dt      = NOW(),
-                       end     = NOW()
+                       end     = NOW(),
+                       views   = $addview
                 ON DUPLICATE KEY UPDATE
-                       end     = NOW()";
+                       end     = NOW(),
+                       views   = views + $addview";
         $this->hlp->runSQL($sql);
     }
 

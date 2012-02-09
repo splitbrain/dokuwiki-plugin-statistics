@@ -201,7 +201,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_top">';
         $result = $this->hlp->Query()->aggregate($this->tlimit);
         echo '<ul>';
-        foreach(array('pageviews','sessions','visitors','users','logins','timespent') as $name){
+        foreach(array('pageviews','sessions','visitors','users','logins','timespent','bouncerate') as $name){
             echo '<li><div class="li">'.sprintf($this->getLang('dash_'.$name),$result[$name]).'</div></li>';
         }
         echo '</ul>';
