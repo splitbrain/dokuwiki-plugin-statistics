@@ -35,4 +35,5 @@ $lang['dash_sessions']  = '%d Visits (Sessions)';
 $lang['dash_visitors']  = '%d Unique Visitors';
 $lang['dash_users']     = '%d Logged in Users';
 $lang['dash_timespent'] = '%.2f Minutes spent in an avarage Session';
+$lang['dash_logins']    = '%d User Logins';
 

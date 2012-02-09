@@ -41,12 +41,14 @@ class StatisticsQuery {
         $data['pageviews'] = $result[0]['views'];
         $data['visitors']  = $result[0]['visitors'];
 
+/* not used currently
         $sql = "SELECT COUNT(id) as robots
                   FROM ".$this->hlp->prefix."access as A
                  WHERE $tlimit
                    AND ua_type = 'robot'";
         $result = $this->hlp->runSQL($sql);
         $data['robots'] = $result[0]['robots'];
+*/
 
         // average time spent on the site
         $sql = "SELECT AVG(end - dt)/60 as time
@@ -55,6 +57,14 @@ class StatisticsQuery {
                    AND dt != end";
         $result = $this->hlp->runSQL($sql);
         $data['timespent'] = $result[0]['time'];
+
+        // logins
+        $sql = "SELECT COUNT(*) as logins
+                  FROM ".$this->hlp->prefix."logins as A
+                 WHERE $tlimit
+                   AND (type = 'l' OR type = 'p')";
+        $result = $this->hlp->runSQL($sql);
+        $data['logins'] = $result[0]['logins'];
 
         return $data;
     }
