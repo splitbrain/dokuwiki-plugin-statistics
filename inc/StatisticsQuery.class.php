@@ -48,10 +48,11 @@ class StatisticsQuery {
         $result = $this->hlp->runSQL($sql);
         $data['robots'] = $result[0]['robots'];
 
-
+        // average time spent on the site
         $sql = "SELECT AVG(end - dt)/60 as time
                   FROM ".$this->hlp->prefix."session as A
-                 WHERE $tlimit";
+                 WHERE $tlimit
+                   AND dt != end";
         $result = $this->hlp->runSQL($sql);
         $data['timespent'] = $result[0]['time'];
 
