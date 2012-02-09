@@ -1,20 +1,20 @@
 -- phpMyAdmin SQL Dump
 -- version 2.9.1.1-Debian-2
 -- http://www.phpmyadmin.net
--- 
+--
 -- Host: localhost
 -- Generation Time: Jan 26, 2007 at 05:34 PM
 -- Server version: 5.0.30
 -- PHP Version: 4.4.4-8
--- 
+--
 -- Database: `stats`
--- 
+--
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `stats_access`
--- 
+--
 
 CREATE TABLE `stats_access` (
   `id` bigint(20) unsigned NOT NULL auto_increment,
@@ -44,9 +44,9 @@ CREATE TABLE `stats_access` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `stats_iplocation`
--- 
+--
 
 CREATE TABLE `stats_iplocation` (
   `ip` varchar(15) collate utf8_unicode_ci NOT NULL,
@@ -135,3 +135,24 @@ CREATE TABLE `stats_session` (
   `dt` datetime NOT NULL,
   `end` datetime NOT NULL
 ) COMMENT='' ENGINE='MyISAM' COLLATE 'utf8_general_ci';
+
+CREATE TABLE `stats_logins` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `dt` datetime NOT NULL,
+  `ip` varchar(40) NOT NULL,
+  `user` varchar(255) NOT NULL,
+  `session` varchar(255) NOT NULL,
+  `uid` varchar(50) NOT NULL,
+  `type` char(1) COLLATE 'ascii_bin' NOT NULL
+) ENGINE='MyISAM' COLLATE 'utf8_general_ci';
+
+ALTER TABLE `stats_edits` ADD INDEX `dt` (`dt`);
+ALTER TABLE `stats_edits` ADD INDEX `type` (`type`);
+ALTER TABLE `stats_logins` ADD INDEX `dt` (`dt`);
+ALTER TABLE `stats_logins` ADD INDEX `type` (`type`);
+ALTER TABLE `stats_outlinks` ADD INDEX `dt` (`dt`);
+ALTER TABLE `stats_search` ADD INDEX `dt` (`dt`);
+ALTER TABLE `stats_session` ADD INDEX `dt` (`dt`);
+
+
+

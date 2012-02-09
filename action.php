@@ -32,6 +32,11 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                                    $this,
                                    'logsearch',
                                    array());
+        $controller->register_hook('ACTION_ACT_PREPROCESS',
+                                   'BEFORE',
+                                   $this,
+                                   'loglogins',
+                                   array());
     }
 
 
@@ -73,5 +78,47 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         $hlp = plugin_load('helper','statistics');
         $hlp->Logger()->log_search('',$event->data['query'],$event->data['highlight'],'dokuwiki');
     }
-}
 
+    /**
+     * Log login/logouts
+     */
+    function loglogins(&$event, $param){
+        $type = '';
+        $act = $this->_act_clean($event->data);
+        if($act == 'logout'){
+            $type = 'o';
+        }elseif($_SERVER['REMOTE_USER'] && $act=='login'){
+            if($_REQUEST['r']){
+                $type = 'p';
+            }else{
+                $type = 'l';
+            }
+        }elseif($_REQUEST['u'] && !$_REQUEST['http_credentials'] && !$_SERVER['REMOTE_USER']){
+            $type = 'f';
+        }
+        if(!$type) return;
+
+        $hlp = plugin_load('helper','statistics');
+        $hlp->Logger()->log_login($type);
+    }
+
+
+    /**
+     * Pre-Sanitize the action command
+     *
+     * Similar to act_clean in action.php but simplified and without
+     * error messages
+     */
+    function _act_clean($act){
+         // check if the action was given as array key
+         if(is_array($act)){
+           list($act) = array_keys($act);
+         }
+
+         //remove all bad chars
+         $act = strtolower($act);
+         $act = preg_replace('/[^a-z_]+/','',$act);
+
+         return $act;
+     }
+}

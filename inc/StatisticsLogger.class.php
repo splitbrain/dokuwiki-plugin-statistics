@@ -279,6 +279,25 @@ class StatisticsLogger {
         $this->hlp->runSQL($sql);
     }
 
+    /**
+     * Log login/logoffs
+     */
+    public function log_login($type){
+        $ip      = addslashes(clientIP(true));
+        $user    = addslashes($_SERVER['REMOTE_USER']);
+        $session = addslashes(session_id());
+        $uid     = addslashes($this->getUID());
+        $type    = addslashes($type);
+
+        $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."logins
+                    SET dt       = NOW(),
+                        type     = '$type',
+                        ip       = '$ip',
+                        user     = '$user',
+                        session  = '$session',
+                        uid      = '$uid'";
+        $this->hlp->runSQL($sql);
+    }
 
     /**
      * Returns a short name for a User Agent and sets type, version and os info
