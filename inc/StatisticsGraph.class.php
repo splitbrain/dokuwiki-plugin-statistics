@@ -108,12 +108,8 @@ class StatisticsGraph {
         $this->PieChart($data);
     }
 
-    public function resolution(){
-
-        //$graph->setProp("key",'view port width',0);
-        //$graph->setProp("key",'view port height',1);
-
-        $result = $this->hlp->Query()->viewport($this->tlimit,0,0,true);
+    public function viewport(){
+        $result = $this->hlp->Query()->viewport($this->tlimit,0,100);
         $data1 = array();
         $data2 = array();
 
@@ -121,22 +117,8 @@ class StatisticsGraph {
             $data1[] = $row['res_x'];
             $data2[] = $row['res_y'];
             $data3[] = $row['cnt'];
-#            $graph->addPoint($row['cnt'],$row['res_x'],0);
         }
 
-/*
-        $result = $this->hlp->Query()->viewport($this->tlimit,0,0,false);
-        foreach($result as $row){
-            $graph->addPoint($row['cnt'],$row['res_y'],1);
-        }
-
-        @$graph->graph();
-        $graph->showGraph();
-*/
-/*
-dbg($result);
-exit;
-*/
         $DataSet = new pData;
         $DataSet->AddPoints($data1,'Serie1');
         $DataSet->AddPoints($data2,'Serie2');
@@ -151,7 +133,37 @@ exit;
         $Chart->drawXYScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
                             'Serie2','Serie1');
 
-        $Chart->drawXYPlotGraph($DataSet->getData(),'Serie2','Serie1');
+        $Chart->drawXYPlotGraph($DataSet,'Serie2','Serie1',0,20,2,null,false,'Serie3');
+        header('Content-Type: image/png');
+        $Chart->Render('');
+    }
+
+    public function resolution(){
+        $result = $this->hlp->Query()->resolution($this->tlimit,0,100);
+        $data1 = array();
+        $data2 = array();
+
+        foreach($result as $row){
+            $data1[] = $row['res_x'];
+            $data2[] = $row['res_y'];
+            $data3[] = $row['cnt'];
+        }
+
+        $DataSet = new pData;
+        $DataSet->AddPoints($data1,'Serie1');
+        $DataSet->AddPoints($data2,'Serie2');
+        $DataSet->AddPoints($data3,'Serie3');
+        $DataSet->AddAllSeries();
+
+        $Canvas = new GDCanvas(700, 500);
+        $Chart  = new pChart(700,500,$Canvas);
+
+        $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
+        $Chart->setGraphArea(50,30,680,480);
+        $Chart->drawXYScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
+                            'Serie2','Serie1');
+
+        $Chart->drawXYPlotGraph($DataSet,'Serie2','Serie1',0,20,2,null,false,'Serie3');
         header('Content-Type: image/png');
         $Chart->Render('');
     }

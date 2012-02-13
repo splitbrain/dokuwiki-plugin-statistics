@@ -313,8 +313,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
 
     function html_resolution(){
-        $result = $this->hlp->Query()->resolution($this->tlimit,$this->start,150);
-        $this->html_resulttable($result,'',150);
+
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=resolution&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
 
         echo '<p>While the data above gives you some info about the resolution your visitors use, it does not tell you
               much about about the real size of their browser windows. The graphic below shows the size distribution of
@@ -322,7 +322,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
               in all browsers. Because users may resize their browser window while browsing your site the statistics may
               be flawed. Take it with a grain of salt.</p>';
 
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=view&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=viewport&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+
+        $result = $this->hlp->Query()->resolution($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
+
+
     }
 
 

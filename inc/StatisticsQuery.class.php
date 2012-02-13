@@ -292,26 +292,21 @@ class StatisticsQuery {
     }
 
     public function resolution($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(DISTINCT session) as cnt, CONCAT(screen_x,'x',screen_y) as res
+        $sql = "SELECT COUNT(*) as cnt,
+                       ROUND(screen_x/100)*100 as res_x,
+                       ROUND(screen_y/100)*100 as res_y
                   FROM ".$this->hlp->prefix."access as A
                  WHERE $tlimit
                    AND ua_type  = 'browser'
                    AND screen_x != 0
+                   AND screen_y != 0
               GROUP BY screen_x, screen_y
-              ORDER BY cnt DESC, screen_x".
+              ORDER BY cnt DESC".
               $this->mklimit($start,$limit);
         return $this->hlp->runSQL($sql);
     }
 
-    public function viewport($tlimit,$start=0,$limit=20,$x=true){
-        if($x){
-            $col = 'view_x';
-            $res = 'res_x';
-        }else{
-            $col = 'view_y';
-            $res = 'res_y';
-        }
-
+    public function viewport($tlimit,$start=0,$limit=20){
         $sql = "SELECT COUNT(*) as cnt,
                        ROUND(view_x/100)*100 as res_x,
                        ROUND(view_y/100)*100 as res_y
@@ -320,8 +315,8 @@ class StatisticsQuery {
                    AND ua_type  = 'browser'
                    AND view_x != 0
                    AND view_y != 0
-              GROUP BY res_x, res_y
-              ORDER BY cnt".
+              GROUP BY view_x, view_y
+              ORDER BY cnt DESC".
               $this->mklimit($start,$limit);
 
         return $this->hlp->runSQL($sql);
