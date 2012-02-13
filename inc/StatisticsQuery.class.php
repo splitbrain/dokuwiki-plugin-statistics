@@ -49,22 +49,16 @@ class StatisticsQuery {
                       FROM ".$this->hlp->prefix."session as A
                      WHERE $tlimit
                        AND views = 1";
-
-
-/*
-            $sql = "SELECT COUNT(*) as cnt FROM (
-                         SELECT COUNT(*) as cnt
-                                          FROM ".$this->hlp->prefix."access as A
-                                         WHERE $tlimit
-                                           AND ua_type = 'browser'
-                                      GROUP BY session
-                           HAVING cnt = 1
-                        ) as foo;";
-*/
-
             $result = $this->hlp->runSQL($sql);
             $data['bouncerate'] = $result[0]['cnt']*100/$data['sessions'];
         }
+
+        // calculate avg. number of views per session
+        $sql = "SELECT AVG(views) as cnt
+                  FROM ".$this->hlp->prefix."session as A
+                     WHERE $tlimit";
+        $result = $this->hlp->runSQL($sql);
+        $data['avgpages'] = $result[0]['cnt'];
 
 /* not used currently
         $sql = "SELECT COUNT(id) as robots
