@@ -1358,7 +1358,9 @@ class pChart {
      * using it's own minima/maxima and the desired output minima/maxima
      */
     function linearScale($value, $istart, $istop, $ostart, $ostop){
-        return $ostart + ($ostop - $ostart) * (($value - $istart) / ($istop - $istart));
+        $div = ($istop - $istart);
+        if($div == 0.0) $div = 1;
+        return $ostart + ($ostop - $ostart) * (($value - $istart) / $div);
     }
 
 	/**
