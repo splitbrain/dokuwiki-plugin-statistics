@@ -255,7 +255,7 @@ class StatisticsQuery {
                        ".$this->hlp->prefix."iplocation as B
                  WHERE $tlimit
                    AND A.ip = B.ip
-              GROUP BY B.country
+              GROUP BY B.code
               ORDER BY cnt DESC, B.country".
               $this->mklimit($start,$limit);
         return $this->hlp->runSQL($sql);

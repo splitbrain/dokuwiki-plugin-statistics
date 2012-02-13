@@ -165,9 +165,9 @@ class StatisticsLogger {
         $data = $http->get('http://api.hostip.info/get_html.php?ip='.$ip);
 
         if(preg_match('/^Country: (.*?) \((.*?)\)\nCity: (.*?)$/s',$data,$match)){
-            $country = addslashes(trim($match[1]));
+            $country = addslashes(ucwords(strtolower(trim($match[1]))));
             $code    = addslashes(strtolower(trim($match[2])));
-            $city    = addslashes(trim($match[3]));
+            $city    = addslashes(ucwords(strtolower(trim($match[3]))));
             $host    = addslashes(gethostbyaddr($ip));
             $ip      = addslashes($ip);
 
