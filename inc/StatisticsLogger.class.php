@@ -4,9 +4,28 @@ require dirname(__FILE__).'/StatisticsBrowscap.class.php';
 
 class StatisticsLogger {
     private $hlp;
+    private $ua_agent;
+    private $ua_type;
+    private $ua_name;
+    private $ua_version;
+    private $ua_platform;
 
+
+    /**
+     * Parses browser info and set internal vars
+     */
     public function __construct($hlp){
         $this->hlp = $hlp;
+
+        $this->ua_agent = trim($_SERVER['HTTP_USER_AGENT']);
+        $bc = new StatisticsBrowscap();
+        $ua = $bc->getBrowser($this->ua_agent);
+        $this->ua_name = $ua->Browser;
+        $this->ua_type = 'browser';
+        if($ua->Crawler) $this->ua_type = 'robot';
+        if($ua->isSyndicationReader) $this->ua_type = 'feedreader';
+        $this->ua_version  = $ua->Version;
+        $this->ua_platform = $ua->Platform;
     }
 
     /**
@@ -106,6 +125,9 @@ class StatisticsLogger {
      * @param int $addview set to 1 to count a view
      */
     public function log_session($addview=0){
+        // only log browser sessions
+        if($this->ua_type != 'browser') return;
+
         $addview = addslashes($addview);
         $session = addslashes(session_id());
         $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."session
@@ -206,13 +228,12 @@ class StatisticsLogger {
         }
 
         // handle user agent
-        $agent   = trim($_SERVER['HTTP_USER_AGENT']);
 
-        $ua      = addslashes($agent);
-        $ua_type = '';
-        $ua_ver  = '';
-        $os      = '';
-        $ua_info = addslashes($this->ua_info($agent,$ua_type,$ua_ver,$os));
+        $ua      = addslashes($this->ua_agent);
+        $ua_type = addslashes($this->ua_type);
+        $ua_ver  = addslashes($this->ua_version);
+        $os      = addslashes($this->ua_platform);
+        $ua_info = addslashes($this->ua_name);
 
         $page    = addslashes($_REQUEST['p']);
         $ip      = addslashes(clientIP(true));
@@ -306,19 +327,4 @@ class StatisticsLogger {
         $this->hlp->runSQL($sql);
     }
 
-    /**
-     * Returns a short name for a User Agent and sets type, version and os info
-     */
-    private function ua_info($agent,&$type,&$version,&$os){
-        $bc = new StatisticsBrowscap();
-        $ua = $bc->getBrowser($agent);
-
-        $type = 'browser';
-        if($ua->Crawler) $type = 'robot';
-        if($ua->isSyndicationReader) $type = 'feedreader';
-
-        $version = $ua->Version;
-        $os      = $ua->Platform;
-        return $ua->Browser;
-    }
 }
