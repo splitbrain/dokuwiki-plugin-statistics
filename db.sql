@@ -134,7 +134,8 @@ CREATE TABLE `stats_session` (
   `session` varchar(255) NOT NULL PRIMARY KEY,
   `dt` datetime NOT NULL,
   `end` datetime NOT NULL,
-  `views` int unsigned NOT NULL
+  `views` int unsigned NOT NULL,
+  `uid` varchar(50) NOT NULL
 ) COMMENT='' ENGINE='MyISAM' COLLATE 'utf8_general_ci';
 
 CREATE TABLE `stats_logins` (
@@ -155,6 +156,7 @@ ALTER TABLE `stats_outlinks` ADD INDEX `dt` (`dt`);
 ALTER TABLE `stats_search` ADD INDEX `dt` (`dt`);
 ALTER TABLE `stats_session` ADD INDEX `dt` (`dt`);
 ALTER TABLE `stats_session` ADD INDEX `views` (`views`);
+ALTER TABLE `stats_session` ADD INDEX `uid` (`uid`);
 
 ALTER TABLE `stats_access` ADD INDEX `ua_type` (`ua_type`);
 

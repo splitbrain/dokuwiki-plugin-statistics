@@ -44,13 +44,25 @@ class StatisticsQuery {
 
         // calculate bounce rate
         if($data['sessions']){
-            // FIXME decide for SQL
             $sql = "SELECT COUNT(*) as cnt
                       FROM ".$this->hlp->prefix."session as A
                      WHERE $tlimit
                        AND views = 1";
             $result = $this->hlp->runSQL($sql);
             $data['bouncerate'] = $result[0]['cnt']*100/$data['sessions'];
+
+            // new visitors
+            $result = "SELECT COUNT(*) as cnt
+                         FROM ".$this->hlp->prefix."session as A
+                        WHERE $tlimit
+                          AND NOT EXISTS (
+                                SELECT *
+                                  FROM stats_session B
+                                 WHERE A.session <> B.session
+                                   AND B.uid = B.uid
+                              )";
+            $result = $this->hlp->runSQL($sql);
+            $data['newvisitors'] = $result[0]['cnt']*100/$data['sessions'];
         }
 
         // calculate avg. number of views per session
@@ -84,6 +96,7 @@ class StatisticsQuery {
                    AND (type = 'l' OR type = 'p')";
         $result = $this->hlp->runSQL($sql);
         $data['logins'] = $result[0]['logins'];
+
 
         return $data;
     }

@@ -4,12 +4,14 @@ require dirname(__FILE__).'/StatisticsBrowscap.class.php';
 
 class StatisticsLogger {
     private $hlp;
+
     private $ua_agent;
     private $ua_type;
     private $ua_name;
     private $ua_version;
     private $ua_platform;
 
+    private $uid;
 
     /**
      * Parses browser info and set internal vars
@@ -26,6 +28,8 @@ class StatisticsLogger {
         if($ua->isSyndicationReader) $this->ua_type = 'feedreader';
         $this->ua_version  = $ua->Version;
         $this->ua_platform = $ua->Platform;
+
+        $this->uid = $this->getUID();
     }
 
     /**
@@ -130,14 +134,17 @@ class StatisticsLogger {
 
         $addview = addslashes($addview);
         $session = addslashes(session_id());
+        $uid     = addslashes($this->uid);
         $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."session
                    SET session = '$session',
                        dt      = NOW(),
                        end     = NOW(),
-                       views   = $addview
+                       views   = $addview,
+                       uid     = '$uid'
                 ON DUPLICATE KEY UPDATE
                        end     = NOW(),
-                       views   = views + $addview";
+                       views   = views + $addview,
+                       uid     = '$uid'";
         $this->hlp->runSQL($sql);
     }
 
@@ -242,7 +249,7 @@ class StatisticsLogger {
         $vx      = (int) $_REQUEST['vx'];
         $vy      = (int) $_REQUEST['vy'];
         $js      = (int) $_REQUEST['js'];
-        $uid     = addslashes($this->getUID());
+        $uid     = addslashes($this->uid);
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
 
@@ -292,7 +299,7 @@ class StatisticsLogger {
         $ip      = addslashes(clientIP(true));
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
-        $uid     = addslashes($this->getUID());
+        $uid     = addslashes($this->uid);
         $page    = addslashes($page);
         $type    = addslashes($type);
 
@@ -314,7 +321,7 @@ class StatisticsLogger {
         $ip      = addslashes(clientIP(true));
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
-        $uid     = addslashes($this->getUID());
+        $uid     = addslashes($this->uid);
         $type    = addslashes($type);
 
         $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."logins
