@@ -3025,17 +3025,23 @@ class pChart {
 
 	static private function computeAutomaticScaling($minCoord, $maxCoord, &$minVal, &$maxVal, &$Divisions) {
 		$ScaleOk = FALSE;
-		$Factor = 1;
+		$Factor = 1.0;
 		$MinDivHeight = 25;
 		$MaxDivs = ($maxCoord - $minCoord) / $MinDivHeight;
 			
-		if ($minVal == 0 && $maxVal == 0) {
+		if ($minVal == 0 && $maxVal == 0){
 			$minVal = 0;
 			$maxVal = 2;
 			$Scale = 1;
 			$Divisions = 2;
+		}elseif ($minVal == $maxVal){
+			$minVal = 0;
+			$maxVal = $maxVal*2;
+			$Scale = 1;
+			$Divisions = 2;
 		} elseif ($MaxDivs > 1) {
 			while ( ! $ScaleOk ) {
+                if($Factor == 0) { die(); }
 				$Scale1 = ($maxVal - $minVal) / $Factor;
 				$Scale2 = ($maxVal - $minVal) / $Factor / 2;
 					
