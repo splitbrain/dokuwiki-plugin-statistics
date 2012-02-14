@@ -87,6 +87,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div id="plugin__statistics">';
         echo '<h1>Access Statistics</h1>';
         $this->html_timeselect();
+        tpl_flush();
 
         $method = 'html_'.$this->opt;
         if(method_exists($this,$method)){

@@ -36,9 +36,8 @@ class StatisticsGraph {
 
     public function PieChart($data){
         $DataSet = new pData;
-        $Canvas = new GDCanvas(400, 200);
+        $Canvas = new GDCanvas(400, 200, false);
         $Chart = new PieChart(400, 200, $Canvas);
-        $Chart->drawBackground(new Color(254,254,254));
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
 
         $DataSet->AddPoints(array_values($data),'Serie1');
@@ -126,9 +125,8 @@ class StatisticsGraph {
         $DataSet->AddPoints($data3,'Serie3');
         $DataSet->AddAllSeries();
 
-        $Canvas = new GDCanvas(700, 500);
+        $Canvas = new GDCanvas(700, 500, false);
         $Chart  = new pChart(700,500,$Canvas);
-        $Chart->drawBackground(new Color(254,254,254));
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
         $Chart->setGraphArea(50,30,680,480);
@@ -157,9 +155,8 @@ class StatisticsGraph {
         $DataSet->AddPoints($data3,'Serie3');
         $DataSet->AddAllSeries();
 
-        $Canvas = new GDCanvas(700, 500);
+        $Canvas = new GDCanvas(700, 500, false);
         $Chart  = new pChart(700,500,$Canvas);
-        $Chart->drawBackground(new Color(254,254,254));
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
         $Chart->setGraphArea(50,30,680,480);
@@ -210,9 +207,8 @@ class StatisticsGraph {
         $DataSet->SetSeriesName('Page Creations','Serie5');
         $DataSet->SetSeriesName('Page Deletions','Serie6');
 
-        $Canvas = new GDCanvas(700, 280);
+        $Canvas = new GDCanvas(700, 280, false);
         $Chart  = new pChart(700,280,$Canvas);
-        $Chart->drawBackground(new Color(254,254,254));
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
         $Chart->setGraphArea(50,30,680,200);
