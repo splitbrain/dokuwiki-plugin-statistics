@@ -11,16 +11,19 @@
 
 #plugin__statistics div.plg_stats_timeselect ul li,
 #plugin__statistics div.plg_stats_timeselect input {
-    margin: 0 1em 0 0;
+    margin: 0 0.5em 0 0;
 }
 
 #plugin__statistics div.plg_stats_timeselect input.edit {
-    width: 8em;
+    width: 6em;
 }
 
 #plugin__statistics div.plg_stats_timeselect {
     margin-bottom: 1em;
 }
+
+
+
 
 #plugin__statistics .left {
     float: left;

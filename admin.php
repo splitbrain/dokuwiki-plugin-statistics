@@ -143,41 +143,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Print the time selection menu
      */
     function html_timeselect(){
-        $now   = date('Y-m-d');
-        $yday  = date('Y-m-d',time()-(60*60*24));
-        $week  = date('Y-m-d',time()-(60*60*24*7));
-        $month = date('Y-m-d',time()-(60*60*24*30));
+        $today   = date('Y-m-d');
+        $last1   = date('Y-m-d',time()-(60*60*24));
+        $last7   = date('Y-m-d',time()-(60*60*24*7));
+        $last30  = date('Y-m-d',time()-(60*60*24*30));
 
         echo '<div class="plg_stats_timeselect">';
-        echo '<span>Select the timeframe:</span>';
-        echo '<ul>';
-
-        echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$now.'&amp;t='.$now.'">';
-        echo 'today';
-        echo '</a>';
-        echo '</li>';
-
-        echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$yday.'&amp;t='.$yday.'">';
-        echo 'yesterday';
-        echo '</a>';
-        echo '</li>';
-
-        echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$week.'&amp;t='.$now.'">';
-        echo 'last 7 days';
-        echo '</a>';
-        echo '</li>';
-
-        echo '<li>';
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$month.'&amp;t='.$now.'">';
-        echo 'last 30 days';
-        echo '</a>';
-        echo '</li>';
-
-        echo '</ul>';
-
+        echo '<span>'.$this->getLang('time_select').'</span> ';
 
         echo '<form action="" method="get">';
         echo '<input type="hidden" name="do" value="admin" />';
@@ -187,6 +159,16 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<input type="text" name="t" value="'.$this->to.'" class="edit" />';
         echo '<input type="submit" value="go" class="button" />';
         echo '</form>';
+
+        echo '<ul>';
+        foreach(array('today','last1','last7','last30') as $time){
+            echo '<li>';
+            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$$time.'&amp;t='.$today.'">';
+            echo $this->getLang('time_'.$time);
+            echo '</a>';
+            echo '</li>';
+        }
+        echo '</ul>';
 
         echo '</div>';
     }
