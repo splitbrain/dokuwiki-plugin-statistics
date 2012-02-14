@@ -3,12 +3,12 @@
 require_once dirname(__FILE__).'/ICanvas.php';
 
 class GDCanvas implements ICanvas {
-	public function __construct($xSize, $ySize) {
+	public function __construct($xSize, $ySize, $transparent=true) {
 		$this->picture = imagecreatetruecolor($xSize, $ySize);
 
 		$C_White = $this->allocateColor(new Color(255, 255, 255));
 		imagefilledrectangle($this->picture, 0, 0, $xSize, $ySize, $C_White);
-		imagecolortransparent($this->picture, $C_White);
+		if($transparent) imagecolortransparent($this->picture, $C_White);
 
 		$this->antialiasQuality = 0;
 	}
