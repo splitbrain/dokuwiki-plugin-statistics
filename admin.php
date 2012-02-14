@@ -84,6 +84,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Output the Statistics
      */
     function html() {
+        echo '<div id="plugin__statistics">';
         echo '<h1>Access Statistics</h1>';
         $this->html_timeselect();
 
@@ -94,6 +95,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
             $this->$method();
             echo '</div>';
         }
+        echo '</div>';
     }
 
     /**
@@ -200,11 +202,20 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         // general info
         echo '<div class="plg_stats_top">';
         $result = $this->hlp->Query()->aggregate($this->tlimit);
-        echo '<ul>';
-        foreach(array('pageviews','sessions','visitors','users','logins','registrations','bouncerate','timespent','avgpages','newvisitors') as $name){
+
+        echo '<ul class="left">';
+        foreach(array('pageviews','sessions','visitors','users','logins') as $name){
             echo '<li><div class="li">'.sprintf($this->getLang('dash_'.$name),$result[$name]).'</div></li>';
         }
         echo '</ul>';
+
+        echo '<ul class="left">';
+        foreach(array('bouncerate','timespent','avgpages','newvisitors','registrations') as $name){
+            echo '<li><div class="li">'.sprintf($this->getLang('dash_'.$name),$result[$name]).'</div></li>';
+        }
+        echo '</ul>';
+
+
         echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=trend&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
         echo '</div>';
 
