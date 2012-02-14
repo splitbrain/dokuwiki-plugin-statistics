@@ -30,13 +30,14 @@ $lang['countries']     = 'Countries';
 $lang['resolution']    = 'Resolution';
 
 
-$lang['dash_pageviews'] = '%d Page Views';
-$lang['dash_sessions']  = '%d Visits (Sessions)';
-$lang['dash_visitors']  = '%d Unique Visitors';
-$lang['dash_users']     = '%d Logged in Users';
-$lang['dash_logins']    = '%d User Logins';
-$lang['dash_bouncerate']= '%.1f%% Bounces';
-$lang['dash_timespent'] = '%.2f Minutes Spent in an Avarage Session';
-$lang['dash_avgpages']  = '%.2f Pages Viewed in an Avarage Session';
-$lang['dash_newvisitors'] = '%.1f%% New Visitors';
+$lang['dash_pageviews']     = '%d Page Views';
+$lang['dash_sessions']      = '%d Visits (Sessions)';
+$lang['dash_visitors']      = '%d Unique Visitors';
+$lang['dash_users']         = '%d Logged in Users';
+$lang['dash_logins']        = '%d User Logins';
+$lang['dash_registrations'] = '%s New Registrations';
+$lang['dash_bouncerate']    = '%.1f%% Bounces';
+$lang['dash_timespent']     = '%.2f Minutes Spent in an Avarage Session';
+$lang['dash_avgpages']      = '%.2f Pages Viewed in an Avarage Session';
+$lang['dash_newvisitors']   = '%.1f%% New Visitors';
 

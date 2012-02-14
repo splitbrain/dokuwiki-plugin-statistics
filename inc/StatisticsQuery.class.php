@@ -97,6 +97,13 @@ class StatisticsQuery {
         $result = $this->hlp->runSQL($sql);
         $data['logins'] = $result[0]['logins'];
 
+        // registrations
+        $sql = "SELECT COUNT(*) as registrations
+                  FROM ".$this->hlp->prefix."logins as A
+                 WHERE $tlimit
+                   AND type = 'C'";
+        $result = $this->hlp->runSQL($sql);
+        $data['registrations'] = $result[0]['registrations'];
 
         return $data;
     }

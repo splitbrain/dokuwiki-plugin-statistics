@@ -315,11 +315,13 @@ class StatisticsLogger {
     }
 
     /**
-     * Log login/logoffs
+     * Log login/logoffs and user creations
      */
-    public function log_login($type){
+    public function log_login($type, $user=''){
+        if(!$user) $user = $_SERVER['REMOTE_USER'];
+
         $ip      = addslashes(clientIP(true));
-        $user    = addslashes($_SERVER['REMOTE_USER']);
+        $user    = addslashes($user);
         $session = addslashes(session_id());
         $uid     = addslashes($this->uid);
         $type    = addslashes($type);

@@ -37,6 +37,11 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
                                    $this,
                                    'loglogins',
                                    array());
+        $controller->register_hook('AUTH_USER_CHANGE',
+                                   'AFTER',
+                                   $this,
+                                   'logregistration',
+                                   array());
     }
 
 
@@ -102,6 +107,15 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         $hlp->Logger()->log_login($type);
     }
 
+    /**
+     * Log user creations
+     */
+    function logregistration(&$event, $param){
+        if($event->data['type'] == 'create'){
+            $hlp = plugin_load('helper','statistics');
+            $hlp->Logger()->log_login('C',$event->data['params'][0]);
+        }
+    }
 
     /**
      * Pre-Sanitize the action command
