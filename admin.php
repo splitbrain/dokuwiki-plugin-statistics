@@ -116,6 +116,14 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         return $toc;
     }
 
+
+    function html_graph($name,$width,$height){
+        $url = DOKU_BASE.'lib/plugins/statistics/img.php?img='.$name.
+               '&amp;f='.$this->from.'&amp;t='.$this->to;
+        echo '<img src="'.$url.'" class="graph" width="'.$width.'" height="'.$height.'"/>';
+    }
+
+
     /**
      * Outputs pagination links
      *
@@ -178,8 +186,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Print an introductionary screen
      */
     function html_dashboard(){
-        echo '<p>This page gives you a quick overview on what is happening in your Wiki. For detailed lists
-              choose a topic from the list.</p>';
+        echo $this->locale_xhtml('dashboard');
 
         // general info
         echo '<div class="plg_stats_top">';
@@ -197,14 +204,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
         echo '</ul>';
 
-
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=trend&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        $this->html_graph('trend',700,280);
         echo '</div>';
 
 
         // top pages today
         echo '<div>';
-        echo '<h2>Most popular pages</h2>';
+        echo '<h2>'.$this->getLang('dash_mostpopular').'</h2>';
         $result = $this->hlp->Query()->pages($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
@@ -212,7 +218,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         // top referer today
         echo '<div>';
-        echo '<h2>Newest incoming links</h2>';
+        echo '<h2>'.$this->getLang('dash_newincoming').'</h2>';
         $result = $this->hlp->Query()->newreferer($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
@@ -220,7 +226,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         // top searches today
         echo '<div>';
-        echo '<h2>Top search phrases</h2>';
+        echo '<h2>'.$this->getLang('dash_topsearch').'</h2>';
         $result = $this->hlp->Query()->searchphrases($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';

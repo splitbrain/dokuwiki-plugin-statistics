@@ -37,14 +37,18 @@ $lang['countries']              = 'Countries';
 $lang['resolution']             = 'Resolution';
 
 // the dashboard items
-$lang['dash_pageviews']         = '%d Page Views';
-$lang['dash_sessions']          = '%d Visits (Sessions)';
-$lang['dash_visitors']          = '%d Unique Visitors';
-$lang['dash_users']             = '%d Logged in Users';
-$lang['dash_logins']            = '%d User Logins';
-$lang['dash_registrations']     = '%s New Registrations';
-$lang['dash_bouncerate']        = '%.1f%% Bounces';
-$lang['dash_timespent']         = '%.2f Minutes Spent in an Avarage Session';
-$lang['dash_avgpages']          = '%.2f Pages Viewed in an Avarage Session';
-$lang['dash_newvisitors']       = '%.1f%% New Visitors';
+$lang['dash_pageviews']         = '<span>%d</span> Page Views';
+$lang['dash_sessions']          = '<span>%d</span> Visits (Sessions)';
+$lang['dash_visitors']          = '<span>%d</span> Unique Visitors';
+$lang['dash_users']             = '<span>%d</span> Logged in Users';
+$lang['dash_logins']            = '<span>%d</span> User Logins';
+$lang['dash_registrations']     = '<span>%s</span> New Registrations';
+$lang['dash_bouncerate']        = '<span>%.1f%%</span> Bounces';
+$lang['dash_timespent']         = '<span>%.2f</span> Minutes Spent in an Avarage Session';
+$lang['dash_avgpages']          = '<span>%.2f</span> Pages Viewed in an Avarage Session';
+$lang['dash_newvisitors']       = '<span>%.1f%%</span> New Visitors';
+
+$lang['dash_mostpopular']       = 'Most Popular Pages';
+$lang['dash_newincoming']       = 'Top Incoming New Links';
+$lang['dash_topsearch']         = 'Top Search Phrases';
 
