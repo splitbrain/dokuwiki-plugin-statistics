@@ -301,7 +301,8 @@ class StatisticsQuery {
     public function resolution($tlimit,$start=0,$limit=20){
         $sql = "SELECT COUNT(*) as cnt,
                        ROUND(screen_x/100)*100 as res_x,
-                       ROUND(screen_y/100)*100 as res_y
+                       ROUND(screen_y/100)*100 as res_y,
+                       CONCAT(ROUND(screen_x/100)*100,'x',ROUND(screen_y/100)*100) as resolution
                   FROM ".$this->hlp->prefix."access as A
                  WHERE $tlimit
                    AND ua_type  = 'browser'
@@ -316,7 +317,8 @@ class StatisticsQuery {
     public function viewport($tlimit,$start=0,$limit=20){
         $sql = "SELECT COUNT(*) as cnt,
                        ROUND(view_x/100)*100 as res_x,
-                       ROUND(view_y/100)*100 as res_y
+                       ROUND(view_y/100)*100 as res_y,
+                       CONCAT(ROUND(view_x/100)*100,'x',ROUND(view_y/100)*100) as resolution
                   FROM ".$this->hlp->prefix."access as A
                  WHERE $tlimit
                    AND ua_type  = 'browser'

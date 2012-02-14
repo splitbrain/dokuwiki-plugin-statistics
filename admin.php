@@ -352,6 +352,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         if(is_array($result)) foreach($result as $row){
             echo '<tr>';
             foreach($row as $k => $v){
+                if($k == 'res_x') continue;
+                if($k == 'res_y') continue;
+
                 echo '<td class="plg_stats_X'.$k.'">';
                 if($k == 'page'){
                     echo '<a href="'.wl($v).'" class="wikilink1">';
