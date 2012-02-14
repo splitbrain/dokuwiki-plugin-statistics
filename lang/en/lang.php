@@ -36,17 +36,34 @@ $lang['os']                     = 'Operating Systems';
 $lang['countries']              = 'Countries';
 $lang['resolution']             = 'Resolution';
 
+// the intro texts
+$lang['intro_dashboard']        = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
+$lang['intro_page']             = 'These are the wiki pages most viewed in the selected timeframe – your top content.';
+$lang['intro_referer']          = 'Of all <strong>%d</strong> external visits, <strong>%d</strong> (<strong>%.1f%%</strong>) were direct (or bookmarked) accesses, <strong>%d</strong> (<strong>%.1f%%</strong>) came from search engines and <strong>%d</strong> (<strong>%.1f%%</strong>) were referred through links from other pages.<br />These other pages are listed below.';
+$lang['intro_newreferer']       = 'The following incoming links where first logged in the selected timeframe and have never been seen before.';
+$lang['intro_outlinks']         = 'These are the most clicked on links to external sites in your wiki.';
+$lang['intro_searchengines']    = 'The following search engines were used by users to find your wiki.';
+$lang['intro_searchphrases']    = 'These are the exact phrases people used to search when they found your wiki.';
+$lang['intro_searchwords']      = 'These are the most common words people used to search when they found your wiki.';
+$lang['intro_internalsearchphrases'] = 'These are the exact phrases people used to search inside your wiki.';
+$lang['intro_internalsearchwords']   = 'These are the most common words people used to search inside your wiki.';
+$lang['intro_browsers']         = 'Here are the most popular browsers used by your users.';
+$lang['intro_os']               = 'Here are the most popular platforms used by your users.';
+$lang['intro_countries']        = 'This is where your users come from. Note that resolving IP addresses to countries is error prone and no exact science.';
+
+
+
 // the dashboard items
-$lang['dash_pageviews']         = '<span>%d</span> Page Views';
-$lang['dash_sessions']          = '<span>%d</span> Visits (Sessions)';
-$lang['dash_visitors']          = '<span>%d</span> Unique Visitors';
-$lang['dash_users']             = '<span>%d</span> Logged in Users';
-$lang['dash_logins']            = '<span>%d</span> User Logins';
-$lang['dash_registrations']     = '<span>%s</span> New Registrations';
-$lang['dash_bouncerate']        = '<span>%.1f%%</span> Bounces';
-$lang['dash_timespent']         = '<span>%.2f</span> Minutes Spent in an Avarage Session';
-$lang['dash_avgpages']          = '<span>%.2f</span> Pages Viewed in an Avarage Session';
-$lang['dash_newvisitors']       = '<span>%.1f%%</span> New Visitors';
+$lang['dash_pageviews']         = '<strong>%d</strong> Page Views';
+$lang['dash_sessions']          = '<strong>%d</strong> Visits (Sessions)';
+$lang['dash_visitors']          = '<strong>%d</strong> Unique Visitors';
+$lang['dash_users']             = '<strong>%d</strong> Logged in Users';
+$lang['dash_logins']            = '<strong>%d</strong> User Logins';
+$lang['dash_registrations']     = '<strong>%s</strong> New Registrations';
+$lang['dash_bouncerate']        = '<strong>%.1f%%</strong> Bounces';
+$lang['dash_timespent']         = '<strong>%.2f</strong> Minutes Spent in an Avarage Session';
+$lang['dash_avgpages']          = '<strong>%.2f</strong> Pages Viewed in an Avarage Session';
+$lang['dash_newvisitors']       = '<strong>%.1f%%</strong> New Visitors';
 
 $lang['dash_mostpopular']       = 'Most Popular Pages';
 $lang['dash_newincoming']       = 'Top Incoming New Links';

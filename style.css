@@ -32,10 +32,6 @@
     font-size: 120%;
 }
 
-#plugin__statistics .plg_stats_top span {
-    font-weight: bold;
-}
-
 #plugin__statistics .left {
     float: left;
 }

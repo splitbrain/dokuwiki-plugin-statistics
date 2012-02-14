@@ -186,7 +186,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Print an introductionary screen
      */
     function html_dashboard(){
-        echo $this->locale_xhtml('dashboard');
+        echo '<p>'.$this->getLang('intro_dashboard').'</p>';
 
         // general info
         echo '<div class="plg_stats_top">';
@@ -234,23 +234,28 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function html_countries(){
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=countries&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        echo '<p>'.$this->getLang('intro_countries').'</p>';
+        $this->html_graph('countries',400,200);
         $result = $this->hlp->Query()->countries($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_page(){
+        echo '<p>'.$this->getLang('intro_page').'</p>';
         $result = $this->hlp->Query()->pages($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_browsers(){
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=browsers&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
+        echo '<p>'.$this->getLang('intro_browsers').'</p>';
+        $this->html_graph('browsers',400,200);
         $result = $this->hlp->Query()->browsers($this->tlimit,$this->start,150,true);
         $this->html_resulttable($result,'',150);
     }
 
     function html_os(){
+        echo '<p>'.$this->getLang('intro_os').'</p>';
+        $this->html_graph('os',400,200);
         $result = $this->hlp->Query()->os($this->tlimit,$this->start,150,true);
         $this->html_resulttable($result,'',150);
     }
@@ -261,11 +266,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $all    = $result['search']+$result['external']+$result['direct'];
 
         if($all){
-            printf("<p>Of all %d external visits, %d (%.1f%%) were bookmarked (direct) accesses,
-                    %d (%.1f%%) came from search engines and %d (%.1f%%) were referred through
-                    links from other pages.</p>",$all,$result['direct'],(100*$result['direct']/$all),
-                    $result['search'],(100*$result['search']/$all),$result['external'],
-                    (100*$result['external']/$all));
+            printf('<p>'.$this->getLang('intro_referer').'</p>',
+                   $all,$result['direct'],(100*$result['direct']/$all),
+                   $result['search'],(100*$result['search']/$all),$result['external'],
+                   (100*$result['external']/$all));
         }
 
         $result = $this->hlp->Query()->referer($this->tlimit,$this->start,150);
@@ -273,39 +277,44 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     }
 
     function html_newreferer(){
-        echo '<p>The following incoming links where first logged in the selected time frame,
-              and have never been seen before.</p>';
+        echo '<p>'.$this->getLang('intro_newreferer').'</p>';
 
         $result = $this->hlp->Query()->newreferer($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_outlinks(){
+        echo '<p>'.$this->getLang('intro_outlinks').'</p>';
         $result = $this->hlp->Query()->outlinks($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_searchphrases(){
+        echo '<p>'.$this->getLang('intro_searchphrases').'</p>';
         $result = $this->hlp->Query()->searchphrases(true,$this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_searchwords(){
+        echo '<p>'.$this->getLang('intro_searchwords').'</p>';
         $result = $this->hlp->Query()->searchwords(true,$this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_internalsearchphrases(){
+        echo '<p>'.$this->getLang('intro_internalsearchphrases').'</p>';
         $result = $this->hlp->Query()->searchphrases(false,$this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_internalsearchwords(){
+        echo '<p>'.$this->getLang('intro_internalsearchwords').'</p>';
         $result = $this->hlp->Query()->searchwords(false,$this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
 
     function html_searchengines(){
+        echo '<p>'.$this->getLang('intro_searchengines').'</p>';
         $result = $this->hlp->Query()->searchengines($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }
