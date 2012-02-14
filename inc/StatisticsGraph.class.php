@@ -125,11 +125,11 @@ class StatisticsGraph {
         $DataSet->AddPoints($data3,'Serie3');
         $DataSet->AddAllSeries();
 
-        $Canvas = new GDCanvas(700, 500, false);
-        $Chart  = new pChart(700,500,$Canvas);
+        $Canvas = new GDCanvas(650, 490, false);
+        $Chart  = new pChart(650,490,$Canvas);
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
-        $Chart->setGraphArea(50,30,680,480);
+        $Chart->setGraphArea(50,30,630,470);
         $Chart->drawXYScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
                             'Serie2','Serie1');
 
@@ -155,11 +155,11 @@ class StatisticsGraph {
         $DataSet->AddPoints($data3,'Serie3');
         $DataSet->AddAllSeries();
 
-        $Canvas = new GDCanvas(700, 500, false);
-        $Chart  = new pChart(700,500,$Canvas);
+        $Canvas = new GDCanvas(650, 490, false);
+        $Chart  = new pChart(650,490,$Canvas);
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
-        $Chart->setGraphArea(50,30,680,480);
+        $Chart->setGraphArea(50,30,630,470);
         $Chart->drawXYScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
                             'Serie2','Serie1');
 

@@ -29,7 +29,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                               'outlinks','searchengines','searchphrases',
                               'searchwords', 'internalsearchphrases',
                               'internalsearchwords','browsers','os',
-                              'countries','resolution');
+                              'countries','resolution','viewport');
 
     /**
      * Initialize the helper
@@ -320,23 +320,18 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $this->html_resulttable($result,'',150);
     }
 
-
     function html_resolution(){
-
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=resolution&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
-
-        echo '<p>While the data above gives you some info about the resolution your visitors use, it does not tell you
-              much about about the real size of their browser windows. The graphic below shows the size distribution of
-              the view port (document area) of your visitor\'s browsers. Please note that this data can not be logged
-              in all browsers. Because users may resize their browser window while browsing your site the statistics may
-              be flawed. Take it with a grain of salt.</p>';
-
-        echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/img.php?img=viewport&amp;f='.$this->from.'&amp;t='.$this->to.'" />';
-
+        echo '<p>'.$this->getLang('intro_resolution').'</p>';
+        $this->html_graph('resolution',650,490);
         $result = $this->hlp->Query()->resolution($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
+    }
 
-
+    function html_viewport(){
+        echo '<p>'.$this->getLang('intro_viewport').'</p>';
+        $this->html_graph('viewport',650,490);
+        $result = $this->hlp->Query()->viewport($this->tlimit,$this->start,150);
+        $this->html_resulttable($result,'',150);
     }
 
 

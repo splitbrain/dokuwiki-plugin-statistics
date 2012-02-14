@@ -34,7 +34,8 @@ $lang['searchengines']          = 'Search Engines';
 $lang['browsers']               = 'Browsers';
 $lang['os']                     = 'Operating Systems';
 $lang['countries']              = 'Countries';
-$lang['resolution']             = 'Resolution';
+$lang['resolution']             = 'Screen Size';
+$lang['viewport']               = 'Browser Viewport';
 
 // the intro texts
 $lang['intro_dashboard']        = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
@@ -50,6 +51,8 @@ $lang['intro_internalsearchwords']   = 'These are the most common words people u
 $lang['intro_browsers']         = 'Here are the most popular browsers used by your users.';
 $lang['intro_os']               = 'Here are the most popular platforms used by your users.';
 $lang['intro_countries']        = 'This is where your users come from. Note that resolving IP addresses to countries is error prone and no exact science.';
+$lang['intro_resolution']       = 'This page gives you some info about the screen size (resolution) of your users. This is how much screen estate they have, not how much of that is available to the browser\'s display area. For the latter see the Browser Viewport page. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
+$lang['intro_viewport']         = 'These are the area sizes that your users\' browsers have available for rendering your wiki. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 
 
 
