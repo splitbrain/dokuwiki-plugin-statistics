@@ -6,13 +6,12 @@
 // for admin plugins, the menu prompt to be displayed in the admin menu
 $lang['menu'] = 'Access and Usage Statistics';
 
-// custom language strings for the plugin
 
-$lang['percent'] = 'Percent';
-$lang['count']   = 'Count';
-$lang['reason']  = 'Reason';
+$lang['more'] = 'more';
+$lang['prev'] = 'previous page';
+$lang['next'] = 'next page';
 
-
+// time selection
 $lang['time_select']            = 'Select the timeframe:';
 $lang['time_today']             = 'Today';
 $lang['time_last1']             = 'Yesterday';

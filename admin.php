@@ -85,7 +85,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     function html() {
         echo '<div id="plugin__statistics">';
-        echo '<h1>Access Statistics</h1>';
+        echo '<h1>'.$this->getLang('menu').'</h1>';
         $this->html_timeselect();
         tpl_flush();
 
@@ -128,8 +128,6 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     /**
      * Outputs pagination links
      *
-     * @fixme does this still work?
-     *
      * @param type $limit
      * @param type $next
      */
@@ -138,12 +136,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
         if($this->start > 0){
             $go = max($this->start - $limit, 0);
-            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$go.'" class="prev">previous page</a>';
+            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$go.'" class="prev">'.$this->getLang('prev').'</a>';
         }
 
         if($next){
             $go = $this->start + $limit;
-            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$go.'" class="next">next page</a>';
+            echo '<a href="?do=admin&amp;page=statistics&amp;opt='.$this->opt.'&amp;f='.$this->from.'&amp;t='.$this->to.'&amp;s='.$go.'" class="next">'.$this->getLang('next').'</a>';
         }
         echo '</div>';
     }
@@ -214,7 +212,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>'.$this->getLang('dash_mostpopular').'</h2>';
         $result = $this->hlp->Query()->pages($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=page&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">'.$this->getLang('more').'</a>';
         echo '</div>';
 
         // top referer today
@@ -222,7 +220,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>'.$this->getLang('dash_newincoming').'</h2>';
         $result = $this->hlp->Query()->newreferer($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=newreferer&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">'.$this->getLang('more').'</a>';
         echo '</div>';
 
         // top searches today
@@ -230,7 +228,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<h2>'.$this->getLang('dash_topsearch').'</h2>';
         $result = $this->hlp->Query()->searchphrases($this->tlimit,$this->start,15);
         $this->html_resulttable($result);
-        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">more</a>';
+        echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">'.$this->getLang('more').'</a>';
         echo '</div>';
     }
 
