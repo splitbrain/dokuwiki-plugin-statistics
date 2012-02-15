@@ -314,6 +314,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     function html_searchengines(){
         echo '<p>'.$this->getLang('intro_searchengines').'</p>';
+        $this->html_graph('searchengines',400,200);
         $result = $this->hlp->Query()->searchengines($this->tlimit,$this->start,150);
         $this->html_resulttable($result,'',150);
     }

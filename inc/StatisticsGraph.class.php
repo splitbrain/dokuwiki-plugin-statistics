@@ -76,6 +76,23 @@ class StatisticsGraph {
         $this->PieChart($data);
     }
 
+    public function searchengines(){
+        // build top countries + other
+        $result = $this->hlp->Query()->searchengines($this->tlimit,$this->start,0);
+        $data = array();
+        $top = 0;
+        foreach($result as $row){
+            if($top < 3){
+                $data[$row['engine']] = $row['cnt'];
+            }else{
+                $data['other'] += $row['cnt'];
+            }
+            $top++;
+        }
+
+        $this->PieChart($data);
+    }
+
     public function browsers(){
         // build top browsers + other
         $result = $this->hlp->Query()->browsers($this->tlimit,$this->start,0,false);
