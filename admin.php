@@ -371,26 +371,32 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '<a href="'.wl('',array('id'=>$v,'do'=>'search')).'">Search</a>';
                 }elseif($k == 'lookup'){
                     echo '<a href="http://www.google.com/search?q='.rawurlencode($v).'">';
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/google.png" alt="lookup in Google" border="0" />';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/google.png" alt="Google" border="0" />';
                     echo '</a> ';
 
                     echo '<a href="http://search.yahoo.com/search?p='.rawurlencode($v).'">';
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/yahoo.png" alt="lookup in Yahoo" border="0" />';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/yahoo.png" alt="Yahoo!" border="0" />';
                     echo '</a> ';
 
-                    echo '<a href="http://search.msn.com/results.aspx?q='.rawurlencode($v).'">';
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/msn.png" alt="lookup in MSN Live" border="0" />';
+                    echo '<a href="http://www.bing.com/search?q='.rawurlencode($v).'">';
+                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/search/bing.png" alt="Bing" border="0" />';
                     echo '</a> ';
 
                 }elseif($k == 'engine'){
-                    include_once(dirname(__FILE__).'/inc/search_engines.php');
-                    echo $SearchEnginesHashLib[$v];
+                    include_once(dirname(__FILE__).'/inc/searchengines.php');
+                    if(isset($SEARCHENGINEINFO[$v])){
+                        echo '<a href="'.$SEARCHENGINEINFO[$v][1].'">'.$SEARCHENGINEINFO[$v][0].'</a>';
+                    }else{
+                        echo hsc(ucwords($v));
+                    }
+                }elseif($k == 'eflag'){
+                    $this->html_icon('search',$v);
                 }elseif($k == 'bflag'){
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/browser/'.strtolower(preg_replace('/[^\w]+/','',$v)).'.png" alt="'.hsc($v).'" />';
+                    $this->html_icon('browser',$v);
                 }elseif($k == 'osflag'){
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/os/'.strtolower(preg_replace('/[^\w]+/','',$v)).'.png" alt="'.hsc($v).'" />';
+                    $this->html_icon('os',$v);
                 }elseif($k == 'cflag'){
-                    echo '<img src="'.DOKU_BASE.'lib/plugins/statistics/ico/flags/'.hsc($v).'.png" alt="'.hsc($v).'" width="18" height="12" />';
+                    $this->html_icon('flags',$v);
                 }elseif($k == 'html'){
                     echo $v;
                 }else{
@@ -408,4 +414,11 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         if($pager) $this->html_pager($pager,count($result) > $pager);
     }
 
+    function html_icon($type,$value){
+        $value = strtolower(preg_replace('/[^\w]+/','',$value));
+        $file  = 'lib/plugins/statistics/ico/'.$type.'/'.$value.'.png';
+        if(file_exists(DOKU_INC.$file)){
+            echo '<img src="'.DOKU_BASE.$file.'" alt="'.hsc($value).'" width="16" height="16" />';
+        }
+    }
 }

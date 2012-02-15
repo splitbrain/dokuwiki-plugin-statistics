@@ -162,7 +162,7 @@ class StatisticsQuery {
     }
 
     public function searchengines($tlimit,$start=0,$limit=20){
-        $sql = "SELECT COUNT(*) as cnt, engine
+        $sql = "SELECT COUNT(*) as cnt, engine as eflag, engine
                   FROM ".$this->hlp->prefix."search as A
                  WHERE $tlimit
               GROUP BY engine
