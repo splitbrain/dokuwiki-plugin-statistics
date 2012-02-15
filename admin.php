@@ -227,7 +227,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         // top searches today
         echo '<div>';
         echo '<h2>'.$this->getLang('dash_topsearch').'</h2>';
-        $result = $this->hlp->Query()->searchphrases($this->tlimit,$this->start,15);
+        $result = $this->hlp->Query()->searchphrases(true,$this->tlimit,$this->start,15);
         $this->html_resulttable($result);
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f='.$this->from.'&amp;t='.$this->to.'" class="more">'.$this->getLang('more').'</a>';
         echo '</div>';
