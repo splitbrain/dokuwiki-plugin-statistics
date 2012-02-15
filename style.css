@@ -28,6 +28,14 @@
     margin: 1em 0;
 }
 
+#plugin__statistics .plg_stats_dashboard div {
+    padding-bottom: 2em;
+}
+
+#plugin__statistics .plg_stats_top div {
+    padding: 0;
+}
+
 #plugin__statistics .plg_stats_top {
     font-size: 120%;
 }
@@ -36,73 +44,16 @@
     float: left;
 }
 
-
-/*
-div.dokuwiki div.plg_stats_dashboard {
-    clear: both;
+#plugin__statistics table {
+    width: 500px;
 }
-div.dokuwiki div.plg_stats_dashboard div table {
-    width: 100%;
+#plugin__statistics .plg_stats_pager {
+    width: 500px;
 }
-
-div.dokuwiki div.plg_stats_dashboard div {
-    float: left;
-    width: 450px;
-    border: solid 1px __border__;
-    padding: 1em;
-    margin: 1em;
-}
-
-div.dokuwiki div.plg_stats_dashboard div h2,
-div.dokuwiki div.plg_stats_full h2 {
-    margin: 0;
-    padding-top: 0;
-}
-
-
-div.dokuwiki div.plg_stats_dashboard div.plg_stats_top ul,
-div.dokuwiki div.plg_stats_dashboard div.plg_stats_top ul li {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-    color: __text__;
-    font-size: 120%;
-}
-
-div.dokuwiki div.plg_stats_dashboard div.plg_stats_top ul li span {
-    font-weight: bold;
-    font-size: 120%;
-}
-
-div.dokuwiki div.plg_stats_full{
-    margin: 2em 230px 1em 2em;
-    padding: 1em;
-    border: solid 1px __border__;
-}
-
-div.dokuwiki div.plg_stats_full table {
-    margin: 1em 0 0 2em;
-    width: 100%;
-}
-
-div.dokuwiki div.plg_stats_full p {
-    margin: 1em;
-}
-
-div.dokuwiki div.plg_stats_full div.plg_stats_pager {
-    height: 2em;
-}
-
-div.dokuwiki div.plg_stats_full div.plg_stats_pager a.next {
+#plugin__statistics .plg_stats_pager a.next {
     float: right;
 }
-
-div.dokuwiki div.plg_stats_full div.plg_stats_pager a.prev {
+#plugin__statistics .plg_stats_pager a.prev {
     float: left;
 }
 
-div.dokuwiki td.plg_stats_Xcnt {
-    text-align: right;
-    padding-right: 1em;
-}
-*/
