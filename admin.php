@@ -418,6 +418,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     function html_icon($type,$value){
         $value = strtolower(preg_replace('/[^\w]+/','',$value));
+        $value = str_replace(' ','_',$value);
         $file  = 'lib/plugins/statistics/ico/'.$type.'/'.$value.'.png';
         if(file_exists(DOKU_INC.$file)){
             echo '<img src="'.DOKU_BASE.$file.'" alt="'.hsc($value).'" width="16" height="16" />';
