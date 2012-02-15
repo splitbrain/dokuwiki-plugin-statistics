@@ -118,8 +118,12 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
      * @author Andreas Gohr <andi@splitbrain.org>
      * @author Harry Fuecks <fuecks@gmail.com>
      */
-    function sendGIF(){
-        $img = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7');
+    function sendGIF($transparent = true){
+        if($transparent){
+            $img = base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAIBTAA7');
+        }else{
+            $img = base64_decode('R0lGODdhAQABAIAAAP///////ywAAAAAAQABAAACAkQBADs=');
+        }
         header('Content-Type: image/gif');
         header('Content-Length: '.strlen($img));
         header('Connection: Close');

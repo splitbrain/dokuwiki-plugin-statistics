@@ -203,7 +203,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
         echo '</ul>';
 
-        $this->html_graph('trend',700,280);
+        $this->html_graph('dashboardviews',700,280);
+        $this->html_graph('dashboardwiki',700,280);
         echo '</div>';
 
 

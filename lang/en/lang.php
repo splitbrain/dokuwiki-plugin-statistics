@@ -53,8 +53,6 @@ $lang['intro_countries']        = 'This is where your users come from. Note that
 $lang['intro_resolution']       = 'This page gives you some info about the screen size (resolution) of your users. This is how much screen estate they have, not how much of that is available to the browser\'s display area. For the latter see the Browser Viewport page. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 $lang['intro_viewport']         = 'These are the area sizes that your users\' browsers have available for rendering your wiki. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 
-
-
 // the dashboard items
 $lang['dash_pageviews']         = '<strong>%d</strong> Page Views';
 $lang['dash_sessions']          = '<strong>%d</strong> Visits (Sessions)';
@@ -70,4 +68,12 @@ $lang['dash_newvisitors']       = '<strong>%.1f%%</strong> New Visitors';
 $lang['dash_mostpopular']       = 'Most Popular Pages';
 $lang['dash_newincoming']       = 'Top Incoming New Links';
 $lang['dash_topsearch']         = 'Top Search Phrases';
+
+// graph labels
+$lang['graph_edits']            = 'Page Edits';
+$lang['graph_creates']          = 'Page Creations';
+$lang['graph_deletions']        = 'Page Deletions';
+$lang['graph_views']            = 'Page Views';
+$lang['graph_sessions']         = 'Visits';
+$lang['graph_visitors']         = 'Visitors';
 

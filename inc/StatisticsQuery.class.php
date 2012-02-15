@@ -116,7 +116,7 @@ class StatisticsQuery {
     /**
      * Return some trend data about visits and edits in the wiki
      */
-    public function trend($tlimit,$hours=false){
+    public function dashboardviews($tlimit,$hours=false){
         if($hours){
             $TIME = 'HOUR(dt)';
         }else{
@@ -141,6 +141,17 @@ class StatisticsQuery {
             $data[$row['time']]['pageviews'] = $row['pageviews'];
             $data[$row['time']]['visitors']  = $row['visitors'];
         }
+        return $data;
+    }
+
+    public function dashboardwiki($tlimit,$hours=false){
+        if($hours){
+            $TIME = 'HOUR(dt)';
+        }else{
+            $TIME = 'DATE(dt)';
+        }
+
+        $data = array();
 
         // edit trends
         foreach(array('E','C','D') as $type){
@@ -156,7 +167,6 @@ class StatisticsQuery {
                 $data[$row['time']][$type] = $row['cnt'];
             }
         }
-
         ksort($data);
         return $data;
     }

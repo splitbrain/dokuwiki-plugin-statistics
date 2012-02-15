@@ -185,24 +185,18 @@ class StatisticsGraph {
         $Chart->Render('');
     }
 
-    public function trend(){
+    public function dashboardviews(){
         $hours  = ($this->from == $this->to);
-        $result = $this->hlp->Query()->trend($this->tlimit,$hours);
+        $result = $this->hlp->Query()->dashboardviews($this->tlimit,$hours);
         $data1  = array();
         $data2  = array();
         $data3  = array();
-        $data4  = array();
-        $data5  = array();
-        $data6  = array();
         $times  = array();
 
         foreach($result as $time => $row){
             $data1[] = (int) $row['pageviews'];
             $data2[] = (int) $row['sessions'];
             $data3[] = (int) $row['visitors'];
-            $data4[] = (int) $row['E'];
-            $data5[] = (int) $row['C'];
-            $data6[] = (int) $row['D'];
             $times[] = $time.($hours?'h':'');
         }
 
@@ -210,25 +204,19 @@ class StatisticsGraph {
         $DataSet->AddPoints($data1,'Serie1');
         $DataSet->AddPoints($data2,'Serie2');
         $DataSet->AddPoints($data3,'Serie3');
-        $DataSet->AddPoints($data4,'Serie4');
-        $DataSet->AddPoints($data5,'Serie5');
-        $DataSet->AddPoints($data6,'Serie6');
         $DataSet->AddPoints($times,'Times');
         $DataSet->AddAllSeries();
         $DataSet->SetAbscissaLabelSeries('Times');
 
-        $DataSet->SetSeriesName('Views','Serie1');
-        $DataSet->SetSeriesName('Sessions','Serie2');
-        $DataSet->SetSeriesName('Visitors','Serie3');
-        $DataSet->SetSeriesName('Page Edits','Serie4');
-        $DataSet->SetSeriesName('Page Creations','Serie5');
-        $DataSet->SetSeriesName('Page Deletions','Serie6');
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_views'),'Serie1');
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_sessions'),'Serie2');
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_visitors'),'Serie3');
 
         $Canvas = new GDCanvas(700, 280, false);
         $Chart  = new pChart(700,280,$Canvas);
 
         $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
-        $Chart->setGraphArea(50,30,680,200);
+        $Chart->setGraphArea(50,10,680,200);
         $Chart->drawScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
                           ($hours?0:45), 1, false, ceil(count($times)/12) );
         $Chart->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
@@ -236,7 +224,54 @@ class StatisticsGraph {
         $DataSet->removeSeries('Times');
         $DataSet->removeSeriesName('Times');
         $Chart->drawLegend(
-            230, 15,
+            550, 15,
+            $DataSet->GetDataDescription(),
+            new Color(250));
+
+        header('Content-Type: image/png');
+        $Chart->Render('');
+    }
+
+    public function dashboardwiki(){
+        $hours  = ($this->from == $this->to);
+        $result = $this->hlp->Query()->dashboardwiki($this->tlimit,$hours);
+        $data1  = array();
+        $data2  = array();
+        $data3  = array();
+        $times  = array();
+
+        foreach($result as $time => $row){
+            $data1[] = (int) $row['E'];
+            $data2[] = (int) $row['C'];
+            $data3[] = (int) $row['D'];
+            $times[] = $time.($hours?'h':'');
+        }
+
+        $DataSet = new pData();
+        $DataSet->AddPoints($data1,'Serie1');
+        $DataSet->AddPoints($data2,'Serie2');
+        $DataSet->AddPoints($data3,'Serie3');
+        $DataSet->AddPoints($times,'Times');
+        $DataSet->AddAllSeries();
+        $DataSet->SetAbscissaLabelSeries('Times');
+
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_edits'),'Serie1');
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_creates'),'Serie2');
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_deletions'),'Serie3');
+
+        $Canvas = new GDCanvas(700, 280, false);
+        $Chart  = new pChart(700,280,$Canvas);
+
+        $Chart->setFontProperties(dirname(__FILE__).'/pchart/Fonts/DroidSans.ttf', 8);
+        $Chart->setGraphArea(50,10,680,200);
+        $Chart->drawScale($DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
+                          ($hours?0:45), 1, false, ceil(count($times)/12) );
+        $Chart->drawLineGraph($DataSet->GetData(),$DataSet->GetDataDescription());
+
+        $DataSet->removeSeries('Times');
+        $DataSet->removeSeriesName('Times');
+        $Chart->drawLegend(
+            550, 15,
             $DataSet->GetDataDescription(),
             new Color(250));
 

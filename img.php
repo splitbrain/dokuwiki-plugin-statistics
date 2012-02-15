@@ -12,6 +12,10 @@ require_once(DOKU_INC.'inc/init.php');
 session_write_close();
 
 $plugin = plugin_load('helper','statistics');
-$plugin->Graph()->render($_REQUEST['img'],$_REQUEST['f'],$_REQUEST['t'],$_REQUEST['s']);
+try {
+    $plugin->Graph()->render($_REQUEST['img'],$_REQUEST['f'],$_REQUEST['t'],$_REQUEST['s']);
+}catch(Exception $e){
+    $plugin->sendGIF(false);
+}
 
-//Setup VIM: ex: et ts=4 enc=utf-8 :
+//Setup VIM: ex: et ts=4 :
