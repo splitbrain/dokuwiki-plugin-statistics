@@ -48,44 +48,52 @@ class StatisticsLogger {
      * Will not write anything if the referer isn't a search engine
      */
     public function log_externalsearch($referer,&$type){
-        $referer = strtolower($referer);
-        $ref     = strtr($referer,' +','__');
+        $referer = utf8_strtolower($referer);
+        include(dirname(__FILE__).'/inc/searchengines.php');
 
-        include(dirname(__FILE__).'/inc/search_engines.php');
+        // parse the referer
+        $domain = parse_url($referer, PHP_URL_HOST);
+        $params = array();
+        parse_str(parse_url($referer, PHP_URL_QUERY),$params);
 
-        foreach($SearchEnginesSearchIDOrder as $regex){
-            if(preg_match('/'.$regex.'/',$ref)){
-                if(!$NotSearchEnginesKeys[$regex] ||
-                   !preg_match('/'.$NotSearchEnginesKeys[$regex].'/',$ref)){
-                    // it's a search engine!
-                    $type = 'search';
+        // check domain against common search engines
+        foreach($SEARCHENGINES as $regex => $info){
+            if(preg_match('/'.$regex.'/',$domain)){
+                $type   = 'search';
+                $name   = array_shift($info);
+                // check the known parameters for content
+                foreach($info as $k){
+                    if(empty($params[$k])) continue;
+                    $query = $params[$k];
                     break;
                 }
+                break;
             }
         }
-        if($type != 'search') return; // we're done here
 
-        // extract query
-        $engine = $SearchEnginesHashID[$regex];
-        $param = $SearchEnginesKnownUrl[$engine];
-        if($param && preg_match('/'.$param.'(.*?)[&$]/',$referer,$match)){
-            $query = array_pop($match);
-        }elseif(preg_match('/'.$WordsToExtractSearchUrl.'(.*?)[&$]/',$referer,$match)){
-            $query = array_pop($match);
+        // try some generic search engin parameters
+        if($type != 'search') foreach(array('search','query','q','keywords','keyword') as $k){
+            if(empty($params[$k])) continue;
+            $query = $params[$k];
+            // we seem to have found some generic search, generate name from domain
+            $name = preg_replace('/(\.co)?\.([a-z]{2-5})$/','',$domain); //strip tld
+            $name = explode('.',$name);
+            $name = array_pop($name);
+            $type = 'search';
+            break;
         }
-        if(!$query) return; // we failed
+
+        // still no hit? return
+        if($type != 'search') return;
 
         // clean the query
         $query = preg_replace('/^(cache|related):[^\+]+/','',$query);  // non-search queries
-        $query = preg_replace('/%0[ad]/',' ',$query);                  // LF CR
-        $query = preg_replace('/%2[02789abc]/',' ',$query);            // space " ' ( ) * + ,
-        $query = preg_replace('/%3a/',' ',$query);                     // :
-        $query = strtr($query,'+\'()"*,:','        ');                 // badly encoded
         $query = preg_replace('/ +/',' ',$query);                      // ws compact
         $query = trim($query);
-        $query = urldecode($query);
         if(!utf8_check($query)) $query = utf8_encode($query);          // assume latin1 if not utf8
-        $query = utf8_strtolower($query);
+
+        // no query? no log
+        if(!$query) return;
 
         // log it!
         $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
