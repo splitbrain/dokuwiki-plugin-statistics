@@ -28,7 +28,7 @@ var plugin_statistics = {
             vy: window.innerHeight,
             js: 1,
             rnd: now.getTime()
-        }
+        };
 
         // log access
         if(JSINFO['act'] == 'show'){
