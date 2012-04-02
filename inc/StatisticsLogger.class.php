@@ -49,7 +49,7 @@ class StatisticsLogger {
      */
     public function log_externalsearch($referer,&$type){
         $referer = utf8_strtolower($referer);
-        include(dirname(__FILE__).'/inc/searchengines.php');
+        include(dirname(__FILE__).'/searchengines.php');
 
         // parse the referer
         $domain = parse_url($referer, PHP_URL_HOST);
