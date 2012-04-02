@@ -345,7 +345,7 @@ class StatisticsQuery {
     /**
      * Builds a limit clause
      */
-    private function mklimit($start,$limit){
+    public function mklimit($start,$limit){
         $start = (int) $start;
         $limit = (int) $limit;
         if($limit){
@@ -357,5 +357,16 @@ class StatisticsQuery {
         return '';
     }
 
+    /**
+     * Create a time limit for use in SQL
+     */
+    public function mktlimit(&$from, &$to) {
+        // fixme add better sanity checking here:
+        $from = preg_replace('/[^\d\-]+/','',$from);
+        $to   = preg_replace('/[^\d\-]+/','',$to);
+        if(!$from) $from = date('Y-m-d');
+        if(!$to)   $to   = date('Y-m-d');
 
+        return "A.dt >= '$from 00:00:00' AND A.dt <= '$to 23:59:59'";
+    }
 }

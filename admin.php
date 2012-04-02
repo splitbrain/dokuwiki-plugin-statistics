@@ -67,15 +67,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * set limit clause
      */
     public function setTimeframe($from,$to){
-        // fixme add better sanity checking here:
-        $from = preg_replace('/[^\d\-]+/','',$from);
-        $to   = preg_replace('/[^\d\-]+/','',$to);
-        if(!$from) $from = date('Y-m-d');
-        if(!$to)   $to   = date('Y-m-d');
-
-        //setup limit clause
-        $tlimit = "A.dt >= '$from 00:00:00' AND A.dt <= '$to 23:59:59'";
-        $this->tlimit = $tlimit;
+        $this->tlimit = $this->hlp->Query()->mktlimit($from,$to);
         $this->from   = $from;
         $this->to     = $to;
     }
