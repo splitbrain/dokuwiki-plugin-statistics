@@ -1,20 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 2.9.1.1-Debian-2
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Jan 26, 2007 at 05:34 PM
--- Server version: 5.0.30
--- PHP Version: 4.4.4-8
---
--- Database: `stats`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `stats_access`
---
 
 CREATE TABLE `stats_access` (
   `id` bigint(20) unsigned NOT NULL auto_increment,
@@ -42,12 +25,6 @@ CREATE TABLE `stats_access` (
   KEY `dt` (`dt`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `stats_iplocation`
---
-
 CREATE TABLE `stats_iplocation` (
   `ip` varchar(15) collate utf8_unicode_ci NOT NULL,
   `code` varchar(3) collate utf8_unicode_ci NOT NULL,
@@ -59,14 +36,13 @@ CREATE TABLE `stats_iplocation` (
   KEY `code` (`code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- added 2007-01-28
+-- UPGRADE added 2007-01-28
 ALTER TABLE `stats_access` CHANGE `dt` `dt` DATETIME NOT NULL ;
 ALTER TABLE `stats_access` ADD `js` TINYINT( 1 ) NOT NULL AFTER `view_y` ;
 UPDATE `stats_access` SET js = 1 ;
 
--- added 2007-01-31
+-- UPGRADE added 2007-01-31
 ALTER TABLE `stats_access` ADD `uid` VARCHAR( 50 ) NOT NULL ;
-
 
 CREATE TABLE `stats_outlinks` (
   `id` bigint(20) unsigned NOT NULL auto_increment,
@@ -78,7 +54,7 @@ CREATE TABLE `stats_outlinks` (
   KEY `link_md5` (`link_md5`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- added 2007-02-04
+-- UPGRADE added 2007-02-04
 ALTER TABLE `stats_outlinks` ADD `page` VARCHAR( 255 ) NOT NULL AFTER `dt` ;
 
 CREATE TABLE `stats_search` (
@@ -103,7 +79,7 @@ update stats_access set ref_type='external' where ref LIKE 'http://www.stumbleup
 update stats_access set ref_type='external' where ref LIKE 'http://swik.net/%';
 update stats_access set ref_type='external' where ref LIKE 'http://segnalo.alice.it/%';
 
--- added 2008-06-15
+-- UPGRADE added 2008-06-15
 CREATE TABLE `stats_refseen` (
   `ref_md5` varchar(32) collate utf8_unicode_ci NOT NULL,
   `dt` datetime NOT NULL,
@@ -114,7 +90,7 @@ CREATE TABLE `stats_refseen` (
 -- This will take some time...
 INSERT INTO stats_refseen (ref_md5,dt) SELECT ref_md5, MIN(dt) FROM stats_access GROUP BY ref_md5;
 
--- added 2012-02-08
+-- UPGRADE added 2012-02-08
 CREATE TABLE `stats_edits` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `dt` datetime NOT NULL,
@@ -157,6 +133,5 @@ ALTER TABLE `stats_search` ADD INDEX `dt` (`dt`);
 ALTER TABLE `stats_session` ADD INDEX `dt` (`dt`);
 ALTER TABLE `stats_session` ADD INDEX `views` (`views`);
 ALTER TABLE `stats_session` ADD INDEX `uid` (`uid`);
-
 ALTER TABLE `stats_access` ADD INDEX `ua_type` (`ua_type`);
 
