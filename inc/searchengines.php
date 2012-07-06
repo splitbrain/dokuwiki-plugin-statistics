@@ -15,13 +15,14 @@ $SEARCHENGINEINFO = array(
     'babylon'       => array('Babylon','http://search.babylon.com'),
     'aol'           => array('AOL Search','http://search.aol.com'),
     'duckduckgo'    => array('DuckDuckGo','http://duckduckgo.com'),
+    'bing'          => array('Bing','http://www.bing.com'),
 );
 
 $SEARCHENGINES = array(
 
-    '^(\w+\.)*google(\.co)?\.([a-z]{2-5})$' => array('google','q'),
-    '^(\w+\.)*bing(\.co)?\.([a-z]{2-5})$'   => array('bing','q'),
-    '^(\w+\.)*yandex(\.co)?\.([a-z]{2-5})$' => array('yandex','query'),
+    '^(\w+\.)*google(\.co)?\.([a-z]{2,5})$' => array('google','q'),
+    '^(\w+\.)*bing(\.co)?\.([a-z]{2,5})$'   => array('bing','q'),
+    '^(\w+\.)*yandex(\.co)?\.([a-z]{2,5})$' => array('yandex','query'),
     '^(\w+\.)*yahoo\.com$'                  => array('yahoo','p'),
     '^search\.naver\.com$'                  => array('naver','query'),
     '^(\w+\.)*baidu\.com$'                  => array('baidu','wd', 'word', 'kw'),
@@ -31,7 +32,7 @@ $SEARCHENGINES = array(
     '^(\w+\.)*search-results\.com$'         => array('ask','ask','q','searchfor'),
     '^search\.babylon\.com$'                => array('babylon','q'),
 
-    '^(\w+\.)*(aol)?((search|recherches?|images|suche|alicesuche)\.)aol(\.co)?\.([a-z]{2-5})$'
+    '^(\w+\.)*(aol)?((search|recherches?|images|suche|alicesuche)\.)aol(\.co)?\.([a-z]{2,5})$'
                                             => array('aol','query', 'q'),
     '^duckduckgo\.com$'                     => array('duckduckgo','q'),
 

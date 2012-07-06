@@ -51,10 +51,17 @@ class StatisticsLogger {
         $referer = utf8_strtolower($referer);
         include(dirname(__FILE__).'/searchengines.php');
 
+        $query = '';
+        $name  = '';
+
         // parse the referer
-        $domain = parse_url($referer, PHP_URL_HOST);
+        $urlparts = parse_url($referer);
+        $domain   = $urlparts['host'];
+        $qpart    = $urlparts['query'];
+        if(!$qpart) $qpart = $urlparts['fragment']; //google does this
+
         $params = array();
-        parse_str(parse_url($referer, PHP_URL_QUERY),$params);
+        parse_str($qpart, $params);
 
         // check domain against common search engines
         foreach($SEARCHENGINES as $regex => $info){
@@ -76,7 +83,7 @@ class StatisticsLogger {
             if(empty($params[$k])) continue;
             $query = $params[$k];
             // we seem to have found some generic search, generate name from domain
-            $name = preg_replace('/(\.co)?\.([a-z]{2-5})$/','',$domain); //strip tld
+            $name = preg_replace('/(\.co)?\.([a-z]{2,5})$/','',$domain); //strip tld
             $name = explode('.',$name);
             $name = array_pop($name);
             $type = 'search';
@@ -97,7 +104,7 @@ class StatisticsLogger {
 
         // log it!
         $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
-        $this->log_search($_REQUEST['p'],$query,$words,$engine);
+        $this->log_search($_REQUEST['p'],$query,$words,$name);
     }
 
     /**
