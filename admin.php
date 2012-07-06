@@ -412,8 +412,15 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $value = strtolower(preg_replace('/[^\w]+/','',$value));
         $value = str_replace(' ','_',$value);
         $file  = 'lib/plugins/statistics/ico/'.$type.'/'.$value.'.png';
+        if($type == 'flags'){
+            $w = 18;
+            $h = 12;
+        }else{
+            $w = 16;
+            $h = 16;
+        }
         if(file_exists(DOKU_INC.$file)){
-            echo '<img src="'.DOKU_BASE.$file.'" alt="'.hsc($value).'" width="16" height="16" />';
+            echo '<img src="'.DOKU_BASE.$file.'" alt="'.hsc($value).'" width="'.$w.'" height="'.$h.'" />';
         }
     }
 }
