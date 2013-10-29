@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Tim Weinhold <tim.weinhold@gmail.com>
+ * @author Cornelius Kölbel <corny@cornelinux.de>
  */
 $lang['menu']                  = 'Zugriffs- und Verwendungsstatistik';
 $lang['more']                  = 'mehr';
@@ -29,6 +30,10 @@ $lang['browsers']              = 'Browser';
 $lang['os']                    = 'Betriebssysteme';
 $lang['countries']             = 'Länder';
 $lang['resolution']            = 'Bildschirmauflösungen';
+$lang['intro_dashboard']       = 'Diese Seite gibt Ihnen einen Überblick über die Aktivitäten in Ihrem Wiki in dem gewählten Zeitraum.<br />Wenn Sie ein Thema aus dem Inhaltsverzeichnis wählen, bekommen Sie weitere Details und Graphen angezeigt.';
+$lang['intro_page']            = 'Dies sind die Wiki-Seiten, die in dem gewählten Zeitraum am häufigsten angezeigt wurden.';
+$lang['intro_outlinks']        = 'Dies sind die externen Links in Ihrem Wiki, die am häufigsten angeklickt wurden.';
+$lang['intro_searchengines']   = 'Die folgenden Suchmaschinen wurden benutzt, um Ihre Wiki zu finden.';
 $lang['dash_pageviews']        = '<strong>%d</strong> Seitenaufrufe';
 $lang['dash_sessions']         = '<strong>%d</strong> Besuche (Sitzung)';
 $lang['dash_visitors']         = '<strong>%d</strong> Individuelle Besucher';
