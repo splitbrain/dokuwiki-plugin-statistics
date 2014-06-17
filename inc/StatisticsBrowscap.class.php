@@ -13,19 +13,21 @@ class StatisticsBrowscap extends Browscap {
         global $conf;
         $this->cacheDir        = $conf['cachedir'].'/';
         $this->cacheFilename   = 'browscap.ini.php';
+        $this->remoteIniUrl    = 'http://browscap.org/stream?q=Lite_PHP_BrowsCapINI';
     }
 
     /**
      * Use DokuWiki's HTTP Clients for downloading
      *
      * @param string $url
+     * @throws Exception
      * @return string
      */
     protected function _getRemoteData($url){
         $http = new DokuHTTPClient($url);
         $file = $http->get($url);
         if(!$file)
-            throw new Browscap_Exception('Your server can\'t connect to external resources. Please update the file manually.');
+            throw new Exception('Your server can\'t connect to external resources. Please update the file manually.');
         return $file;
     }
 }
