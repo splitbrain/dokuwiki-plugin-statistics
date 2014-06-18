@@ -2767,8 +2767,12 @@ class pChart {
 		/* Save image map if requested */
 		if ($this->BuildMap)
 			$this->SaveImageMap ();
-		
-		imagepng ( $this->canvas->getPicture(), $FileName );
+
+        if(!$FileName) {
+		    imagepng ( $this->canvas->getPicture() );
+        } else {
+            imagepng ( $this->canvas->getPicture(), $FileName );
+        }
 	}
 	
 	/**
