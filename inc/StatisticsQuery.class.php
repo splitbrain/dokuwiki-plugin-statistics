@@ -3,7 +3,7 @@
 class StatisticsQuery {
     private $hlp;
 
-    public function __construct($hlp){
+    public function __construct(helper_plugin_statistics $hlp){
         $this->hlp = $hlp;
     }
 

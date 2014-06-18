@@ -69,8 +69,13 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
                 msg('DB Error: connection failed',-1);
                 return null;
             }
+            if(!mysql_select_db($this->getConf('db_database'))) {
+                msg('DB Error: failed to select database',-1);
+                return null;
+            }
+
             // set utf-8
-            if(!mysql_db_query($this->getConf('db_database'),'set names utf8',$this->dblink)){
+            if(!mysql_query('set names utf8', $this->dblink)){
                 msg('DB Error: could not set UTF-8 ('.mysql_error($this->dblink).')',-1);
                 return null;
             }
@@ -84,7 +89,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     public function runSQL($sql_string) {
         $link = $this->dbLink();
 
-        $result = mysql_db_query($this->conf['db_database'],$sql_string,$link);
+        $result = mysql_query($sql_string,$link);
         if(!$result){
             dbglog('DB Error: '.mysql_error($link).' '.hsc($sql_string),-1);
             msg('DB Error: '.mysql_error($link).' '.hsc($sql_string),-1);

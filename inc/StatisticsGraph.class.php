@@ -13,7 +13,7 @@ class StatisticsGraph {
     private $from;
     private $to;
 
-    public function __construct($hlp){
+    public function __construct(helper_plugin_statistics $hlp){
         $this->hlp = $hlp;
     }
 
@@ -129,6 +129,7 @@ class StatisticsGraph {
         $result = $this->hlp->Query()->viewport($this->tlimit,0,100);
         $data1 = array();
         $data2 = array();
+        $data3 = array();
 
         foreach($result as $row){
             $data1[] = $row['res_x'];
@@ -159,6 +160,7 @@ class StatisticsGraph {
         $result = $this->hlp->Query()->resolution($this->tlimit,0,100);
         $data1 = array();
         $data2 = array();
+        $data3 = array();
 
         foreach($result as $row){
             $data1[] = $row['res_x'];

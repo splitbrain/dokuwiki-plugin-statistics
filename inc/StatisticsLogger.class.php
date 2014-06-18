@@ -16,7 +16,7 @@ class StatisticsLogger {
     /**
      * Parses browser info and set internal vars
      */
-    public function __construct($hlp){
+    public function __construct(helper_plugin_statistics $hlp){
         $this->hlp = $hlp;
 
         $this->ua_agent = trim($_SERVER['HTTP_USER_AGENT']);
@@ -129,7 +129,7 @@ class StatisticsLogger {
             $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."searchwords
                        SET sid  = $id,
                            word = '$word'";
-            $ok = $this->hlp->runSQL($sql);
+            $this->hlp->runSQL($sql);
         }
     }
 
@@ -204,8 +204,8 @@ class StatisticsLogger {
     public function log_outgoing(){
         if(!$_REQUEST['ol']) return;
 
-        $link_md5 = md5($link);
         $link     = addslashes($_REQUEST['ol']);
+        $link_md5 = md5($link);
         $session  = addslashes(session_id());
         $page     = addslashes($_REQUEST['p']);
 
