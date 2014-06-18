@@ -1,5 +1,5 @@
 <?php
-require dirname(__FILE__).'/Browscap.php';
+require dirname(__FILE__) . '/Browscap.php';
 
 /**
  * Overwrites some methods from the original upstream Browscap class
@@ -9,11 +9,11 @@ class StatisticsBrowscap extends Browscap {
     /**
      * Defines our own cache locations and names
      */
-    public function __construct(){
+    public function __construct() {
         global $conf;
-        $this->cacheDir        = $conf['cachedir'].'/';
-        $this->cacheFilename   = 'browscap.ini.php';
-        $this->remoteIniUrl    = 'http://browscap.org/stream?q=Lite_PHP_BrowsCapINI';
+        $this->cacheDir      = $conf['cachedir'] . '/';
+        $this->cacheFilename = 'browscap.ini.php';
+        $this->remoteIniUrl  = 'http://browscap.org/stream?q=Lite_PHP_BrowsCapINI';
     }
 
     /**
@@ -23,7 +23,7 @@ class StatisticsBrowscap extends Browscap {
      * @throws Exception
      * @return string
      */
-    protected function _getRemoteData($url){
+    protected function _getRemoteData($url) {
         $http = new DokuHTTPClient($url);
         $file = $http->get($url);
         if(!$file)

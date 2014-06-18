@@ -1,6 +1,6 @@
 <?php
 
-require dirname(__FILE__).'/StatisticsBrowscap.class.php';
+require dirname(__FILE__) . '/StatisticsBrowscap.class.php';
 
 class StatisticsLogger {
     private $hlp;
@@ -16,14 +16,14 @@ class StatisticsLogger {
     /**
      * Parses browser info and set internal vars
      */
-    public function __construct(helper_plugin_statistics $hlp){
+    public function __construct(helper_plugin_statistics $hlp) {
         $this->hlp = $hlp;
 
         $this->ua_agent = trim($_SERVER['HTTP_USER_AGENT']);
-        $bc = new StatisticsBrowscap();
-        $ua = $bc->getBrowser($this->ua_agent);
-        $this->ua_name = $ua->Browser;
-        $this->ua_type = 'browser';
+        $bc             = new StatisticsBrowscap();
+        $ua             = $bc->getBrowser($this->ua_agent);
+        $this->ua_name  = $ua->Browser;
+        $this->ua_type  = 'browser';
         if($ua->Crawler) $this->ua_type = 'robot';
         if($ua->isSyndicationReader) $this->ua_type = 'feedreader';
         $this->ua_version  = $ua->Version;
@@ -35,9 +35,9 @@ class StatisticsLogger {
     /**
      * get the unique user ID
      */
-    private function getUID(){
+    private function getUID() {
         $uid = $_REQUEST['uid'];
-        if(!$uid) $uid = get_doku_pref('plgstats',false);
+        if(!$uid) $uid = get_doku_pref('plgstats', false);
         if(!$uid) $uid = session_id();
         return $uid;
     }
@@ -47,9 +47,9 @@ class StatisticsLogger {
      *
      * Will not write anything if the referer isn't a search engine
      */
-    public function log_externalsearch($referer,&$type){
+    public function log_externalsearch($referer, &$type) {
         $referer = utf8_strtolower($referer);
-        include(dirname(__FILE__).'/searchengines.php');
+        include(dirname(__FILE__) . '/searchengines.php');
 
         $query = '';
         $name  = '';
@@ -64,12 +64,12 @@ class StatisticsLogger {
         parse_str($qpart, $params);
 
         // check domain against common search engines
-        foreach($SEARCHENGINES as $regex => $info){
-            if(preg_match('/'.$regex.'/',$domain)){
-                $type   = 'search';
-                $name   = array_shift($info);
+        foreach($SEARCHENGINES as $regex => $info) {
+            if(preg_match('/' . $regex . '/', $domain)) {
+                $type = 'search';
+                $name = array_shift($info);
                 // check the known parameters for content
-                foreach($info as $k){
+                foreach($info as $k) {
                     if(empty($params[$k])) continue;
                     $query = $params[$k];
                     break;
@@ -79,12 +79,12 @@ class StatisticsLogger {
         }
 
         // try some generic search engin parameters
-        if($type != 'search') foreach(array('search','query','q','keywords','keyword') as $k){
+        if($type != 'search') foreach(array('search', 'query', 'q', 'keywords', 'keyword') as $k) {
             if(empty($params[$k])) continue;
             $query = $params[$k];
             // we seem to have found some generic search, generate name from domain
-            $name = preg_replace('/(\.co)?\.([a-z]{2,5})$/','',$domain); //strip tld
-            $name = explode('.',$name);
+            $name = preg_replace('/(\.co)?\.([a-z]{2,5})$/', '', $domain); //strip tld
+            $name = explode('.', $name);
             $name = array_pop($name);
             $type = 'search';
             break;
@@ -94,39 +94,39 @@ class StatisticsLogger {
         if($type != 'search') return;
 
         // clean the query
-        $query = preg_replace('/^(cache|related):[^\+]+/','',$query);  // non-search queries
-        $query = preg_replace('/ +/',' ',$query);                      // ws compact
+        $query = preg_replace('/^(cache|related):[^\+]+/', '', $query); // non-search queries
+        $query = preg_replace('/ +/', ' ', $query); // ws compact
         $query = trim($query);
-        if(!utf8_check($query)) $query = utf8_encode($query);          // assume latin1 if not utf8
+        if(!utf8_check($query)) $query = utf8_encode($query); // assume latin1 if not utf8
 
         // no query? no log
         if(!$query) return;
 
         // log it!
-        $words = explode(' ',utf8_stripspecials($query,' ','\._\-:\*'));
-        $this->log_search($_REQUEST['p'],$query,$words,$name);
+        $words = explode(' ', utf8_stripspecials($query, ' ', '\._\-:\*'));
+        $this->log_search($_REQUEST['p'], $query, $words, $name);
     }
 
     /**
      * The given data to the search related tables
      */
-    public function log_search($page,$query,$words,$engine){
+    public function log_search($page, $query, $words, $engine) {
         $page   = addslashes($page);
         $query  = addslashes($query);
         $engine = addslashes($engine);
 
-        $sql  = "INSERT INTO ".$this->hlp->prefix."search
+        $sql = "INSERT INTO " . $this->hlp->prefix . "search
                     SET dt       = NOW(),
                         page     = '$page',
                         query    = '$query',
                         engine   = '$engine'";
-        $id = $this->hlp->runSQL($sql);
+        $id  = $this->hlp->runSQL($sql);
         if(is_null($id)) return;
 
-        foreach($words as $word){
+        foreach($words as $word) {
             if(!$word) continue;
             $word = addslashes($word);
-            $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."searchwords
+            $sql  = "INSERT DELAYED INTO " . $this->hlp->prefix . "searchwords
                        SET sid  = $id,
                            word = '$word'";
             $this->hlp->runSQL($sql);
@@ -143,14 +143,14 @@ class StatisticsLogger {
      *
      * @param int $addview set to 1 to count a view
      */
-    public function log_session($addview=0){
+    public function log_session($addview = 0) {
         // only log browser sessions
         if($this->ua_type != 'browser') return;
 
         $addview = addslashes($addview);
         $session = addslashes(session_id());
         $uid     = addslashes($this->uid);
-        $sql = "INSERT DELAYED INTO ".$this->hlp->prefix."session
+        $sql     = "INSERT DELAYED INTO " . $this->hlp->prefix . "session
                    SET session = '$session',
                        dt      = NOW(),
                        end     = NOW(),
@@ -166,27 +166,27 @@ class StatisticsLogger {
     /**
      * Resolve IP to country/city
      */
-    public function log_ip($ip){
+    public function log_ip($ip) {
         // check if IP already known and up-to-date
-        $sql = "SELECT ip
-                  FROM ".$this->hlp->prefix."iplocation
-                 WHERE ip ='".addslashes($ip)."'
+        $sql    = "SELECT ip
+                  FROM " . $this->hlp->prefix . "iplocation
+                 WHERE ip ='" . addslashes($ip) . "'
                    AND lastupd > DATE_SUB(CURDATE(),INTERVAL 30 DAY)";
         $result = $this->hlp->runSQL($sql);
         if($result[0]['ip']) return;
 
-        $http = new DokuHTTPClient();
+        $http          = new DokuHTTPClient();
         $http->timeout = 10;
-        $data = $http->get('http://api.hostip.info/get_html.php?ip='.$ip);
+        $data          = $http->get('http://api.hostip.info/get_html.php?ip=' . $ip);
 
-        if(preg_match('/^Country: (.*?) \((.*?)\)\nCity: (.*?)$/s',$data,$match)){
+        if(preg_match('/^Country: (.*?) \((.*?)\)\nCity: (.*?)$/s', $data, $match)) {
             $country = addslashes(ucwords(strtolower(trim($match[1]))));
             $code    = addslashes(strtolower(trim($match[2])));
             $city    = addslashes(ucwords(strtolower(trim($match[3]))));
             $host    = addslashes(gethostbyaddr($ip));
             $ip      = addslashes($ip);
 
-            $sql = "REPLACE INTO ".$this->hlp->prefix."iplocation
+            $sql = "REPLACE INTO " . $this->hlp->prefix . "iplocation
                         SET ip = '$ip',
                             country = '$country',
                             code    = '$code',
@@ -201,7 +201,7 @@ class StatisticsLogger {
      *
      * called from log.php
      */
-    public function log_outgoing(){
+    public function log_outgoing() {
         if(!$_REQUEST['ol']) return;
 
         $link     = addslashes($_REQUEST['ol']);
@@ -209,14 +209,14 @@ class StatisticsLogger {
         $session  = addslashes(session_id());
         $page     = addslashes($_REQUEST['p']);
 
-        $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."outlinks
+        $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "outlinks
                     SET dt       = NOW(),
                         session  = '$session',
                         page     = '$page',
                         link_md5 = '$link_md5',
                         link     = '$link'";
-        $ok = $this->hlp->runSQL($sql);
-        if(is_null($ok)){
+        $ok  = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
             global $MSG;
             print_r($MSG);
         }
@@ -227,23 +227,23 @@ class StatisticsLogger {
      *
      * called from log.php
      */
-    public function log_access(){
+    public function log_access() {
         if(!$_REQUEST['p']) return;
 
         # FIXME check referer against blacklist and drop logging for bad boys
 
         // handle referer
         $referer = trim($_REQUEST['r']);
-        if($referer){
+        if($referer) {
             $ref     = addslashes($referer);
             $ref_md5 = ($ref) ? md5($referer) : '';
-            if(strpos($referer,DOKU_URL) === 0){
+            if(strpos($referer, DOKU_URL) === 0) {
                 $ref_type = 'internal';
-            }else{
+            } else {
                 $ref_type = 'external';
-                $this->log_externalsearch($referer,$ref_type);
+                $this->log_externalsearch($referer, $ref_type);
             }
-        }else{
+        } else {
             $ref      = '';
             $ref_md5  = '';
             $ref_type = '';
@@ -268,7 +268,7 @@ class StatisticsLogger {
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
 
-        $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."access
+        $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "access
                     SET dt       = NOW(),
                         page     = '$page',
                         ip       = '$ip',
@@ -288,17 +288,17 @@ class StatisticsLogger {
                         user     = '$user',
                         session  = '$session',
                         uid      = '$uid'";
-        $ok = $this->hlp->runSQL($sql);
-        if(is_null($ok)){
+        $ok  = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
             global $MSG;
             print_r($MSG);
         }
 
-        $sql = "INSERT DELAYED IGNORE INTO ".$this->hlp->prefix."refseen
+        $sql = "INSERT DELAYED IGNORE INTO " . $this->hlp->prefix . "refseen
                    SET ref_md5  = '$ref_md5',
                        dt       = NOW()";
-        $ok = $this->hlp->runSQL($sql);
-        if(is_null($ok)){
+        $ok  = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
             global $MSG;
             print_r($MSG);
         }
@@ -310,7 +310,7 @@ class StatisticsLogger {
     /**
      * Log edits
      */
-    public function log_edit($page, $type){
+    public function log_edit($page, $type) {
         $ip      = addslashes(clientIP(true));
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
@@ -318,7 +318,7 @@ class StatisticsLogger {
         $page    = addslashes($page);
         $type    = addslashes($type);
 
-        $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."edits
+        $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "edits
                     SET dt       = NOW(),
                         page     = '$page',
                         type     = '$type',
@@ -332,7 +332,7 @@ class StatisticsLogger {
     /**
      * Log login/logoffs and user creations
      */
-    public function log_login($type, $user=''){
+    public function log_login($type, $user = '') {
         if(!$user) $user = $_SERVER['REMOTE_USER'];
 
         $ip      = addslashes(clientIP(true));
@@ -341,7 +341,7 @@ class StatisticsLogger {
         $uid     = addslashes($this->uid);
         $type    = addslashes($type);
 
-        $sql  = "INSERT DELAYED INTO ".$this->hlp->prefix."logins
+        $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "logins
                     SET dt       = NOW(),
                         type     = '$type',
                         ip       = '$ip',

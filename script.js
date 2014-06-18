@@ -9,14 +9,14 @@ var plugin_statistics = {
      *
      * @param id string - urlencoded page id
      */
-    init: function(){
+    init: function () {
 
         // load visitor cookie
         var now = new Date();
-        var uid   = DokuCookie.getValue('plgstats');
-        if(!uid){
-            uid = now.getTime()+'-'+Math.floor(Math.random()*32000);
-            DokuCookie.setValue('plgstats',uid);
+        var uid = DokuCookie.getValue('plgstats');
+        if (!uid) {
+            uid = now.getTime() + '-' + Math.floor(Math.random() * 32000);
+            DokuCookie.setValue('plgstats', uid);
         }
         plugin_statistics.data = {
             uid: uid,
@@ -31,9 +31,9 @@ var plugin_statistics = {
         };
 
         // log access
-        if(JSINFO['act'] == 'show'){
+        if (JSINFO['act'] == 'show') {
             plugin_statistics.log_view('v');
-        }else{
+        } else {
             plugin_statistics.log_view('s');
         }
 
@@ -41,7 +41,7 @@ var plugin_statistics = {
         jQuery('a.urlextern').click(plugin_statistics.log_external);
 
         // attach unload event
-        jQuery(window).bind('beforeunload',plugin_statistics.log_exit);
+        jQuery(window).bind('beforeunload', plugin_statistics.log_exit);
     },
 
     /**
@@ -49,19 +49,19 @@ var plugin_statistics = {
      *
      * @param string act 'v' = view, 's' = session
      */
-    log_view: function(act){
+    log_view: function (act) {
         var params = jQuery.param(plugin_statistics.data);
         var img = new Image();
-        img.src = DOKU_BASE+'lib/plugins/statistics/log.php?do='+act+'&'+params;
+        img.src = DOKU_BASE + 'lib/plugins/statistics/log.php?do=' + act + '&' + params;
     },
 
     /**
      * Log clicks to external URLs
      */
-    log_external: function(){
+    log_external: function () {
         var params = jQuery.param(plugin_statistics.data);
         var img = new Image();
-        img.src = DOKU_BASE+'lib/plugins/statistics/log.php?do=o&ol='+encodeURIComponent(this.href)+'&'+params;
+        img.src = DOKU_BASE + 'lib/plugins/statistics/log.php?do=o&ol=' + encodeURIComponent(this.href) + '&' + params;
         plugin_statistics.pause(500);
         return true;
     },
@@ -69,21 +69,21 @@ var plugin_statistics = {
     /**
      * Log any leaving action as session info
      */
-    log_exit: function(){
+    log_exit: function () {
         var params = jQuery.param(plugin_statistics.data);
-        var url = DOKU_BASE+'lib/plugins/statistics/log.php?do=s&'+params;
-        jQuery.ajax(url,{async: false});
+        var url = DOKU_BASE + 'lib/plugins/statistics/log.php?do=s&' + params;
+        jQuery.ajax(url, {async: false});
     },
 
     /**
      * Pause the script execution for the given time
      */
-    pause: function(ms){
+    pause: function (ms) {
         var now = new Date();
-        var exitTime = now.getTime()+ms;
-        while(true){
+        var exitTime = now.getTime() + ms;
+        while (true) {
             now = new Date();
-            if(now.getTime()>exitTime){
+            if (now.getTime() > exitTime) {
                 return;
             }
         }
