@@ -247,6 +247,38 @@ class StatisticsQuery {
         return $this->hlp->runSQL($sql);
     }
 
+    public function edits($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, page
+                  FROM " . $this->hlp->prefix . "edits as A
+                 WHERE $tlimit
+              GROUP BY page
+              ORDER BY cnt DESC, page" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+    public function images($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, media, SUM(size) as filesize
+                  FROM " . $this->hlp->prefix . "media as A
+                 WHERE $tlimit
+                   AND mime1 = 'image'
+              GROUP BY media
+              ORDER BY cnt DESC, media" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+    public function downloads($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, media, SUM(size) as filesize
+                  FROM " . $this->hlp->prefix . "media as A
+                 WHERE $tlimit
+                   AND mime1 != 'image'
+              GROUP BY media
+              ORDER BY cnt DESC, media" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
     public function referer($tlimit, $start = 0, $limit = 20) {
         $sql = "SELECT COUNT(*) as cnt, ref as url
                   FROM " . $this->hlp->prefix . "access as A

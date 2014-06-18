@@ -21,6 +21,9 @@ $lang['time_go']     = 'Go';
 // the different pages
 $lang['dashboard']             = 'Dashboard';
 $lang['page']                  = 'Pages';
+$lang['edits']                 = 'Edits';
+$lang['images']                = 'Images';
+$lang['downloads']             = 'Downloads';
 $lang['referer']               = 'Incoming Links';
 $lang['newreferer']            = 'New Incoming Links';
 $lang['outlinks']              = 'Outgoing Links';
@@ -39,6 +42,9 @@ $lang['seenusers']             = 'Seen Users';
 // the intro texts
 $lang['intro_dashboard']             = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
 $lang['intro_page']                  = 'These are the wiki pages most viewed in the selected timeframe – your top content.';
+$lang['intro_edits']                 = 'These are the wiki pages most edited in the selected timeframe – this is where the current activity takes place.';
+$lang['intro_images']                = 'These are the top most displayed local images in your wiki. The third column shows the total amount of bytes transferred for each item.';
+$lang['intro_downloads']             = 'These are the top most downloaded local media items in your wiki. The third column shows the total amount of bytes transferred for each item.';
 $lang['intro_referer']               = 'Of all <strong>%d</strong> external visits, <strong>%d</strong> (<strong>%.1f%%</strong>) were direct (or bookmarked) accesses, <strong>%d</strong> (<strong>%.1f%%</strong>) came from search engines and <strong>%d</strong> (<strong>%.1f%%</strong>) were referred through links from other pages.<br />These other pages are listed below.';
 $lang['intro_newreferer']            = 'The following incoming links where first logged in the selected timeframe and have never been seen before.';
 $lang['intro_outlinks']              = 'These are the most clicked on links to external sites in your wiki.';

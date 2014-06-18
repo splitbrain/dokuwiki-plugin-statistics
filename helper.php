@@ -17,7 +17,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     /**
      * Return an instance of the query class
      *
-     * @return object
+     * @return StatisticsQuery
      */
     public function Query() {
         $this->prefix = $this->getConf('db_prefix');
@@ -31,7 +31,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     /**
      * Return an instance of the logger class
      *
-     * @return object
+     * @return StatisticsLogger
      */
     public function Logger() {
         $this->prefix = $this->getConf('db_prefix');
@@ -45,7 +45,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     /**
      * Return an instance of the Graph class
      *
-     * @return object
+     * @return StatisticsGraph
      */
     public function Graph() {
         $this->prefix = $this->getConf('db_prefix');

@@ -34,7 +34,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Available statistic pages
      */
     protected $pages = array(
-        'dashboard', 'page', 'referer', 'newreferer',
+        'dashboard', 'page', 'edits', 'images', 'downloads',
+        'referer', 'newreferer',
         'outlinks', 'searchengines', 'searchphrases',
         'searchwords', 'internalsearchphrases',
         'internalsearchwords', 'browsers', 'os',
@@ -245,6 +246,24 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $this->html_resulttable($result, '', 150);
     }
 
+    function html_edits() {
+        echo '<p>' . $this->getLang('intro_edits') . '</p>';
+        $result = $this->hlp->Query()->edits($this->tlimit, $this->start, 150);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_images() {
+        echo '<p>' . $this->getLang('intro_images') . '</p>';
+        $result = $this->hlp->Query()->images($this->tlimit, $this->start, 150);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_downloads() {
+        echo '<p>' . $this->getLang('intro_downloads') . '</p>';
+        $result = $this->hlp->Query()->downloads($this->tlimit, $this->start, 150);
+        $this->html_resulttable($result, '', 150);
+    }
+
     function html_browsers() {
         echo '<p>' . $this->getLang('intro_browsers') . '</p>';
         $this->html_graph('browsers', 400, 200);
@@ -366,6 +385,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
                     echo '<a href="' . wl($v) . '" class="wikilink1">';
                     echo hsc($v);
                     echo '</a>';
+                } elseif($k == 'media') {
+                        echo '<a href="' . ml($v) . '" class="wikilink1">';
+                        echo hsc($v);
+                        echo '</a>';
+                } elseif($k == 'filesize') {
+                    echo filesize_h($v);
                 } elseif($k == 'url') {
                     $url = hsc($v);
                     $url = preg_replace('/^https?:\/\/(www\.)?/', '', $url);

@@ -49,6 +49,13 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
             'logregistration',
             array()
         );
+        $controller->register_hook(
+            'FETCH_MEDIA_STATUS',
+            'BEFORE',
+            $this,
+            'logmedia',
+            array()
+        );
     }
 
     /**
@@ -77,6 +84,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         } else {
             $type = 'C';
         }
+        /** @var helper_plugin_statistics $hlp */
         $hlp = plugin_load('helper', 'statistics');
         $hlp->Logger()->log_edit(cleanID($event->data[1] . ':' . $event->data[2]), $type);
     }
@@ -85,6 +93,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
      * Log internal search
      */
     function logsearch(&$event, $param) {
+        /** @var helper_plugin_statistics $hlp */
         $hlp = plugin_load('helper', 'statistics');
         $hlp->Logger()->log_search('', $event->data['query'], $event->data['highlight'], 'dokuwiki');
     }
@@ -108,6 +117,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         }
         if(!$type) return;
 
+        /** @var helper_plugin_statistics $hlp */
         $hlp = plugin_load('helper', 'statistics');
         $hlp->Logger()->log_login($type);
     }
@@ -117,9 +127,35 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
      */
     function logregistration(&$event, $param) {
         if($event->data['type'] == 'create') {
+            /** @var helper_plugin_statistics $hlp */
             $hlp = plugin_load('helper', 'statistics');
             $hlp->Logger()->log_login('C', $event->data['params'][0]);
         }
+    }
+
+    /**
+     * Log media access
+     */
+    function logmedia(&$event, $param) {
+        if($event->data['status'] < 200) return;
+        if($event->data['status'] >= 400) return;
+        if(preg_match('/^\w+:\/\//', $event->data['media'])) return;
+
+        // no size for redirect/not modified
+        if($event->data['status'] >= 300) {
+            $size = 0;
+        } else {
+            $size = filesize($event->data['file']);
+        }
+
+        /** @var helper_plugin_statistics $hlp */
+        $hlp = plugin_load('helper', 'statistics');
+        $hlp->Logger()->log_media(
+            $event->data['media'],
+            $event->data['mime'],
+            !$event->data['download'],
+            $size
+        );
     }
 
     /**

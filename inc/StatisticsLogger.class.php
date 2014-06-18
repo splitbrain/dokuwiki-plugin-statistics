@@ -269,7 +269,6 @@ class StatisticsLogger {
         }
 
         // handle user agent
-
         $ua      = addslashes($this->ua_agent);
         $ua_type = addslashes($this->ua_type);
         $ua_ver  = addslashes($this->ua_version);
@@ -324,6 +323,60 @@ class StatisticsLogger {
 
         // resolve the IP
         $this->log_ip(clientIP(true));
+    }
+
+    /**
+     * Log access to a media file
+     *
+     * called from action.php
+     *
+     * @param string $media the media ID
+     * @param string $mime  the media's mime type
+     * @param bool $inline is this displayed inline?
+     * @param int $size size of the media file
+     */
+    public function log_media($media, $mime, $inline, $size) {
+        // handle user agent
+        $ua      = addslashes($this->ua_agent);
+        $ua_type = addslashes($this->ua_type);
+        $ua_ver  = addslashes($this->ua_version);
+        $os      = addslashes($this->ua_platform);
+        $ua_info = addslashes($this->ua_name);
+
+        $media    = addslashes($media);
+        list($mime1, $mime2)     = explode('/', strtolower($mime));
+        $mime1   = addslashes($mime1);
+        $mime2   = addslashes($mime2);
+        $inline  = $inline ? 1 : 0;
+        $size    = (int) $size;
+
+        $ip      = addslashes(clientIP(true));
+        $uid     = addslashes($this->uid);
+        $user    = addslashes($_SERVER['REMOTE_USER']);
+        $session = addslashes(session_id());
+
+        $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "media
+                    SET dt       = NOW(),
+                        media    = '$media',
+                        ip       = '$ip',
+                        ua       = '$ua',
+                        ua_info  = '$ua_info',
+                        ua_type  = '$ua_type',
+                        ua_ver   = '$ua_ver',
+                        os       = '$os',
+                        user     = '$user',
+                        session  = '$session',
+                        uid      = '$uid',
+                        size     = $size,
+                        mime1    = '$mime1',
+                        mime2    = '$mime2',
+                        inline   = $inline
+                        ";
+        $ok  = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
+            global $MSG;
+            print_r($MSG);
+        }
     }
 
     /**

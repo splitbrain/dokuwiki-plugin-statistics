@@ -204,8 +204,36 @@ ALTER TABLE `stats_access` ADD INDEX `ua_type` (`ua_type`);
 
 -- UPGRADE added 2014-06-18
 CREATE TABLE `stats_lastseen` (
-  `user`     VARCHAR(255) NOT NULL,
-  `dt`       TIMESTAMP    NOT NULL,
+  `user` VARCHAR(255) NOT NULL,
+  `dt`   TIMESTAMP    NOT NULL,
   PRIMARY KEY (`user`)
 )
-  ENGINE ='MEMORY';
+  ENGINE ='MEMORY'
+  COLLATE 'utf8_general_ci';
+
+CREATE TABLE `stats_media` (
+  `id`      BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dt`      DATETIME            NOT NULL,
+  `media`   VARCHAR(255)        NOT NULL,
+  `ip`      VARCHAR(40) DEFAULT NULL,
+  `ua`      VARCHAR(255)        NOT NULL,
+  `ua_info` VARCHAR(255)        NOT NULL,
+  `ua_type` VARCHAR(32)         NOT NULL,
+  `ua_ver`  VARCHAR(10)         NOT NULL,
+  `os`      VARCHAR(32)         NOT NULL,
+  `user`    VARCHAR(255)        NOT NULL,
+  `session` VARCHAR(255)        NOT NULL,
+  `uid`     VARCHAR(50)         NOT NULL,
+  `size`    INT UNSIGNED        NOT NULL,
+  `mime1`   VARCHAR(50)         NOT NULL,
+  `mime2`   VARCHAR(50)         NOT NULL,
+  `inline`  TINYINT(1)          NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `media` (`media`),
+  KEY `dt` (`dt`),
+  KEY `ua_type` (`ua_type`)
+)
+  ENGINE ='MyISAM'
+  COLLATE ='utf8_unicode_ci';
+
+ALTER TABLE `stats_media` ADD INDEX `mime1` (`mime1`);
