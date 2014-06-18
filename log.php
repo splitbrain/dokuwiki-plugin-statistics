@@ -12,6 +12,7 @@ require_once(DOKU_INC . 'inc/init.php');
 session_write_close();
 
 // all features are brokered by the helper plugin
+/** @var helper_plugin_statistics $plugin */
 $plugin = plugin_load('helper', 'statistics');
 
 dbglog('Log ' . $_SERVER['REQUEST_URI']);
@@ -21,8 +22,11 @@ switch($_REQUEST['do']) {
         $plugin->Logger()->log_access();
         $plugin->Logger()->log_session(1);
         break;
+
+    /** @noinspection PhpMissingBreakStatementInspection */
     case 'o':
         $plugin->Logger()->log_outgoing();
+
     //falltrough
     default:
         $plugin->Logger()->log_session();

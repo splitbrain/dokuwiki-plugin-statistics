@@ -201,3 +201,11 @@ ALTER TABLE `stats_session` ADD INDEX `dt` (`dt`);
 ALTER TABLE `stats_session` ADD INDEX `views` (`views`);
 ALTER TABLE `stats_session` ADD INDEX `uid` (`uid`);
 ALTER TABLE `stats_access` ADD INDEX `ua_type` (`ua_type`);
+
+-- UPGRADE added 2014-06-18
+CREATE TABLE `stats_lastseen` (
+  `user`     VARCHAR(255) NOT NULL,
+  `dt`       TIMESTAMP    NOT NULL,
+  PRIMARY KEY (`user`)
+)
+  ENGINE ='MEMORY';

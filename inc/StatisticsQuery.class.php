@@ -105,6 +105,13 @@ class StatisticsQuery {
         $result                = $this->hlp->runSQL($sql);
         $data['registrations'] = $result[0]['registrations'];
 
+        // current users
+        $sql = "SELECT COUNT(*) as current
+                  FROM ". $this->hlp->prefix . "lastseen
+                 WHERE `dt` >= NOW() - INTERVAL 10 MINUTE";
+        $result                = $this->hlp->runSQL($sql);
+        $data['current'] = $result[0]['current'];
+
         return $data;
     }
 
@@ -340,6 +347,16 @@ class StatisticsQuery {
 
         return $this->hlp->runSQL($sql);
     }
+
+    public function seenusers($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT `user`, `dt`
+                  FROM " . $this->hlp->prefix . "lastseen as A
+              ORDER BY `dt` DESC" .
+            $this->mklimit($start, $limit);
+
+        return $this->hlp->runSQL($sql);
+    }
+
 
     /**
      * Builds a limit clause

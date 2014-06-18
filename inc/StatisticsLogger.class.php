@@ -30,6 +30,8 @@ class StatisticsLogger {
         $this->ua_platform = $ua->Platform;
 
         $this->uid = $this->getUID();
+
+        $this->log_lastseen();
     }
 
     /**
@@ -43,6 +45,22 @@ class StatisticsLogger {
     }
 
     /**
+     * Log that we've seen the user (authenticated only)
+     *
+     * This is called directly from the constructor and thus logs always,
+     * regardless from where the log is initiated
+     */
+    public function log_lastseen() {
+        if(empty($_SERVER['REMOTE_USER'])) return;
+        $user = addslashes($_SERVER['REMOTE_USER']);
+
+        $sql = "REPLACE INTO " . $this->hlp->prefix . "lastseen
+                    SET `user` = '$user'
+               ";
+        $this->hlp->runSQL($sql);
+    }
+
+    /**
      * Log external search queries
      *
      * Will not write anything if the referer isn't a search engine
@@ -50,6 +68,7 @@ class StatisticsLogger {
     public function log_externalsearch($referer, &$type) {
         $referer = utf8_strtolower($referer);
         include(dirname(__FILE__) . '/searchengines.php');
+        /** @var array $SEARCHENGINES */
 
         $query = '';
         $name  = '';

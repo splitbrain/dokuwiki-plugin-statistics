@@ -14,12 +14,21 @@ if(!defined('DOKU_INC')) die();
  * need to inherit from this class
  */
 class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
-    public $dblink = null;
+    /** @var string the currently selected page */
     protected $opt = '';
+
+    /** @var string from date in YYYY-MM-DD */
     protected $from = '';
+    /** @var string to date in YYYY-MM-DD */
     protected $to = '';
-    protected $start = '';
+    /** @var int Offset to use when displaying paged data */
+    protected $start = 0;
+
+    /** @var string MySQL timelimit statement */
     protected $tlimit = '';
+
+    /** @var helper_plugin_statistics  */
+    protected $hlp;
 
     /**
      * Available statistic pages
@@ -29,7 +38,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         'outlinks', 'searchengines', 'searchphrases',
         'searchwords', 'internalsearchphrases',
         'internalsearchwords', 'browsers', 'os',
-        'countries', 'resolution', 'viewport'
+        'countries', 'resolution', 'viewport',
+        'seenusers'
     );
 
     /**
@@ -119,8 +129,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
     /**
      * Outputs pagination links
      *
-     * @param type $limit
-     * @param type $next
+     * @param int $limit
+     * @param int $next
      */
     function html_pager($limit, $next) {
         echo '<div class="plg_stats_pager">';
@@ -182,7 +192,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $result = $this->hlp->Query()->aggregate($this->tlimit);
 
         echo '<ul class="left">';
-        foreach(array('pageviews', 'sessions', 'visitors', 'users', 'logins') as $name) {
+        foreach(array('pageviews', 'sessions', 'visitors', 'users', 'logins', 'current') as $name) {
             echo '<li><div class="li">' . sprintf($this->getLang('dash_' . $name), $result[$name]) . '</div></li>';
         }
         echo '</ul>';
@@ -322,6 +332,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<p>' . $this->getLang('intro_viewport') . '</p>';
         $this->html_graph('viewport', 650, 490);
         $result = $this->hlp->Query()->viewport($this->tlimit, $this->start, 150);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_seenusers() {
+        echo '<p>' . $this->getLang('intro_seenusers') . '</p>';
+        $result = $this->hlp->Query()->seenusers($this->tlimit, $this->start, 150);
         $this->html_resulttable($result, '', 150);
     }
 

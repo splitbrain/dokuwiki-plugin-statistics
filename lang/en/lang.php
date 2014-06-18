@@ -34,6 +34,7 @@ $lang['os']                    = 'Operating Systems';
 $lang['countries']             = 'Countries';
 $lang['resolution']            = 'Screen Size';
 $lang['viewport']              = 'Browser Viewport';
+$lang['seenusers']             = 'Seen Users';
 
 // the intro texts
 $lang['intro_dashboard']             = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
@@ -51,6 +52,7 @@ $lang['intro_os']                    = 'Here are the most popular platforms used
 $lang['intro_countries']             = 'This is where your users come from. Note that resolving IP addresses to countries is error prone and no exact science.';
 $lang['intro_resolution']            = 'This page gives you some info about the screen size (resolution) of your users. This is how much screen estate they have, not how much of that is available to the browser\'s display area. For the latter see the Browser Viewport page. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 $lang['intro_viewport']              = 'These are the area sizes that your users\' browsers have available for rendering your wiki. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
+$lang['intro_seenusers']             = 'This is a list of when users have been last seen in the Wiki ordered by last seen date. This is independent of the selected time frame.';
 
 // the dashboard items
 $lang['dash_pageviews']     = '<strong>%d</strong> Page Views';
@@ -59,6 +61,7 @@ $lang['dash_visitors']      = '<strong>%d</strong> Unique Visitors';
 $lang['dash_users']         = '<strong>%d</strong> Logged in Users';
 $lang['dash_logins']        = '<strong>%d</strong> User Logins';
 $lang['dash_registrations'] = '<strong>%s</strong> New Registrations';
+$lang['dash_current']       = '<strong>%d</strong> Current logged in Users';
 $lang['dash_bouncerate']    = '<strong>%.1f%%</strong> Bounces';
 $lang['dash_timespent']     = '<strong>%.2f</strong> Minutes Spent in an Avarage Session';
 $lang['dash_avgpages']      = '<strong>%.2f</strong> Pages Viewed in an Avarage Session';
