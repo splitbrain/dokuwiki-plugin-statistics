@@ -19,68 +19,66 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(dirname(__FILE__).'/Color.php');
-
 class BackgroundStyle {
-	/**
-	 * @todo I suspect using stripe and gradient are mutually
-	 * exclusive, so it would be possible to simplify this interface
-	 * somewhat.
-	 */
-	public function __construct(Color $backgroundColor, $stripe = false, Color $gradientStartColor = null, $gradientDecay = null, $borderWidth = 1, $borderDotSize = 0) {
-		$this->backgroundColor = $backgroundColor;
-		$this->stripe = $stripe;
-		$this->gradientStartColor = $gradientStartColor;
-		$this->gradientDecay = $gradientDecay;
-		$this->borderWidth = $borderWidth;
-		$this->borderDotSize = $borderDotSize;
-	}
+    /**
+     * @todo I suspect using stripe and gradient are mutually
+     * exclusive, so it would be possible to simplify this interface
+     * somewhat.
+     */
+    public function __construct(Color $backgroundColor, $stripe = false, Color $gradientStartColor = null, $gradientDecay = null, $borderWidth = 1, $borderDotSize = 0) {
+        $this->backgroundColor    = $backgroundColor;
+        $this->stripe             = $stripe;
+        $this->gradientStartColor = $gradientStartColor;
+        $this->gradientDecay      = $gradientDecay;
+        $this->borderWidth        = $borderWidth;
+        $this->borderDotSize      = $borderDotSize;
+    }
 
-	public function getBackgroundColor() {
-		return $this->backgroundColor;
-	}
+    public function getBackgroundColor() {
+        return $this->backgroundColor;
+    }
 
-	public function useStripe() {
-		return $this->stripe;
-	}
+    public function useStripe() {
+        return $this->stripe;
+    }
 
-	public function useGradient() {
-		return $this->gradientStartColor != null;
-	}
+    public function useGradient() {
+        return $this->gradientStartColor != null;
+    }
 
-	public function getGradientStartColor() {
-		if ($this->gradientStartColor == null) {
-			throw new Exception("Requested gradient start color, but gradient is not enabled");
-		}
+    public function getGradientStartColor() {
+        if($this->gradientStartColor == null) {
+            throw new Exception("Requested gradient start color, but gradient is not enabled");
+        }
 
-		return $this->gradientStartColor;
-	}
+        return $this->gradientStartColor;
+    }
 
-	public function getGradientDecay() {
-		if ($this->gradientStartColor == null) {
-			throw new Exception("Requested gradient decay, but gradient is not enabled");
-		}
-		
-		return $this->gradientDecay;
-	}
+    public function getGradientDecay() {
+        if($this->gradientStartColor == null) {
+            throw new Exception("Requested gradient decay, but gradient is not enabled");
+        }
 
-	public function getBorderWidth() {
-		return $this->borderWidth;
-	}
+        return $this->gradientDecay;
+    }
 
-	public function getBorderDotSize() {
-		return $this->borderDotSize;
-	}
+    public function getBorderWidth() {
+        return $this->borderWidth;
+    }
 
-	private $backgroundColor;
+    public function getBorderDotSize() {
+        return $this->borderDotSize;
+    }
 
-	private $stripe;
+    private $backgroundColor;
 
-	private $gradientStartColor;
+    private $stripe;
 
-	private $gradientDecay;
+    private $gradientStartColor;
 
-	private $borderWidth;
+    private $gradientDecay;
 
-	private $borderDotSize;
+    private $borderWidth;
+
+    private $borderDotSize;
 }

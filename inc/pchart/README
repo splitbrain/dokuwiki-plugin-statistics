@@ -5,10 +5,7 @@ conditions.
 For the same reasons we do not include the orginal fonts, but use the DroidSans
 font which is licensed under the Apache License.
 
-We're currently at this commit (master branch):
-https://github.com/sebix/pChart/commit/52ad6a2612d1a9a9e6999c1a6b6aaeec94d5ab70
-
-This seems to be the most up-to-date version of the library today (2012-02-07).
+This seems to be the most up-to-date version of the library today (2014-06-19).
 When updating later, make sure to have a look at the current state of forks.
 
 This is how it looks like currently
@@ -17,3 +14,4 @@ http://pchart.sourceforge.net/
 -> https://github.com/aweiland/pChart-php5
    -> https://github.com/timmartin/pChart-php5
       -> https://github.com/sebix/pChart/
+         -> https://github.com/splitbrain/pChart

@@ -18,64 +18,68 @@
  */
 
 class ShadowProperties {
-	private function __construct() {
+    private function __construct() {
 
-	}
+    }
 
-	static public function FromDefaults() {
-		$properties = new ShadowProperties;
+    static public function FromDefaults() {
+        $properties = new ShadowProperties;
 
-		$properties->active = false;
+        $properties->active = false;
 
-		return $properties;
-	}
+        return $properties;
+    }
 
-	static public function FromSettings($xDistance, $yDistance, Color $color, $alpha = 50, $blur = 0) {
-		$properties = new ShadowProperties;
+    static public function FromSettings($xDistance, $yDistance, Color $color, $alpha = 50, $blur = 0) {
+        $properties = new ShadowProperties;
 
-		$properties->active = true;
-		$properties->xDistance = $xDistance;
-		$properties->yDistance = $yDistance;
-		$properties->color = $color;
-		$properties->alpha = $alpha;
-		$properties->blur = $blur;
+        $properties->active    = true;
+        $properties->xDistance = $xDistance;
+        $properties->yDistance = $yDistance;
+        $properties->color     = $color;
+        $properties->alpha     = $alpha;
+        $properties->blur      = $blur;
 
-		return $properties;
-	}
+        return $properties;
+    }
 
-	/**
-	 * Instantiate a new ShadowProperties with the same settings as
-	 * the one passed in. Essentially this is a clone method.
-	 *
-	 * @todo clone appears to be a reserved word in PHP, is there
-	 * actually any special clone functionality? I can't RTFM at the
-	 * moment as the internet connection is down.
-	 */
-	static public function Copy(ShadowProperties $other) {
-		$copy = ShadowProperties::FromSettings($other->xDistance,
-											   $other->yDistance,
-											   $other->color,
-											   $other->alpha,
-											   $other->blur);
-		$copy->active = $other->active;
+    /**
+     * Instantiate a new ShadowProperties with the same settings as
+     * the one passed in. Essentially this is a clone method.
+     *
+     * @todo clone appears to be a reserved word in PHP, is there
+     * actually any special clone functionality? I can't RTFM at the
+     * moment as the internet connection is down.
+     */
+    static public function Copy(ShadowProperties $other) {
+        $copy         = ShadowProperties::FromSettings(
+            $other->xDistance,
+            $other->yDistance,
+            $other->color,
+            $other->alpha,
+            $other->blur
+        );
+        $copy->active = $other->active;
 
-		return $copy;
-	}
+        return $copy;
+    }
 
-	static public function NoShadow() {
-		return self::FromDefaults();
-	}
+    static public function NoShadow() {
+        return self::FromDefaults();
+    }
 
-	public function __toString() {
-		return sprintf("ShadowProperties<%d, %d, %d, %s, %d, %d>",
-					   $this->active, $this->xDistance, $this->yDistance,
-					   $this->color, $this->alpha, $this->blur);
-	}
+    public function __toString() {
+        return sprintf(
+            "ShadowProperties<%d, %d, %d, %s, %d, %d>",
+            $this->active, $this->xDistance, $this->yDistance,
+            $this->color, $this->alpha, $this->blur
+        );
+    }
 
-	public $active;
-	public $xDistance;
-	public $yDistance;
-	public $color;
-	public $alpha;
-	public $blur;
+    public $active;
+    public $xDistance;
+    public $yDistance;
+    public $color;
+    public $alpha;
+    public $blur;
 }

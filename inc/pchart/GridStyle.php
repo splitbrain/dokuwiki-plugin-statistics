@@ -19,42 +19,40 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once(dirname(__FILE__).'/Color.php');
-
 class GridStyle {
-	public function __construct($lineWidth, $mosaic = true, Color $color = null, $alpha = 100) {
-		if ($color == null) {
-			$color = new Color(220, 220, 220);
-		}
+    public function __construct($lineWidth, $mosaic = true, Color $color = null, $alpha = 100) {
+        if($color == null) {
+            $color = new Color(220, 220, 220);
+        }
 
-		if ($alpha > 100 || $alpha < 0) {
-			throw new InvalidArgumentException("Bad alpha argument specified to ".__METHOD__);
-		}
+        if($alpha > 100 || $alpha < 0) {
+            throw new InvalidArgumentException("Bad alpha argument specified to ".__METHOD__);
+        }
 
-		$this->lineWidth = $lineWidth;
-		$this->mosaic = $mosaic;
-		$this->color = $color;
-		$this->alpha = $alpha;
-	}
+        $this->lineWidth = $lineWidth;
+        $this->mosaic    = $mosaic;
+        $this->color     = $color;
+        $this->alpha     = $alpha;
+    }
 
-	public function getLineWidth() {
-		return $this->lineWidth;
-	}
+    public function getLineWidth() {
+        return $this->lineWidth;
+    }
 
-	public function getMosaic() {
-		return $this->mosaic;
-	}
+    public function getMosaic() {
+        return $this->mosaic;
+    }
 
-	public function getColor() {
-		return $this->color;
-	}
+    public function getColor() {
+        return $this->color;
+    }
 
-	public function getAlpha() {
-		return $this->alpha;
-	}
+    public function getAlpha() {
+        return $this->alpha;
+    }
 
-	private $lineWidth;
-	private $mosaic;
-	private $color;
-	private $alpha;
+    private $lineWidth;
+    private $mosaic;
+    private $color;
+    private $alpha;
 }
