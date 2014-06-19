@@ -178,6 +178,23 @@ class StatisticsQuery {
         return $data;
     }
 
+    public function history($tlimit, $info, $months = false) {
+        if($months) {
+            $TIME = 'EXTRACT(YEAR_MONTH FROM dt)';
+        } else {
+            $TIME = 'dt';
+        }
+
+        $sql = "SELECT $TIME as time,
+                       SUM(`value`) as cnt
+                  FROM " . $this->hlp->prefix . "history as A
+                 WHERE $tlimit
+                   AND info = '$info'
+                  GROUP BY $TIME
+                  ORDER BY $TIME";
+        return $this->hlp->runSQL($sql);
+    }
+
     public function searchengines($tlimit, $start = 0, $limit = 20) {
         $sql = "SELECT COUNT(*) as cnt, engine as eflag, engine
                   FROM " . $this->hlp->prefix . "search as A

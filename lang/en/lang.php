@@ -38,6 +38,7 @@ $lang['countries']             = 'Countries';
 $lang['resolution']            = 'Screen Size';
 $lang['viewport']              = 'Browser Viewport';
 $lang['seenusers']             = 'Seen Users';
+$lang['history']               = 'History';
 
 // the intro texts
 $lang['intro_dashboard']             = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
@@ -59,6 +60,7 @@ $lang['intro_countries']             = 'This is where your users come from. Note
 $lang['intro_resolution']            = 'This page gives you some info about the screen size (resolution) of your users. This is how much screen estate they have, not how much of that is available to the browser\'s display area. For the latter see the Browser Viewport page. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 $lang['intro_viewport']              = 'These are the area sizes that your users\' browsers have available for rendering your wiki. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 $lang['intro_seenusers']             = 'This is a list of when users have been last seen in the Wiki ordered by last seen date. This is independent of the selected time frame.';
+$lang['intro_history']               = 'This graph gives you an idea on how your wiki developed over the given timeframe. Please not that this graph requires a timeframe of multiple days at least.';
 
 // the dashboard items
 $lang['dash_pageviews']     = '<strong>%d</strong> Page Views';

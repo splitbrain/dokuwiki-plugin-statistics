@@ -423,4 +423,60 @@ class StatisticsLogger {
         $this->hlp->runSQL($sql);
     }
 
+    /**
+     * Log the current page count and size as today's history entry
+     */
+    public function log_history_pages() {
+        global $conf;
+
+        // use the popularity plugin's search method to find the wanted data
+        /** @var helper_plugin_popularity $pop */
+        $pop = plugin_load('helper', 'popularity');
+        $list = array();
+        search($list,$conf['datadir'],array($pop,'_search_count'),array('all'=>false),'');
+        $page_count = $list['file_count'];
+        $page_size  = $list['file_size'];
+
+        print_r($list);
+
+        $sql = "REPLACE INTO " . $this->hlp->prefix . "history
+                        (`info`, `value`, `dt`)
+                        VALUES
+                        ( 'page_count', $page_count, DATE(NOW()) ),
+                        ( 'page_size',  $page_size, DATE(NOW()) )
+                        ";
+        $ok = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
+            global $MSG;
+            print_r($MSG);
+        }
+    }
+
+    /**
+     * Log the current page count and size as today's history entry
+     */
+    public function log_history_media() {
+        global $conf;
+
+        // use the popularity plugin's search method to find the wanted data
+        /** @var helper_plugin_popularity $pop */
+        $pop = plugin_load('helper', 'popularity');
+        $list = array();
+        search($list,$conf['mediadir'],array($pop,'_search_count'),array('all'=>true),'');
+        $media_count = $list['file_count'];
+        $media_size  = $list['file_size'];
+
+        $sql = "REPLACE INTO " . $this->hlp->prefix . "history
+                        (`info`, `value`, `dt`)
+                        VALUES
+                        ( 'media_count', $media_count, DATE(NOW()) ),
+                        ( 'media_size',  $media_size, DATE(NOW()) )
+                        ";
+        $ok = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
+            global $MSG;
+            print_r($MSG);
+        }
+    }
+
 }

@@ -35,7 +35,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     protected $pages = array(
         'dashboard', 'page', 'edits', 'images', 'downloads',
-        'referer', 'newreferer',
+        'history', 'referer', 'newreferer',
         'outlinks', 'searchengines', 'searchphrases',
         'searchwords', 'internalsearchphrases',
         'internalsearchwords', 'browsers', 'os',
@@ -231,6 +231,13 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         $this->html_resulttable($result);
         echo '<a href="?do=admin&amp;page=statistics&amp;opt=searchphrases&amp;f=' . $this->from . '&amp;t=' . $this->to . '" class="more button">' . $this->getLang('more') . '</a>';
         echo '</div>';
+    }
+
+    function html_history() {
+        echo '<p>' . $this->getLang('intro_history') . '</p>';
+        $this->html_graph('history', 600, 200);
+        #$result = $this->hlp->Query()->countries($this->tlimit, $this->start, 150);
+        #$this->html_resulttable($result, '', 150);
     }
 
     function html_countries() {

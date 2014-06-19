@@ -192,6 +192,56 @@ class StatisticsGraph {
         $Chart->Render('');
     }
 
+    public function history() {
+        $diff = abs(strtotime($this->from) - strtotime($this->to));
+        $days = floor($diff / (60*60*24));
+        $months = $days > 40;
+
+        $result = $this->hlp->Query()->history($this->tlimit, 'page_count', $months);
+
+        $data = array();
+        $times = array();
+        foreach($result as $row) {
+            $data[] = $row['cnt'];
+            if($months) {
+                $times[] = substr($row['time'],0,4).'-'.substr($row['time'],4,2);
+            }else {
+                $times[] = substr($row['time'], -5);
+            }
+        }
+
+        $DataSet = new pData();
+        $DataSet->AddPoints($data, 'Serie1');
+        $DataSet->AddPoints($times, 'Times');
+        $DataSet->AddAllSeries();
+        $DataSet->SetAbscissaLabelSeries('Times');
+
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_views').'FIXME', 'Serie1');
+
+        $Canvas = new GDCanvas(600, 200, false);
+        $Chart  = new pChart(600, 200, $Canvas);
+
+        $Chart->setFontProperties(dirname(__FILE__) . '/pchart/Fonts/DroidSans.ttf', 8);
+        $Chart->setGraphArea(50, 10, 580, 140);
+        $Chart->drawScale(
+            $DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
+            45, 1, false, ceil(count($times) / 12)
+        );
+        $Chart->drawLineGraph($DataSet->GetData(), $DataSet->GetDataDescription());
+
+        $DataSet->removeSeries('Times');
+        $DataSet->removeSeriesName('Times');
+        $Chart->drawLegend(
+            500, 5,
+            $DataSet->GetDataDescription(),
+            new Color(250)
+        );
+
+
+        header('Content-Type: image/png');
+        $Chart->Render('');
+    }
+
     public function dashboardviews() {
         $hours  = ($this->from == $this->to);
         $result = $this->hlp->Query()->dashboardviews($this->tlimit, $hours);

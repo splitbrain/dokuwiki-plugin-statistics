@@ -56,6 +56,13 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
             'logmedia',
             array()
         );
+        $controller->register_hook(
+            'INDEXER_TASKS_RUN',
+            'AFTER',
+            $this,
+            'loghistory',
+            array()
+        );
     }
 
     /**
@@ -72,7 +79,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
     /**
      * Log page edits actions
      */
-    function logedits(&$event, $param) {
+    function logedits(Doku_Event $event, $param) {
         if($event->data[3]) return; // no revision
 
         if(file_exists($event->data[0][0])) {
@@ -92,7 +99,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
     /**
      * Log internal search
      */
-    function logsearch(&$event, $param) {
+    function logsearch(Doku_Event $event, $param) {
         /** @var helper_plugin_statistics $hlp */
         $hlp = plugin_load('helper', 'statistics');
         $hlp->Logger()->log_search('', $event->data['query'], $event->data['highlight'], 'dokuwiki');
@@ -101,7 +108,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
     /**
      * Log login/logouts
      */
-    function loglogins(&$event, $param) {
+    function loglogins(Doku_Event $event, $param) {
         $type = '';
         $act  = $this->_act_clean($event->data);
         if($act == 'logout') {
@@ -125,7 +132,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
     /**
      * Log user creations
      */
-    function logregistration(&$event, $param) {
+    function logregistration(Doku_Event $event, $param) {
         if($event->data['type'] == 'create') {
             /** @var helper_plugin_statistics $hlp */
             $hlp = plugin_load('helper', 'statistics');
@@ -136,7 +143,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
     /**
      * Log media access
      */
-    function logmedia(&$event, $param) {
+    function logmedia(Doku_Event $event, $param) {
         if($event->data['status'] < 200) return;
         if($event->data['status'] >= 400) return;
         if(preg_match('/^\w+:\/\//', $event->data['media'])) return;
@@ -156,6 +163,48 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
             !$event->data['download'],
             $size
         );
+    }
+
+    /**
+     * Log the daily page and media counts for the history
+     */
+    function loghistory(Doku_Event $event, $param) {
+        echo 'Plugin Statistics: started'.DOKU_LF;
+
+        /** @var helper_plugin_statistics $hlp */
+        $hlp = plugin_load('helper', 'statistics');
+
+        // check if a history was gathered already today
+        $sql = "SELECT `info` FROM " . $hlp->prefix . "history WHERE `dt` = DATE(NOW())";
+        $result = $hlp->runSQL($sql);
+        if(is_null($result)) {
+            global $MSG;
+            print_r($MSG);
+        }
+
+        $page_ran  = false;
+        $media_ran = false;
+        foreach($result as $row) {
+            if($row['info'] == 'page_count')  $page_ran  = true;
+            if($row['info'] == 'media_count') $media_ran = true;
+        }
+
+        if($page_ran && $media_ran){
+            echo 'Plugin Statistics: nothing to do - finished'.DOKU_LF;
+            return;
+        }
+
+        $event->stopPropagation();
+        $event->preventDefault();
+
+        if($page_ran) {
+            echo 'Plugin Statistics: logging media'.DOKU_LF;
+            $hlp->Logger()->log_history_media();
+        } else {
+            echo 'Plugin Statistics: logging pages'.DOKU_LF;
+            $hlp->Logger()->log_history_pages();
+        }
+        echo 'Plugin Statistics: finished'.DOKU_LF;
     }
 
     /**

@@ -237,3 +237,12 @@ CREATE TABLE `stats_media` (
   COLLATE ='utf8_unicode_ci';
 
 ALTER TABLE `stats_media` ADD INDEX `mime1` (`mime1`);
+
+CREATE TABLE `stats_history` (
+  `info`    VARCHAR(50)         NOT NULL,
+  `dt`      DATE                NOT NULL,
+  `value`   INT UNSIGNED        NOT NULL,
+  PRIMARY KEY (`info`, `dt`)
+)
+  ENGINE ='MyISAM'
+  COLLATE ='utf8_unicode_ci';

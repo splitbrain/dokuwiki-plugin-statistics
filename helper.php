@@ -15,12 +15,18 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     private $oGraph = null;
 
     /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->prefix = $this->getConf('db_prefix');
+    }
+
+    /**
      * Return an instance of the query class
      *
      * @return StatisticsQuery
      */
     public function Query() {
-        $this->prefix = $this->getConf('db_prefix');
         if(is_null($this->oQuery)) {
             require dirname(__FILE__) . '/inc/StatisticsQuery.class.php';
             $this->oQuery = new StatisticsQuery($this);
