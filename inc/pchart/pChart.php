@@ -1363,6 +1363,17 @@ class pChart {
     }
 
     /**
+     * Linearly Scale a given value
+     *
+     * using it's own minima/maxima and the desired output minima/maxima
+     */
+    function linearScale($value, $istart, $istop, $ostart, $ostop) {
+        $div = ($istop - $istart);
+        if($div == 0.0) $div = 1;
+        return $ostart + ($ostop - $ostart) * (($value - $istart) / $div);
+    }
+
+    /**
      * This function draw a plot graph
      */
     function drawPlotGraph($Data, $DataDescription, $BigRadius = 5, $SmallRadius = 2, Color $color2 = null, $Shadow = FALSE) {
@@ -1466,11 +1477,12 @@ class pChart {
     /**
      * @brief This function draw a plot graph in an X/Y space
      */
-    function drawXYPlotGraph($Data, $YSerieName, $XSerieName, $PaletteID = 0, $BigRadius = 5, $SmallRadius = 2, Color $color2 = null, $Shadow = TRUE) {
+    function drawXYPlotGraph(pData $DataSet, $YSerieName, $XSerieName, $PaletteID = 0, $BigRadius = 5, $SmallRadius = 2, Color $color2 = null, $Shadow = TRUE, $SizeSerieName = '') {
         $color = $this->palette->getColor($PaletteID);
 
         $color3 = null;
 
+        $Data = $DataSet->getData();
         foreach($Data as $Values) {
             if(isset($Values[$YSerieName]) && isset ($Values[$XSerieName])) {
                 $X = $Values[$XSerieName];
@@ -1479,11 +1491,25 @@ class pChart {
                 $Y = $this->GArea_Y2 - (($Y - $this->VMin) * $this->DivisionRatio);
                 $X = $this->GArea_X1 + (($X - $this->VXMin) * $this->XDivisionRatio);
 
+                if(isset($Values[$SizeSerieName])) {
+                    $br = $this->linearScale(
+                        $Values[$SizeSerieName],
+                        $DataSet->getSeriesMin($SizeSerieName),
+                        $DataSet->getSeriesMax($SizeSerieName),
+                        $SmallRadius,
+                        $BigRadius
+                    );
+                    $sr = $br;
+                } else {
+                    $br = $BigRadius;
+                    $sr = $SmallRadius;
+                }
+
                 if($Shadow) {
                     if($color3 != null) {
                         $this->canvas->drawFilledCircle(
                             new Point($X + 2, $Y + 2),
-                            $BigRadius,
+                            $br,
                             $color3,
                             $this->shadowProperties
                         );
@@ -1491,7 +1517,7 @@ class pChart {
                         $color3 = $this->palette->getColor($PaletteID)->addRGBIncrement(-20);
                         $this->canvas->drawFilledCircle(
                             new Point($X + 2, $Y + 2),
-                            $BigRadius,
+                            $br,
                             $color3,
                             $this->shadowProperties
                         );
@@ -1500,7 +1526,7 @@ class pChart {
 
                 $this->canvas->drawFilledCircle(
                     new Point($X + 1, $Y + 1),
-                    $BigRadius,
+                    $br,
                     $color,
                     $this->shadowProperties
                 );
@@ -1508,7 +1534,7 @@ class pChart {
                 if($color2 != null) {
                     $this->canvas->drawFilledCircle(
                         new Point($X + 1, $Y + 1),
-                        $SmallRadius,
+                        $sr,
                         $color2,
                         $this->shadowProperties
                     );
@@ -1517,7 +1543,7 @@ class pChart {
 
                     $this->canvas->drawFilledCircle(
                         new Point($X + 1, $Y + 1),
-                        $SmallRadius,
+                        $sr,
                         $color2,
                         $this->shadowProperties
                     );
@@ -3243,16 +3269,29 @@ class pChart {
     static private function computeAutomaticScaling($minCoord, $maxCoord, &$minVal, &$maxVal, &$Divisions) {
         $ScaleOk      = FALSE;
         $Factor       = 1;
+        $Scale        = 1;
         $MinDivHeight = 25;
         $MaxDivs      = ($maxCoord - $minCoord) / $MinDivHeight;
+
+        $minVal = (float) $minVal;
+        $maxVal = (float) $maxVal;
+
+        // when min and max are the them spread out the value
+        if($minVal == $maxVal) {
+            $ispos = $minVal > 0;
+            $maxVal += $maxVal/2;
+            $minVal -= $minVal/2;
+            if($minVal < 0 && $ispos) $minVal = 0;
+        }
 
         if($minVal == 0 && $maxVal == 0) {
             $minVal    = 0;
             $maxVal    = 2;
-            $Scale     = 1;
             $Divisions = 2;
         } elseif($MaxDivs > 1) {
             while(!$ScaleOk) {
+                if($Factor == 0) throw new Exception('Division by zero whne calculating scales (should not happen)');
+
                 $Scale1 = ($maxVal - $minVal) / $Factor;
                 $Scale2 = ($maxVal - $minVal) / $Factor / 2;
 
@@ -3267,11 +3306,11 @@ class pChart {
                     $Scale     = 2;
                 }
                 if(!$ScaleOk) {
-                    if($Scale2 > 1) {
-                        $Factor = $Factor * 10;
+                    if($Scale2 >= 1) {
+                        $Factor = $Factor * 10.0;
                     }
                     if($Scale2 < 1) {
-                        $Factor = $Factor / 10;
+                        $Factor = $Factor / 10.0;
                     }
                 }
             }
@@ -3287,16 +3326,18 @@ class pChart {
                 $minVal = $GridID * $Scale * $Factor;
                 $Divisions++;
             }
-        } else /* Can occurs for small graphs */
-            $Scale = 1;
+        }
 
-        if(!isset ($Divisions))
+        if(!isset ($Divisions)) {
             $Divisions = 2;
+        }
 
-        if(self::isRealInt(($maxVal - $minVal) / ($Divisions - 1)))
+        if(self::isRealInt(($maxVal - $minVal) / ($Divisions - 1))) {
             $Divisions--;
-        elseif(self::isRealInt(($maxVal - $minVal) / ($Divisions + 1)))
+        }
+        elseif(self::isRealInt(($maxVal - $minVal) / ($Divisions + 1))) {
             $Divisions++;
+        }
     }
 
     static private function convertValueForDisplay($value, $format, $unit) {
