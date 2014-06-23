@@ -79,6 +79,9 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * set limit clause
      */
     public function setTimeframe($from, $to) {
+        // swap if wrong order
+        if($from > $to) list($from, $to) = array($to, $from);
+
         $this->tlimit = $this->hlp->Query()->mktlimit($from, $to);
         $this->from   = $from;
         $this->to     = $to;
@@ -160,12 +163,12 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<div class="plg_stats_timeselect">';
         echo '<span>' . $this->getLang('time_select') . '</span> ';
 
-        echo '<form action="" method="get">';
+        echo '<form action="'.DOKU_SCRIPT.'" method="get">';
         echo '<input type="hidden" name="do" value="admin" />';
         echo '<input type="hidden" name="page" value="statistics" />';
         echo '<input type="hidden" name="opt" value="' . $this->opt . '" />';
-        echo '<input type="text" name="f" value="' . $this->from . '" class="edit" />';
-        echo '<input type="text" name="t" value="' . $this->to . '" class="edit" />';
+        echo '<input type="text" name="f" value="' . $this->from . '" class="edit datepicker" />';
+        echo '<input type="text" name="t" value="' . $this->to . '" class="edit datepicker" />';
         echo '<input type="submit" value="go" class="button" />';
         echo '</form>';
 
