@@ -185,8 +185,13 @@ class StatisticsQuery {
             $TIME = 'dt';
         }
 
+        $mod = 1;
+        if($info == 'media_size' || $info == 'page_size') {
+            $mod = 1024*1024;
+        }
+
         $sql = "SELECT $TIME as time,
-                       SUM(`value`) as cnt
+                       SUM(`value`)/$mod as cnt
                   FROM " . $this->hlp->prefix . "history as A
                  WHERE $tlimit
                    AND info = '$info'

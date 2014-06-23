@@ -235,9 +235,10 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     function html_history() {
         echo '<p>' . $this->getLang('intro_history') . '</p>';
-        $this->html_graph('history', 600, 200);
-        #$result = $this->hlp->Query()->countries($this->tlimit, $this->start, 150);
-        #$this->html_resulttable($result, '', 150);
+        $this->html_graph('history_page_count', 600, 200);
+        $this->html_graph('history_page_size', 600, 200);
+        $this->html_graph('history_media_count', 600, 200);
+        $this->html_graph('history_media_size', 600, 200);
     }
 
     function html_countries() {

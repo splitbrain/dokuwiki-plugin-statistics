@@ -192,12 +192,29 @@ class StatisticsGraph {
         $Chart->Render('');
     }
 
-    public function history() {
+
+    public function history_page_count() {
+        $this->history('page_count');
+    }
+
+    public function history_page_size() {
+        $this->history('page_size');
+    }
+
+    public function history_media_count() {
+        $this->history('media_count');
+    }
+
+    public function history_media_size() {
+        $this->history('media_size');
+    }
+
+    public function history($info) {
         $diff = abs(strtotime($this->from) - strtotime($this->to));
         $days = floor($diff / (60*60*24));
         $months = $days > 40;
 
-        $result = $this->hlp->Query()->history($this->tlimit, 'page_count', $months);
+        $result = $this->hlp->Query()->history($this->tlimit, $info, $months);
 
         $data = array();
         $times = array();
@@ -216,7 +233,7 @@ class StatisticsGraph {
         $DataSet->AddAllSeries();
         $DataSet->SetAbscissaLabelSeries('Times');
 
-        $DataSet->SetSeriesName($this->hlp->getLang('graph_views').'FIXME', 'Serie1');
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_'.$info), 'Serie1');
 
         $Canvas = new GDCanvas(600, 200, false);
         $Chart  = new pChart(600, 200, $Canvas);
@@ -232,7 +249,7 @@ class StatisticsGraph {
         $DataSet->removeSeries('Times');
         $DataSet->removeSeriesName('Times');
         $Chart->drawLegend(
-            500, 5,
+            75, 5,
             $DataSet->GetDataDescription(),
             new Color(250)
         );
