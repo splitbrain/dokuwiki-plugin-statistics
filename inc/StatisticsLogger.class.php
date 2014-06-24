@@ -61,6 +61,32 @@ class StatisticsLogger {
     }
 
     /**
+     * Log actions by groups
+     *
+     * @param string $type   The type of access to log ('view','edit')
+     * @param array  $groups The groups to log
+     */
+    public function log_groups($type, $groups) {
+        if(!is_array($groups) || !count($groups)) return;
+
+        $type = addslashes($type);
+
+        $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "groups
+                     (`dt`, `type`, `group`) VALUES ";
+        foreach($groups as $group) {
+            $group = addslashes($group);
+            $sql .= "( NOW(), '$type', '$group' ),";
+        }
+        $sql = rtrim($sql, ',');
+
+        $ok = $this->hlp->runSQL($sql);
+        if(is_null($ok)) {
+            global $MSG;
+            print_r($MSG);
+        }
+    }
+
+    /**
      * Log external search queries
      *
      * Will not write anything if the referer isn't a search engine
@@ -248,6 +274,7 @@ class StatisticsLogger {
      */
     public function log_access() {
         if(!$_REQUEST['p']) return;
+        global $USERINFO;
 
         # FIXME check referer against blacklist and drop logging for bad boys
 
@@ -321,6 +348,11 @@ class StatisticsLogger {
             print_r($MSG);
         }
 
+        // log group access
+        if(isset($USERINFO['grps'])) {
+            $this->log_groups('view', $USERINFO['grps']);
+        }
+
         // resolve the IP
         $this->log_ip(clientIP(true));
     }
@@ -383,6 +415,8 @@ class StatisticsLogger {
      * Log edits
      */
     public function log_edit($page, $type) {
+        global $USERINFO;
+
         $ip      = addslashes(clientIP(true));
         $user    = addslashes($_SERVER['REMOTE_USER']);
         $session = addslashes(session_id());
@@ -399,6 +433,11 @@ class StatisticsLogger {
                         session  = '$session',
                         uid      = '$uid'";
         $this->hlp->runSQL($sql);
+
+        // log group access
+        if(isset($USERINFO['grps'])) {
+            $this->log_groups('edit', $USERINFO['grps']);
+        }
     }
 
     /**

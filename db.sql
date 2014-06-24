@@ -142,11 +142,11 @@ CREATE TABLE `stats_refseen` (
   COLLATE utf8_unicode_ci;
 
 -- This will take some time...
-INSERT INTO stats_refseen (ref_md5, dt) SELECT
-                                          ref_md5,
-                                          MIN(dt)
+INSERT INTO stats_refseen (`ref_md5`, `dt`) SELECT
+                                          `ref_md5`,
+                                          MIN(`dt`)
                                         FROM stats_access
-                                        GROUP BY ref_md5;
+                                        GROUP BY `ref_md5`;
 
 -- UPGRADE added 2012-02-08
 CREATE TABLE `stats_edits` (
@@ -243,6 +243,18 @@ CREATE TABLE `stats_history` (
   `dt`      DATE                NOT NULL,
   `value`   INT UNSIGNED        NOT NULL,
   PRIMARY KEY (`info`, `dt`)
+)
+  ENGINE ='MyISAM'
+  COLLATE ='utf8_unicode_ci';
+
+CREATE TABLE `stats_groups` (
+  `id`      BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `dt`      DATETIME            NOT NULL,
+  `group`   VARCHAR(255)        NOT NULL,
+  `type`    VARCHAR(50)         NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `dt` (`dt`),
+  KEY `type` (`type`)
 )
   ENGINE ='MyISAM'
   COLLATE ='utf8_unicode_ci';
