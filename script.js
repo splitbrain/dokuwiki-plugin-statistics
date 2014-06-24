@@ -44,7 +44,6 @@ var plugin_statistics = {
         jQuery(window).bind('beforeunload', plugin_statistics.log_exit);
 
         jQuery('.plg_stats_timeselect .datepicker').datepicker({dateFormat: 'yy-mm-dd'});
-        console.log('ook');
     },
 
     /**
