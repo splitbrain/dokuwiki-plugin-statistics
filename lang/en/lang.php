@@ -39,6 +39,15 @@ $lang['resolution']            = 'Screen Size';
 $lang['viewport']              = 'Browser Viewport';
 $lang['seenusers']             = 'Seen Users';
 $lang['history']               = 'Growth History';
+$lang['topuser']               = 'Top Users';
+$lang['topeditor']             = 'Top Editors';
+$lang['topgroup']              = 'Top Groups';
+$lang['topgroupedit']          = 'Top Editing Groups';
+$lang['content']               = '(Content)';
+$lang['users']                 = '(Users and Groups)';
+$lang['links']                 = '(Links)';
+$lang['search']                = '(Search)';
+$lang['technology']            = '(Technology)';
 
 // the intro texts
 $lang['intro_dashboard']             = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
@@ -61,6 +70,10 @@ $lang['intro_resolution']            = 'This page gives you some info about the 
 $lang['intro_viewport']              = 'These are the area sizes that your users\' browsers have available for rendering your wiki. All values are rounded to 100 pixels, the graph shows the top 100 values only.';
 $lang['intro_seenusers']             = 'This is a list of when users have been last seen in the Wiki ordered by last seen date. This is independent of the selected time frame.';
 $lang['intro_history']               = 'These graphs give you an idea on how your wiki grew over the given timeframe in relation to number of entries and size. Please note that this graph requires a timeframe of multiple days at least.';
+$lang['intro_topuser']               = 'This page shows which of your logged in users browsed the most pages in your wiki in the selected timeframe.';
+$lang['intro_topeditor']             = 'This page shows which of your logged in users did the most edits in the seleced timeframe.';
+$lang['intro_topgroup']              = 'These are the groups of the logged in users that browsed the most pages in your wiki in the selected timeframe. Note: when a user is member of multiple groups, all her groups are counted.';
+$lang['intro_topgroupedit']          = 'These are the groups of the logged in users that did the mst edits in the selected timeframe. Note: when a user is member of multiple groups, all her groups are counted.';
 
 // the dashboard items
 $lang['dash_pageviews']     = '<strong>%d</strong> Page Views';
@@ -80,14 +93,14 @@ $lang['dash_newincoming'] = 'Top Incoming New Links';
 $lang['dash_topsearch']   = 'Top Search Phrases';
 
 // graph labels
-$lang['graph_edits']     = 'Page Edits';
-$lang['graph_creates']   = 'Page Creations';
-$lang['graph_deletions'] = 'Page Deletions';
-$lang['graph_views']     = 'Page Views';
-$lang['graph_sessions']  = 'Visits';
-$lang['graph_visitors']  = 'Visitors';
-$lang['graph_page_count'] = 'Pages';
-$lang['graph_page_size'] = 'Pagessize (MB)';
+$lang['graph_edits']       = 'Page Edits';
+$lang['graph_creates']     = 'Page Creations';
+$lang['graph_deletions']   = 'Page Deletions';
+$lang['graph_views']       = 'Page Views';
+$lang['graph_sessions']    = 'Visits';
+$lang['graph_visitors']    = 'Visitors';
+$lang['graph_page_count']  = 'Pages';
+$lang['graph_page_size']   = 'Pagessize (MB)';
 $lang['graph_media_count'] = 'Media Items';
-$lang['graph_media_size'] = 'Media Item Size (MB)';
+$lang['graph_media_size']  = 'Media Item Size (MB)';
 

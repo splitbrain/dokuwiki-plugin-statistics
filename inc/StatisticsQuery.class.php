@@ -369,6 +369,52 @@ class StatisticsQuery {
         return $this->hlp->runSQL($sql);
     }
 
+    public function topuser($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, user
+                  FROM " . $this->hlp->prefix . "access as A
+                 WHERE $tlimit
+                   AND ua_type = 'browser'
+                   AND user != ''
+              GROUP BY user
+              ORDER BY cnt DESC, user" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+    public function topeditor($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, user
+                  FROM " . $this->hlp->prefix . "edits as A
+                 WHERE $tlimit
+                   AND user != ''
+              GROUP BY user
+              ORDER BY cnt DESC, user" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+    public function topgroup($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, `group`
+                  FROM " . $this->hlp->prefix . "groups as A
+                 WHERE $tlimit
+                   AND `type` = 'view'
+              GROUP BY `group`
+              ORDER BY cnt DESC, `group`" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+    public function topgroupedit($tlimit, $start = 0, $limit = 20) {
+        $sql = "SELECT COUNT(*) as cnt, `group`
+                  FROM " . $this->hlp->prefix . "groups as A
+                 WHERE $tlimit
+                   AND `type` = 'edit'
+              GROUP BY `group`
+              ORDER BY cnt DESC, `group`" .
+            $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+
     public function resolution($tlimit, $start = 0, $limit = 20) {
         $sql = "SELECT COUNT(*) as cnt,
                        ROUND(screen_x/100)*100 as res_x,

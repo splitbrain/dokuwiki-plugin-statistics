@@ -34,20 +34,60 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Available statistic pages
      */
     protected $pages = array(
-        'dashboard', 'page', 'edits', 'images', 'downloads',
-        'history', 'referer', 'newreferer',
-        'outlinks', 'searchengines', 'searchphrases',
-        'searchwords', 'internalsearchphrases',
-        'internalsearchwords', 'browsers', 'os',
-        'countries', 'resolution', 'viewport',
-        'seenusers'
+        'dashboard' => 1,
+
+        'content' => array(
+            'page',
+            'edits',
+            'images',
+            'downloads',
+            'history',
+        ),
+        'users' => array(
+            'topuser',
+            'topeditor',
+            'topgroup',
+            'topgroupedit',
+            'seenusers',
+        ),
+        'links' => array(
+            'referer',
+            'newreferer',
+            'outlinks',
+        ),
+        'search' => array(
+            'searchengines',
+            'searchphrases',
+            'searchwords',
+            'internalsearchphrases',
+            'internalsearchwords',
+        ),
+        'technology' => array(
+            'browsers',
+            'os',
+            'countries',
+            'resolution',
+            'viewport',
+        ),
     );
+
+    /** @var array keeps a list of all real content pages, generated from above array */
+    protected $allowedpages = array();
 
     /**
      * Initialize the helper
      */
     public function __construct() {
         $this->hlp = plugin_load('helper', 'statistics');
+
+        // build a list of pages
+        foreach($this->pages as $key => $val) {
+            if(is_array($val)) {
+                $this->allowedpages = array_merge($this->allowedpages, $val);
+            }else {
+                $this->allowedpages[] = $key;
+            }
+        }
     }
 
     /**
@@ -69,7 +109,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     public function handle() {
         $this->opt = preg_replace('/[^a-z]+/', '', $_REQUEST['opt']);
-        if(!in_array($this->opt, $this->pages)) $this->opt = 'dashboard';
+        if(!in_array($this->opt, $this->allowedpages)) $this->opt = 'dashboard';
 
         $this->start = (int) $_REQUEST['s'];
         $this->setTimeframe($_REQUEST['f'], $_REQUEST['t']);
@@ -113,13 +153,32 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      */
     function getTOC() {
         $toc = array();
-        foreach($this->pages as $page) {
-            $toc[] = array(
-                'link'  => '?do=admin&amp;page=statistics&amp;opt=' . $page . '&amp;f=' . $this->from . '&amp;t=' . $this->to,
-                'title' => $this->getLang($page),
-                'level' => 1,
-                'type'  => 'ul'
-            );
+        foreach($this->pages as $key => $info) {
+            if (is_array($info)) {
+
+                $toc[] = html_mktocitem(
+                    '',
+                    $this->getLang($key),
+                    1,
+                    ''
+                );
+
+                foreach($info as $page) {
+                    $toc[] = html_mktocitem(
+                        '?do=admin&amp;page=statistics&amp;opt=' . $page . '&amp;f=' . $this->from . '&amp;t=' . $this->to,
+                        $this->getLang($page),
+                        2,
+                        ''
+                    );
+                }
+            } else {
+                $toc[] = html_mktocitem(
+                    '?do=admin&amp;page=statistics&amp;opt=' . $key . '&amp;f=' . $this->from . '&amp;t=' . $this->to,
+                    $this->getLang($key),
+                    1,
+                    ''
+                );
+            }
         }
         return $toc;
     }
@@ -279,6 +338,34 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         echo '<p>' . $this->getLang('intro_browsers') . '</p>';
         $this->html_graph('browsers', 400, 200);
         $result = $this->hlp->Query()->browsers($this->tlimit, $this->start, 150, true);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_topuser(){
+        echo '<p>' . $this->getLang('intro_topuser') . '</p>';
+        $this->html_graph('topuser', 400, 200);
+        $result = $this->hlp->Query()->topuser($this->tlimit, $this->start, 150, true);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_topeditor(){
+        echo '<p>' . $this->getLang('intro_topeditor') . '</p>';
+        $this->html_graph('topeditor', 400, 200);
+        $result = $this->hlp->Query()->topeditor($this->tlimit, $this->start, 150, true);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_topgroup(){
+        echo '<p>' . $this->getLang('intro_topgroup') . '</p>';
+        $this->html_graph('topgroup', 400, 200);
+        $result = $this->hlp->Query()->topgroup($this->tlimit, $this->start, 150, true);
+        $this->html_resulttable($result, '', 150);
+    }
+
+    function html_topgroupedit(){
+        echo '<p>' . $this->getLang('intro_topgroupedit') . '</p>';
+        $this->html_graph('topgroupedit', 400, 200);
+        $result = $this->hlp->Query()->topgroupedit($this->tlimit, $this->start, 150, true);
         $this->html_resulttable($result, '', 150);
     }
 

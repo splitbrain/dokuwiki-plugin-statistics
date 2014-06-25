@@ -33,7 +33,12 @@ class StatisticsGraph {
         }
     }
 
-    public function PieChart($data) {
+    /**
+     * Create a PieChart
+     *
+     * @param array $data associative array contianing label and values
+     */
+    protected function PieChart($data) {
         $DataSet = new pData;
         $Canvas  = new GDCanvas(400, 200, false);
         $Chart   = new PieChart(400, 200, $Canvas);
@@ -60,70 +65,115 @@ class StatisticsGraph {
         $Chart->Render('');
     }
 
-    public function countries() {
-        // build top countries + other
-        $result = $this->hlp->Query()->countries($this->tlimit, $this->start, 0);
+    /**
+     * Build a PieChart with only the top data shown and all other summarized
+     *
+     * @param string $query The function to call on the Query object to get the data
+     * @param string $key The key containing the label
+     * @param int $max How many discrete values to show before summarizing under "other"
+     */
+    protected function sumUpPieChart($query, $key, $max=4){
+        $result = $this->hlp->Query()->$query($this->tlimit, $this->start, 0, false);
         $data   = array();
         $top    = 0;
         foreach($result as $row) {
-            if($top < 6) {
-                $data[$row['country']] = $row['cnt'];
+            if($top < $max) {
+                $data[$row[$key]] = $row['cnt'];
             } else {
                 $data['other'] += $row['cnt'];
             }
             $top++;
         }
-
         $this->PieChart($data);
+    }
+
+    /**
+     * Create a history graph for the given info type
+     *
+     * @param $info
+     */
+    protected function history($info) {
+        $diff = abs(strtotime($this->from) - strtotime($this->to));
+        $days = floor($diff / (60*60*24));
+        $months = $days > 40;
+
+        $result = $this->hlp->Query()->history($this->tlimit, $info, $months);
+
+        $data = array();
+        $times = array();
+        foreach($result as $row) {
+            $data[] = $row['cnt'];
+            if($months) {
+                $times[] = substr($row['time'],0,4).'-'.substr($row['time'],4,2);
+            }else {
+                $times[] = substr($row['time'], -5);
+            }
+        }
+
+        $DataSet = new pData();
+        $DataSet->AddPoints($data, 'Serie1');
+        $DataSet->AddPoints($times, 'Times');
+        $DataSet->AddAllSeries();
+        $DataSet->SetAbscissaLabelSeries('Times');
+
+        $DataSet->SetSeriesName($this->hlp->getLang('graph_'.$info), 'Serie1');
+
+        $Canvas = new GDCanvas(600, 200, false);
+        $Chart  = new pChart(600, 200, $Canvas);
+
+        $Chart->setFontProperties(dirname(__FILE__) . '/pchart/Fonts/DroidSans.ttf', 8);
+        $Chart->setGraphArea(50, 10, 580, 140);
+        $Chart->drawScale(
+            $DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
+            45, 1, false, ceil(count($times) / 12)
+        );
+        $Chart->drawLineGraph($DataSet->GetData(), $DataSet->GetDataDescription());
+
+        $DataSet->removeSeries('Times');
+        $DataSet->removeSeriesName('Times');
+        $Chart->drawLegend(
+            75, 5,
+            $DataSet->GetDataDescription(),
+            new Color(250)
+        );
+
+
+        header('Content-Type: image/png');
+        $Chart->Render('');
+    }
+
+    #region Graphbuilding functions
+
+    public function countries() {
+        $this->sumUpPieChart('countries', 'country');
     }
 
     public function searchengines() {
-        // build top countries + other
-        $result = $this->hlp->Query()->searchengines($this->tlimit, $this->start, 0);
-        $data   = array();
-        $top    = 0;
-        foreach($result as $row) {
-            if($top < 3) {
-                $data[$row['engine']] = $row['cnt'];
-            } else {
-                $data['other'] += $row['cnt'];
-            }
-            $top++;
-        }
-
-        $this->PieChart($data);
+        $this->sumUpPieChart('searchengines', 'engine', 3);
     }
 
     public function browsers() {
-        // build top browsers + other
-        $result = $this->hlp->Query()->browsers($this->tlimit, $this->start, 0, false);
-        $data   = array();
-        $top    = 0;
-        foreach($result as $row) {
-            if($top < 4) {
-                $data[$row['ua_info']] = $row['cnt'];
-            } else {
-                $data['other'] += $row['cnt'];
-            }
-            $top++;
-        }
-        $this->PieChart($data);
+        $this->sumUpPieChart('browsers', 'ua_info');
     }
 
     public function os() {
-        // build top browsers + other
-        $result = $this->hlp->Query()->os($this->tlimit, $this->start, 0, false);
-        $data   = array();
-        $top    = 0;
-        foreach($result as $row) {
-            if($top < 4) {
-                $data[$row['os']] = $row['cnt'];
-            } else {
-                $data['other'] += $row['cnt'];
-            }
-            $top++;
-        }
-        $this->PieChart($data);
+        $this->sumUpPieChart('os', 'os');
+    }
+
+    public function topuser() {
+        $this->sumUpPieChart('topuser', 'user');
+    }
+
+    public function topeditor() {
+        $this->sumUpPieChart('topeditor', 'user');
+    }
+
+    public function topgroup() {
+        $this->sumUpPieChart('topgroup', 'group');
+    }
+
+    public function topgroupedit() {
+        $this->sumUpPieChart('topgroupedit', 'group');
     }
 
     public function viewport() {
@@ -209,55 +259,6 @@ class StatisticsGraph {
         $this->history('media_size');
     }
 
-    public function history($info) {
-        $diff = abs(strtotime($this->from) - strtotime($this->to));
-        $days = floor($diff / (60*60*24));
-        $months = $days > 40;
-
-        $result = $this->hlp->Query()->history($this->tlimit, $info, $months);
-
-        $data = array();
-        $times = array();
-        foreach($result as $row) {
-            $data[] = $row['cnt'];
-            if($months) {
-                $times[] = substr($row['time'],0,4).'-'.substr($row['time'],4,2);
-            }else {
-                $times[] = substr($row['time'], -5);
-            }
-        }
-
-        $DataSet = new pData();
-        $DataSet->AddPoints($data, 'Serie1');
-        $DataSet->AddPoints($times, 'Times');
-        $DataSet->AddAllSeries();
-        $DataSet->SetAbscissaLabelSeries('Times');
-
-        $DataSet->SetSeriesName($this->hlp->getLang('graph_'.$info), 'Serie1');
-
-        $Canvas = new GDCanvas(600, 200, false);
-        $Chart  = new pChart(600, 200, $Canvas);
-
-        $Chart->setFontProperties(dirname(__FILE__) . '/pchart/Fonts/DroidSans.ttf', 8);
-        $Chart->setGraphArea(50, 10, 580, 140);
-        $Chart->drawScale(
-            $DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
-            45, 1, false, ceil(count($times) / 12)
-        );
-        $Chart->drawLineGraph($DataSet->GetData(), $DataSet->GetDataDescription());
-
-        $DataSet->removeSeries('Times');
-        $DataSet->removeSeriesName('Times');
-        $Chart->drawLegend(
-            75, 5,
-            $DataSet->GetDataDescription(),
-            new Color(250)
-        );
-
-
-        header('Content-Type: image/png');
-        $Chart->Render('');
-    }
 
     public function dashboardviews() {
         $hours  = ($this->from == $this->to);
@@ -359,4 +360,5 @@ class StatisticsGraph {
         $Chart->Render('');
     }
 
+    #endregion Graphbuilding functions
 }
