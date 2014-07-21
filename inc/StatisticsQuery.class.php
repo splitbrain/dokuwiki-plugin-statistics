@@ -290,6 +290,14 @@ class StatisticsQuery {
         return $this->hlp->runSQL($sql);
     }
 
+    public function imagessum($tlimit) {
+        $sql = "SELECT COUNT(*) as cnt, SUM(size) as filesize
+                  FROM " . $this->hlp->prefix . "media as A
+                 WHERE $tlimit
+                   AND mime1 = 'image'";
+        return $this->hlp->runSQL($sql);
+    }
+
     public function downloads($tlimit, $start = 0, $limit = 20) {
         $sql = "SELECT COUNT(*) as cnt, media, SUM(size) as filesize
                   FROM " . $this->hlp->prefix . "media as A
@@ -298,6 +306,14 @@ class StatisticsQuery {
               GROUP BY media
               ORDER BY cnt DESC, media" .
             $this->mklimit($start, $limit);
+        return $this->hlp->runSQL($sql);
+    }
+
+    public function downloadssum($tlimit) {
+        $sql = "SELECT COUNT(*) as cnt, SUM(size) as filesize
+                  FROM " . $this->hlp->prefix . "media as A
+                 WHERE $tlimit
+                   AND mime1 != 'image'";
         return $this->hlp->runSQL($sql);
     }
 

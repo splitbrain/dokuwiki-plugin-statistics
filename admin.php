@@ -324,12 +324,24 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
 
     function html_images() {
         echo '<p>' . $this->getLang('intro_images') . '</p>';
+
+        $result = $this->hlp->Query()->imagessum($this->tlimit);
+        echo '<p>';
+        echo sprintf($this->getLang('trafficsum'), $result[0]['cnt'], filesize_h($result[0]['filesize']));
+        echo '</p>';
+
         $result = $this->hlp->Query()->images($this->tlimit, $this->start, 150);
         $this->html_resulttable($result, '', 150);
     }
 
     function html_downloads() {
         echo '<p>' . $this->getLang('intro_downloads') . '</p>';
+
+        $result = $this->hlp->Query()->downloadssum($this->tlimit);
+        echo '<p>';
+        echo sprintf($this->getLang('trafficsum'), $result[0]['cnt'], filesize_h($result[0]['filesize']));
+        echo '</p>';
+
         $result = $this->hlp->Query()->downloads($this->tlimit, $this->start, 150);
         $this->html_resulttable($result, '', 150);
     }

@@ -48,6 +48,7 @@ $lang['users']                 = '(Users and Groups)';
 $lang['links']                 = '(Links)';
 $lang['search']                = '(Search)';
 $lang['technology']            = '(Technology)';
+$lang['trafficsum']            = '<strong>%s</strong> requests caused <strong>%s</strong> traffic.';
 
 // the intro texts
 $lang['intro_dashboard']             = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
