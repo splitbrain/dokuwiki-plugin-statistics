@@ -441,7 +441,7 @@ class StatisticsQuery {
                    AND ua_type  = 'browser'
                    AND screen_x != 0
                    AND screen_y != 0
-              GROUP BY screen_x, screen_y
+              GROUP BY resolution
               ORDER BY cnt DESC" .
             $this->mklimit($start, $limit);
         return $this->hlp->runSQL($sql);
@@ -457,7 +457,7 @@ class StatisticsQuery {
                    AND ua_type  = 'browser'
                    AND view_x != 0
                    AND view_y != 0
-              GROUP BY view_x, view_y
+              GROUP BY resolution
               ORDER BY cnt DESC" .
             $this->mklimit($start, $limit);
 
