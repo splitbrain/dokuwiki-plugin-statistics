@@ -432,7 +432,7 @@ class StatisticsQuery {
 
 
     public function resolution($tlimit, $start = 0, $limit = 20) {
-        $sql = "SELECT COUNT(*) as cnt,
+        $sql = "SELECT COUNT(DISTINCT uid) as cnt,
                        ROUND(screen_x/100)*100 as res_x,
                        ROUND(screen_y/100)*100 as res_y,
                        CONCAT(ROUND(screen_x/100)*100,'x',ROUND(screen_y/100)*100) as resolution
@@ -448,7 +448,7 @@ class StatisticsQuery {
     }
 
     public function viewport($tlimit, $start = 0, $limit = 20) {
-        $sql = "SELECT COUNT(*) as cnt,
+        $sql = "SELECT COUNT(DISTINCT uid) as cnt,
                        ROUND(view_x/100)*100 as res_x,
                        ROUND(view_y/100)*100 as res_y,
                        CONCAT(ROUND(view_x/100)*100,'x',ROUND(view_y/100)*100) as resolution
