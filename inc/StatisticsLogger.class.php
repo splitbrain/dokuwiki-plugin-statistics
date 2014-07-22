@@ -69,6 +69,13 @@ class StatisticsLogger {
     public function log_groups($type, $groups) {
         if(!is_array($groups) || !count($groups)) return;
 
+        $tolog = $this->hlp->getConf('loggroups');
+        if($tolog) {
+            foreach($groups as $pos => $group) {
+                if(!in_array($group, $tolog)) unset($groups[$pos]);
+            }
+        }
+
         $type = addslashes($type);
 
         $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "groups
