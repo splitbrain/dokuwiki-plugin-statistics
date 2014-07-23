@@ -6,6 +6,7 @@
  * @author NicolasFriedli <nicolas@theologique.ch>
  * @author Schplurtz le Déboulonné <schplurtz@laposte.net>
  * @author Alexandre Saillet <moutardea@gmail.com>
+ * @author tuxun <tuxuntrash@gmail.com>
  */
 $lang['menu']                  = 'Statistiques d\'utilisation et d\'accès';
 $lang['more']                  = 'plus';
@@ -46,8 +47,11 @@ $lang['users']                 = '(Utilisateurs et Groupes)';
 $lang['links']                 = '(Liens)';
 $lang['search']                = '(Recherche)';
 $lang['technology']            = '(Technologie)';
+$lang['trafficsum']            = '<strong>%s</strong> requêtes ayant crée <strong>%s</strong> de traffic.';
 $lang['intro_dashboard']       = 'Cette page donne une vue d\'ensemble de ce qui s\'est passé dans votre wiki pendant la période choisie<br />Sélectionnez un sujet de la table des matières pour obtenir une vue détaillée.';
 $lang['intro_page']            = 'Ces pages sont les plus vues du wiki durant la période sélectionnée - votre contenu le plus vu.';
+$lang['intro_edits']           = 'Voici les pages du wiki les plus édités dans la plage de temps selectionné. c\'est ou l\'activité courante s\'affiche.';
+$lang['intro_images']          = 'Ce sont les plus téléchargées des médias locaux dans votre wiki. La troisième colonne montre le nombre total d\'octets transférés pour chaque objet.';
 $lang['intro_referer']         = 'Sur l\'ensemble des <strong>%d</strong> visites externes, <strong>%d</strong> (<strong>%.1f%%</strong>) étaient des arrivées directes, <strong>%d</strong> (<strong>%.1f%%</strong>) provenaient de moteurs de recherche et<strong>%d</strong> (<strong>%.1f%%</strong>) en ayant suivi un lien sur d\'autres pages.<br />Voilà la liste de ces autres pages.';
 $lang['intro_newreferer']      = 'Les liens entrants suivants ont été vus pour la première fois pendant la période sélectionnée.';
 $lang['intro_outlinks']        = 'Liens  de votre wiki vers des sites externes les plus suivis.';
@@ -61,12 +65,17 @@ $lang['intro_os']              = 'Les plateformes les plus populaires chez vos u
 $lang['intro_countries']       = 'Voici d\'où proviennent les utilisateurs. Notez que retrouver les pays en fonction des adresses IP n\'est pas une science exacte.';
 $lang['intro_resolution']      = 'Cette page vous fourni des informations à propos des tailles des écrans utilisés par vos utilisateurs. Il s\'agit de la taille de l\'écran, et non de la partie de celui-ci disponible pour l\'affichage du navigateur. Pour ce dernier, voir la page Dimension du navigateur. Les valeurs sont arrondies à 100 pixels, le graphe ne montre que les 100 premières valeurs.';
 $lang['intro_viewport']        = 'Voilà les espaces d\'affichage effectivement utilisable par les navigateurs qui visitent votre site. Les valeurs sont arrondies à 100 pixels, le graphe ne montre que les 100 premières valeurs.';
+$lang['intro_topuser']         = 'Cette page montre lesquels des utilisateurs connectés ont affiché le plus de pages sur votre wiki dans la plage de temps sélectionné.';
+$lang['intro_topeditor']       = 'Cette page montre lesquels des utilisateurs connectés ont effectué le plus d\'éditions dans la plage de temps sélectionné.';
+$lang['intro_topgroup']        = 'Groupes d\'utilisateurs connectés qui ont affiché le plus de pages sur votre wiki dans la plage de temps sélectionné. Note: quand un utilisateur est membre de plusieurs groupes, tous les groupes sont comptabilisés.';
+$lang['intro_topgroupedit']    = 'Groupes d\'utilisateurs connectés qui ont accompli le plus d\'éditions dans la plage de temps sélectionné. Note: quand un utilisateur est membre de plusieurs groupes, tous les groupes sont comptabilisés.';
 $lang['dash_pageviews']        = '<strong>%d</strong> pages vues';
 $lang['dash_sessions']         = '<strong>%d</strong> visites (sessions)';
 $lang['dash_visitors']         = '<strong>%d</strong> visiteurs uniques';
 $lang['dash_users']            = '<strong>%d</strong> visiteurs connectés';
 $lang['dash_logins']           = '<strong>%d</strong> connexions d\'utilisateurs';
 $lang['dash_registrations']    = '<strong>%s</strong> nouvelles inscriptions';
+$lang['dash_current']          = '<strong>%d</strong> Utilisateurs actuellement connectés';
 $lang['dash_bouncerate']       = '<strong>%.1f%%</strong> renvois (bounces)';
 $lang['dash_timespent']        = '<strong>%.2f</strong> minutes passées, en moyenne, par session';
 $lang['dash_avgpages']         = '<strong>%.2f</strong> pages vues, en moyenne, par session';
@@ -81,3 +90,6 @@ $lang['graph_views']           = 'Vues de pages';
 $lang['graph_sessions']        = 'Visites';
 $lang['graph_visitors']        = 'Visiteurs';
 $lang['graph_page_count']      = 'Pages';
+$lang['graph_page_size']       = 'Taille de la page (Mo)';
+$lang['graph_media_count']     = 'Fichiers multimédias';
+$lang['graph_media_size']      = 'Taille du média (Mo)';
