@@ -266,6 +266,8 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
         }
         echo '</ul>';
 
+        echo '<br style="clear: left" />';
+
         $this->html_graph('dashboardviews', 700, 280);
         $this->html_graph('dashboardwiki', 700, 280);
         echo '</div>';
@@ -474,7 +476,7 @@ class admin_plugin_statistics extends DokuWiki_Admin_Plugin {
      * Display a result in a HTML table
      */
     function html_resulttable($result, $header = '', $pager = 0) {
-        echo '<table>';
+        echo '<table class="inline">';
         if(is_array($header)) {
             echo '<tr>';
             foreach($header as $h) {
