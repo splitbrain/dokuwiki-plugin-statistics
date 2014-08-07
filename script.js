@@ -6,8 +6,6 @@ var plugin_statistics = {
 
     /**
      * initialize the script
-     *
-     * @param id string - urlencoded page id
      */
     init: function () {
 
@@ -18,8 +16,31 @@ var plugin_statistics = {
             uid = now.getTime() + '-' + Math.floor(Math.random() * 32000);
             DokuCookie.setValue('plgstats', uid);
         }
+
+        // load session cookie
+        var ses = DokuCookie.getValue('plgstatsses');
+        if (ses) {
+            ses = ses.split('-');
+            var time = ses[0];
+            ses = ses[1];
+            if (now.getTime() - time > 15 * 60 * 1000) {
+                ses = ''; // session expired
+            }
+        }
+        // assign new session
+        if (!ses) {
+            //http://stackoverflow.com/a/16693578/172068
+            ses = (Math.random().toString(16) + "000000000").substr(2, 8) +
+                  (Math.random().toString(16) + "000000000").substr(2, 8) +
+                  (Math.random().toString(16) + "000000000").substr(2, 8) +
+                  (Math.random().toString(16) + "000000000").substr(2, 8);
+        }
+        // update session info
+        DokuCookie.setValue('plgstatsses', now.getTime() + '-' + ses);
+
         plugin_statistics.data = {
             uid: uid,
+            ses: ses,
             p: JSINFO['id'],
             r: document.referrer,
             sx: screen.width,
@@ -49,7 +70,7 @@ var plugin_statistics = {
     /**
      * Log a view or session
      *
-     * @param string act 'v' = view, 's' = session
+     * @param {string} act 'v' = view, 's' = session
      */
     log_view: function (act) {
         var params = jQuery.param(plugin_statistics.data);
@@ -79,6 +100,8 @@ var plugin_statistics = {
 
     /**
      * Pause the script execution for the given time
+     *
+     * @param {int} ms
      */
     pause: function (ms) {
         var now = new Date();

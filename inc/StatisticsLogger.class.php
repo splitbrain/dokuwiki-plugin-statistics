@@ -37,11 +37,25 @@ class StatisticsLogger {
     /**
      * get the unique user ID
      */
-    private function getUID() {
+    protected function getUID() {
         $uid = $_REQUEST['uid'];
         if(!$uid) $uid = get_doku_pref('plgstats', false);
         if(!$uid) $uid = session_id();
         return $uid;
+    }
+
+    /**
+     * Return the user's session ID
+     *
+     * This is usually our own managed session, not a PHP session (only in fallback)
+     *
+     * @return string
+     */
+    protected function getSession() {
+        $ses = $_REQUEST['ses'];
+        if(!$ses) $ses = get_doku_pref('plgstatsses', false);
+        if(!$ses) $ses = session_id();
+        return $ses;
     }
 
     /**
@@ -200,7 +214,7 @@ class StatisticsLogger {
         if($this->ua_type != 'browser') return;
 
         $addview = addslashes($addview);
-        $session = addslashes(session_id());
+        $session = addslashes($this->getSession());
         $uid     = addslashes($this->uid);
         $sql     = "INSERT DELAYED INTO " . $this->hlp->prefix . "session
                    SET session = '$session',
@@ -258,7 +272,7 @@ class StatisticsLogger {
 
         $link     = addslashes($_REQUEST['ol']);
         $link_md5 = md5($link);
-        $session  = addslashes(session_id());
+        $session  = addslashes($this->getSession());
         $page     = addslashes($_REQUEST['p']);
 
         $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "outlinks
@@ -318,7 +332,7 @@ class StatisticsLogger {
         $js      = (int) $_REQUEST['js'];
         $uid     = addslashes($this->uid);
         $user    = addslashes($_SERVER['REMOTE_USER']);
-        $session = addslashes(session_id());
+        $session = addslashes($this->getSession());
 
         $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "access
                     SET dt       = NOW(),
@@ -392,7 +406,7 @@ class StatisticsLogger {
         $ip      = addslashes(clientIP(true));
         $uid     = addslashes($this->uid);
         $user    = addslashes($_SERVER['REMOTE_USER']);
-        $session = addslashes(session_id());
+        $session = addslashes($this->getSession());
 
         $sql = "INSERT DELAYED INTO " . $this->hlp->prefix . "media
                     SET dt       = NOW(),
@@ -426,7 +440,7 @@ class StatisticsLogger {
 
         $ip      = addslashes(clientIP(true));
         $user    = addslashes($_SERVER['REMOTE_USER']);
-        $session = addslashes(session_id());
+        $session = addslashes($this->getSession());
         $uid     = addslashes($this->uid);
         $page    = addslashes($page);
         $type    = addslashes($type);
@@ -455,7 +469,7 @@ class StatisticsLogger {
 
         $ip      = addslashes(clientIP(true));
         $user    = addslashes($user);
-        $session = addslashes(session_id());
+        $session = addslashes($this->getSession());
         $uid     = addslashes($this->uid);
         $type    = addslashes($type);
 
