@@ -17,30 +17,9 @@ var plugin_statistics = {
             DokuCookie.setValue('plgstats', uid);
         }
 
-        // load session cookie
-        var ses = DokuCookie.getValue('plgstatsses');
-        if (ses) {
-            ses = ses.split('-');
-            var time = ses[0];
-            ses = ses[1];
-            if (now.getTime() - time > 15 * 60 * 1000) {
-                ses = ''; // session expired
-            }
-        }
-        // assign new session
-        if (!ses) {
-            //http://stackoverflow.com/a/16693578/172068
-            ses = (Math.random().toString(16) + "000000000").substr(2, 8) +
-                  (Math.random().toString(16) + "000000000").substr(2, 8) +
-                  (Math.random().toString(16) + "000000000").substr(2, 8) +
-                  (Math.random().toString(16) + "000000000").substr(2, 8);
-        }
-        // update session info
-        DokuCookie.setValue('plgstatsses', now.getTime() + '-' + ses);
-
         plugin_statistics.data = {
             uid: uid,
-            ses: ses,
+            ses: plugin_statistics.get_session(),
             p: JSINFO['id'],
             r: document.referrer,
             sx: screen.width,
@@ -94,9 +73,48 @@ var plugin_statistics = {
      */
     log_exit: function () {
         var params = jQuery.param(plugin_statistics.data);
+
+        var ses = plugin_statistics.get_session();
+        if(ses != params.ses) return; // session expired a while ago, don't log this anymore
+
         var url = DOKU_BASE + 'lib/plugins/statistics/log.php?do=s&' + params;
         jQuery.ajax(url, {async: false});
     },
+
+    /**
+     * get current session identifier
+     *
+     * Auto clears an expired session and creates a new one after 15 min idle time
+     *
+     * @returns {string}
+     */
+    get_session: function () {
+        var now = new Date();
+
+        // load session cookie
+        var ses = DokuCookie.getValue('plgstatsses');
+        if (ses) {
+            ses = ses.split('-');
+            var time = ses[0];
+            ses = ses[1];
+            if (now.getTime() - time > 15 * 60 * 1000) {
+                ses = ''; // session expired
+            }
+        }
+        // assign new session
+        if (!ses) {
+            //http://stackoverflow.com/a/16693578/172068
+            ses = (Math.random().toString(16) + "000000000").substr(2, 8) +
+                (Math.random().toString(16) + "000000000").substr(2, 8) +
+                (Math.random().toString(16) + "000000000").substr(2, 8) +
+                (Math.random().toString(16) + "000000000").substr(2, 8);
+        }
+        // update session info
+        DokuCookie.setValue('plgstatsses', now.getTime() + '-' + ses);
+
+        return ses;
+    },
+
 
     /**
      * Pause the script execution for the given time
