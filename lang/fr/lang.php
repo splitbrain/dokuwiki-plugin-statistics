@@ -7,6 +7,7 @@
  * @author Schplurtz le Déboulonné <schplurtz@laposte.net>
  * @author Alexandre Saillet <moutardea@gmail.com>
  * @author tuxun <tuxuntrash@gmail.com>
+ * @author Nicolas Friedli <nicolas@theologique.ch>
  */
 $lang['menu']                  = 'Statistiques d\'utilisation et d\'accès';
 $lang['more']                  = 'plus';
@@ -52,6 +53,7 @@ $lang['intro_dashboard']       = 'Cette page donne une vue d\'ensemble de ce qui
 $lang['intro_page']            = 'Ces pages sont les plus vues du wiki durant la période sélectionnée - votre contenu le plus vu.';
 $lang['intro_edits']           = 'Voici les pages du wiki les plus édités dans la plage de temps selectionné. c\'est ou l\'activité courante s\'affiche.';
 $lang['intro_images']          = 'Ce sont les plus téléchargées des médias locaux dans votre wiki. La troisième colonne montre le nombre total d\'octets transférés pour chaque objet.';
+$lang['intro_downloads']       = 'Voici les téléchargement les plus fréquents parmi les médias de votre wiki. La troisième colone montre la taille totale des transferts (en bytes) pour chaque média.';
 $lang['intro_referer']         = 'Sur l\'ensemble des <strong>%d</strong> visites externes, <strong>%d</strong> (<strong>%.1f%%</strong>) étaient des arrivées directes, <strong>%d</strong> (<strong>%.1f%%</strong>) provenaient de moteurs de recherche et<strong>%d</strong> (<strong>%.1f%%</strong>) en ayant suivi un lien sur d\'autres pages.<br />Voilà la liste de ces autres pages.';
 $lang['intro_newreferer']      = 'Les liens entrants suivants ont été vus pour la première fois pendant la période sélectionnée.';
 $lang['intro_outlinks']        = 'Liens  de votre wiki vers des sites externes les plus suivis.';
@@ -65,6 +67,8 @@ $lang['intro_os']              = 'Les plateformes les plus populaires chez vos u
 $lang['intro_countries']       = 'Voici d\'où proviennent les utilisateurs. Notez que retrouver les pays en fonction des adresses IP n\'est pas une science exacte.';
 $lang['intro_resolution']      = 'Cette page vous fourni des informations à propos des tailles des écrans utilisés par vos utilisateurs. Il s\'agit de la taille de l\'écran, et non de la partie de celui-ci disponible pour l\'affichage du navigateur. Pour ce dernier, voir la page Dimension du navigateur. Les valeurs sont arrondies à 100 pixels, le graphe ne montre que les 100 premières valeurs.';
 $lang['intro_viewport']        = 'Voilà les espaces d\'affichage effectivement utilisable par les navigateurs qui visitent votre site. Les valeurs sont arrondies à 100 pixels, le graphe ne montre que les 100 premières valeurs.';
+$lang['intro_seenusers']       = 'Cette liste montre la dernière visite des utilisateurs sur le wiki, par ordre chronologique. C\'est indépendant de la période sélectionnée.';
+$lang['intro_history']         = 'Ces graphes vous donnent une idée de la croissance de votre wiki dans une période définie (nombre d\'entrées et taille). Notez que ce graphe demande une période de plusieurs jours.';
 $lang['intro_topuser']         = 'Cette page montre lesquels des utilisateurs connectés ont affiché le plus de pages sur votre wiki dans la plage de temps sélectionné.';
 $lang['intro_topeditor']       = 'Cette page montre lesquels des utilisateurs connectés ont effectué le plus d\'éditions dans la plage de temps sélectionné.';
 $lang['intro_topgroup']        = 'Groupes d\'utilisateurs connectés qui ont affiché le plus de pages sur votre wiki dans la plage de temps sélectionné. Note: quand un utilisateur est membre de plusieurs groupes, tous les groupes sont comptabilisés.';
