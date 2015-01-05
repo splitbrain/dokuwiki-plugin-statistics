@@ -5,6 +5,7 @@
  * 
  * @author Rene <wllywlnt@yahoo.com>
  * @author Peter van Diest <peter.van.diest@xs4all.nl>
+ * @author Wouter Wijsman <wwijsman@live.nl>
  */
 $lang['menu']                  = 'Toegangs- en gebruiksstatistieken';
 $lang['more']                  = 'meer';
@@ -45,6 +46,7 @@ $lang['users']                 = '(Gebruikers en Groepen)';
 $lang['links']                 = '(Links)';
 $lang['search']                = '(Zoek)';
 $lang['technology']            = '(Technologie)';
+$lang['trafficsum']            = '<strong>%s</strong> aanvragen veroorzaakte <strong>%s</strong> verkeer.';
 $lang['intro_dashboard']       = 'Deze pagina geeft een snel overzicht wat er in de wiki is gebeurd in de gekozen tijdperiode.<br /> Voor een gedetailleerde weergave en grafieken kies je een onderwerp in de Inhoud Opgave';
 $lang['intro_page']            = 'Dit zijn de meest bekeken wikipagina\'s in de geselecteerde periode - de top-inhoud.';
 $lang['intro_edits']           = 'Dit zijn meest aangepaste wikipagina\'s in het geselecteerde tijdvak - dit is waar de huidige activiteit plaatsvindt.';
