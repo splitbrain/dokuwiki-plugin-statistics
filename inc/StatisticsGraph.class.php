@@ -95,21 +95,33 @@ class StatisticsGraph {
     protected function history($info) {
         $diff = abs(strtotime($this->from) - strtotime($this->to));
         $days = floor($diff / (60*60*24));
-        $months = $days > 40;
+        if ($days > 365) {
+            $interval= 'months';
+        } elseif ($days > 56) {
+            $interval = 'weeks';
+        } else {
+            $interval = 'days';
+        }
 
-        $result = $this->hlp->Query()->history($this->tlimit, $info, $months);
+        $result = $this->hlp->Query()->history($this->tlimit, $info, $interval);
 
         $data = array();
         $times = array();
         foreach($result as $row) {
             $data[] = $row['cnt'];
-            if($months) {
-                $times[] = substr($row['time'],0,4).'-'.substr($row['time'],4,2);
+            if($interval == 'months') {
+                $times[] = substr($row['time'], 0, 4) . '-' . substr($row['time'], 4, 2);
+            } elseif ($interval == 'weeks') {
+                $times[] = $row['EXTRACT(YEAR FROM dt)'] . '-' . $row['time'];
             }else {
                 $times[] = substr($row['time'], -5);
             }
         }
 
+        // todo: change legend to y-axis label
+        // todo: add x-axis label
+        // todo: correctly scale y axis
+        // todo: column diagram?
         $DataSet = new pData();
         $DataSet->AddPoints($data, 'Serie1');
         $DataSet->AddPoints($times, 'Times');
