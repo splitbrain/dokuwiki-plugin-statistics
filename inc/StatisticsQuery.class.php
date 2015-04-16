@@ -193,7 +193,7 @@ class StatisticsQuery {
         }
 
         $sql = "SELECT $TIME as time,
-                       SUM(`value`)/$mod as cnt
+                       AVG(`value`)/$mod as cnt
                   FROM " . $this->hlp->prefix . "history as A
                  WHERE $tlimit
                    AND info = '$info'
