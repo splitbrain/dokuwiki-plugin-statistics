@@ -3,6 +3,11 @@
  * english language file
  */
 
+
+
+
+
+
 // for admin plugins, the menu prompt to be displayed in the admin menu
 $lang['menu'] = 'Access and Usage Statistics';
 
@@ -17,6 +22,9 @@ $lang['time_last1']  = 'Yesterday';
 $lang['time_last7']  = 'Last 7 Days';
 $lang['time_last30'] = 'Last 30 Days';
 $lang['time_go']     = 'Go';
+$lang['days']                  = 'Days';
+$lang['weeks']                 = 'Weeks';
+$lang['months']                = 'Months';
 
 // the different pages
 $lang['dashboard']             = 'Dashboard';
@@ -50,6 +58,7 @@ $lang['search']                = '(Search)';
 $lang['technology']            = '(Technology)';
 $lang['trafficsum']            = '<strong>%s</strong> requests caused <strong>%s</strong> traffic.';
 
+
 // the intro texts
 $lang['intro_dashboard']             = 'This page gives you a quick overview on what has happened in your wiki during the chosen timeframe.<br />For detailed insights and graphs pick a topic from the Table of Contents.';
 $lang['intro_page']                  = 'These are the wiki pages most viewed in the selected timeframe – your top content.';
@@ -57,6 +66,7 @@ $lang['intro_edits']                 = 'These are the wiki pages most edited in 
 $lang['intro_images']                = 'These are the top most displayed local images in your wiki. The third column shows the total amount of bytes transferred for each item.';
 $lang['intro_downloads']             = 'These are the top most downloaded local media items in your wiki. The third column shows the total amount of bytes transferred for each item.';
 $lang['intro_referer']               = 'Of all <strong>%d</strong> external visits, <strong>%d</strong> (<strong>%.1f%%</strong>) were direct (or bookmarked) accesses, <strong>%d</strong> (<strong>%.1f%%</strong>) came from search engines and <strong>%d</strong> (<strong>%.1f%%</strong>) were referred through links from other pages.<br />These other pages are listed below.';
+
 $lang['intro_newreferer']            = 'The following incoming links where first logged in the selected timeframe and have never been seen before.';
 $lang['intro_outlinks']              = 'These are the most clicked on links to external sites in your wiki.';
 $lang['intro_searchengines']         = 'The following search engines were used by users to find your wiki.';
@@ -104,4 +114,3 @@ $lang['graph_page_count']  = 'Pages';
 $lang['graph_page_size']   = 'Pagessize (MB)';
 $lang['graph_media_count'] = 'Media Items';
 $lang['graph_media_size']  = 'Media Item Size (MB)';
-

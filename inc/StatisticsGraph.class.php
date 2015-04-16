@@ -128,7 +128,8 @@ class StatisticsGraph {
         $DataSet->AddAllSeries();
         $DataSet->SetAbscissaLabelSeries('Times');
 
-        $DataSet->SetSeriesName($this->hlp->getLang('graph_'.$info), 'Serie1');
+        $DataSet->setXAxisName($this->hlp->getLang($interval));
+        $DataSet->setYAxisName($this->hlp->getLang('graph_'.$info));
 
         $Canvas = new GDCanvas(600, 200, false);
         $Chart  = new pChart(600, 200, $Canvas);
@@ -143,11 +144,6 @@ class StatisticsGraph {
 
         $DataSet->removeSeries('Times');
         $DataSet->removeSeriesName('Times');
-        $Chart->drawLegend(
-            75, 5,
-            $DataSet->GetDataDescription(),
-            new Color(250)
-        );
 
 
         header('Content-Type: image/png');
