@@ -178,8 +178,10 @@ class StatisticsQuery {
         return $data;
     }
 
-    public function history($tlimit, $info, $months = false) {
-        if($months) {
+    public function history($tlimit, $info, $interval = false) {
+        if($interval == 'weeks') {
+            $TIME = 'EXTRACT(YEAR FROM dt), EXTRACT(WEEK FROM dt)';
+        } elseif ($interval == 'months') {
             $TIME = 'EXTRACT(YEAR_MONTH FROM dt)';
         } else {
             $TIME = 'dt';
@@ -191,7 +193,7 @@ class StatisticsQuery {
         }
 
         $sql = "SELECT $TIME as time,
-                       SUM(`value`)/$mod as cnt
+                       AVG(`value`)/$mod as cnt
                   FROM " . $this->hlp->prefix . "history as A
                  WHERE $tlimit
                    AND info = '$info'

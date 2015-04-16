@@ -11,6 +11,7 @@ define('DOKU_DISABLE_GZIP_OUTPUT', 1);
 require_once(DOKU_INC . 'inc/init.php');
 session_write_close();
 
+/** @var helper_plugin_statistics $plugin */
 $plugin = plugin_load('helper', 'statistics');
 try {
     $plugin->Graph()->render($_REQUEST['img'], $_REQUEST['f'], $_REQUEST['t'], $_REQUEST['s']);

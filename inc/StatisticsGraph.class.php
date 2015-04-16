@@ -95,16 +95,24 @@ class StatisticsGraph {
     protected function history($info) {
         $diff = abs(strtotime($this->from) - strtotime($this->to));
         $days = floor($diff / (60*60*24));
-        $months = $days > 40;
+        if ($days > 365) {
+            $interval= 'months';
+        } elseif ($days > 56) {
+            $interval = 'weeks';
+        } else {
+            $interval = 'days';
+        }
 
-        $result = $this->hlp->Query()->history($this->tlimit, $info, $months);
+        $result = $this->hlp->Query()->history($this->tlimit, $info, $interval);
 
         $data = array();
         $times = array();
         foreach($result as $row) {
             $data[] = $row['cnt'];
-            if($months) {
-                $times[] = substr($row['time'],0,4).'-'.substr($row['time'],4,2);
+            if($interval == 'months') {
+                $times[] = substr($row['time'], 0, 4) . '-' . substr($row['time'], 4, 2);
+            } elseif ($interval == 'weeks') {
+                $times[] = $row['EXTRACT(YEAR FROM dt)'] . '-' . $row['time'];
             }else {
                 $times[] = substr($row['time'], -5);
             }
@@ -116,7 +124,8 @@ class StatisticsGraph {
         $DataSet->AddAllSeries();
         $DataSet->SetAbscissaLabelSeries('Times');
 
-        $DataSet->SetSeriesName($this->hlp->getLang('graph_'.$info), 'Serie1');
+        $DataSet->setXAxisName($this->hlp->getLang($interval));
+        $DataSet->setYAxisName($this->hlp->getLang('graph_'.$info));
 
         $Canvas = new GDCanvas(600, 200, false);
         $Chart  = new pChart(600, 200, $Canvas);
@@ -131,11 +140,6 @@ class StatisticsGraph {
 
         $DataSet->removeSeries('Times');
         $DataSet->removeSeriesName('Times');
-        $Chart->drawLegend(
-            75, 5,
-            $DataSet->GetDataDescription(),
-            new Color(250)
-        );
 
 
         header('Content-Type: image/png');
