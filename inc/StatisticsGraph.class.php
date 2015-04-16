@@ -118,10 +118,6 @@ class StatisticsGraph {
             }
         }
 
-        // todo: change legend to y-axis label
-        // todo: add x-axis label
-        // todo: correctly scale y axis
-        // todo: column diagram?
         $DataSet = new pData();
         $DataSet->AddPoints($data, 'Serie1');
         $DataSet->AddPoints($times, 'Times');
