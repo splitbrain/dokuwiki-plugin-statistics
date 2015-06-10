@@ -8,6 +8,7 @@
  * @author Alexandre Saillet <moutardea@gmail.com>
  * @author tuxun <tuxuntrash@gmail.com>
  * @author Nicolas Friedli <nicolas@theologique.ch>
+ * @author Schplurtz le Déboulonné <Schplurtz@laposte.net>
  */
 $lang['menu']                  = 'Statistiques d\'utilisation et d\'accès';
 $lang['more']                  = 'plus';
@@ -19,6 +20,9 @@ $lang['time_last1']            = 'Hier';
 $lang['time_last7']            = '7 derniers jours';
 $lang['time_last30']           = '30 derniers jours';
 $lang['time_go']               = 'Aller';
+$lang['days']                  = 'Jours';
+$lang['weeks']                 = 'Semaines';
+$lang['months']                = 'Mois';
 $lang['dashboard']             = 'Tableau de bord';
 $lang['page']                  = 'Pages';
 $lang['edits']                 = 'Editions';
