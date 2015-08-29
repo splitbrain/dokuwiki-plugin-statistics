@@ -2,36 +2,80 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- *
- * @author     Myeongjin <aranet100@gmail.com>
+ * 
+ * @author Myeongjin <aranet100@gmail.com>
  */
 $lang['menu']                  = '접근 및 사용 통계';
 $lang['more']                  = '더 보기';
 $lang['prev']                  = '이전 페이지';
 $lang['next']                  = '다음 페이지';
-$lang['time_select']           = '시기 선택:';
+$lang['time_select']           = '기간 선택:';
 $lang['time_today']            = '오늘';
 $lang['time_last1']            = '어제';
 $lang['time_last7']            = '지난 7일';
 $lang['time_last30']           = '지난 30일';
 $lang['time_go']               = '보기';
+$lang['days']                  = '일';
+$lang['weeks']                 = '주';
+$lang['months']                = '월';
 $lang['dashboard']             = '대시보드';
 $lang['page']                  = '문서';
+$lang['edits']                 = '편집';
+$lang['images']                = '그림';
+$lang['downloads']             = '다운로드';
 $lang['referer']               = '들어오는 링크';
 $lang['newreferer']            = '새 들어오는 링크';
 $lang['outlinks']              = '나가는 링크';
-$lang['searchphrases']         = '바깥 검색 문장';
+$lang['searchphrases']         = '바깥 검색 어구';
 $lang['searchwords']           = '바깥 검색 낱말';
-$lang['internalsearchphrases'] = '안쪽 검색 문장';
+$lang['internalsearchphrases'] = '안쪽 검색 어구';
 $lang['internalsearchwords']   = '안쪽 검색 낱말';
 $lang['searchengines']         = '검색 엔진';
 $lang['browsers']              = '브라우저';
 $lang['os']                    = '운영 체제';
-$lang['resolution']            = '스크린 크기';
+$lang['countries']             = '국가';
+$lang['resolution']            = '화면 크기';
 $lang['viewport']              = '브라우저 뷰포트';
-$lang['graph_edits']           = '문서 편집수';
-$lang['graph_creates']         = '문서 만들기수';
-$lang['graph_deletions']       = '문서 삭제수';
+$lang['seenusers']             = '보는 사용자';
+$lang['history']               = '성장 역사';
+$lang['topuser']               = '상위 사용자';
+$lang['topeditor']             = '상위 편집자';
+$lang['topgroup']              = '상위 그룹';
+$lang['topgroupedit']          = '상위 편집 그룹';
+$lang['content']               = '(내용)';
+$lang['users']                 = '(사용자 및 그룹)';
+$lang['links']                 = '(링크)';
+$lang['search']                = '(검색)';
+$lang['technology']            = '(기술)';
+$lang['trafficsum']            = '<strong>%s</strong>의 요청은 <strong>%s</strong> 트래픽을 발생합니다.';
+$lang['intro_page']            = '선택한 기간의 가장 많이 본 위키 문서입니다 – 상위 내용.';
+$lang['intro_edits']           = '선택한 기간의 가장 많이 편집한 위키 문서입니다 – 현재 활발히 편집되는 곳입니다.';
+$lang['intro_newreferer']      = '다음 들어오는 링크는 선택한 기간에 처음으로 로그인했으며 이전에 한 번도 본 적이 없습니다.';
+$lang['intro_browsers']        = '여기에 사용자가 가장 많이 사용하는 브라우저가 있습니다.';
+$lang['intro_os']              = '여기에 사용자가 가장 많이 사용하는 플랫폼이 있습니다.';
+$lang['intro_topuser']         = '이 페이지는 선택한 기간에 위키의 가장 많이 문서를 둘러본 로그인한 사용자가 누구인지 보여줍니다.';
+$lang['intro_topeditor']       = '이 페이지는 선택한 기간에 가장 많이 편집한 로그인한 사용자가 누구인지 보여줍니다.';
+$lang['dash_pageviews']        = '문서 조회수 <strong>%d</strong>번';
+$lang['dash_sessions']         = '방문 <strong>%d</strong>번 (세션)';
+$lang['dash_visitors']         = '고유 방문자 <strong>%d</strong>명';
+$lang['dash_users']            = '로그인한 사용자 <strong>%d</strong>명';
+$lang['dash_logins']           = '사용자 로그인 <strong>%d</strong>번';
+$lang['dash_registrations']    = '새 등록 <strong>%s</strong>번';
+$lang['dash_current']          = '현재 로그인한 사용자 <strong>%d</strong>명';
+$lang['dash_bouncerate']       = '바운스 <strong>%.1f%%</strong>번';
+$lang['dash_timespent']        = '평균 세션에서 <strong>%.2f</strong>분 보냄';
+$lang['dash_avgpages']         = '평균 세션에서 본 문서 <strong>%.2f</strong>개';
+$lang['dash_newvisitors']      = '새 방문자 <strong>%.1f%%</strong>명';
+$lang['dash_mostpopular']      = '가장 인기 있는 문서';
+$lang['dash_newincoming']      = '상위 들어오는 새 링크';
+$lang['dash_topsearch']        = '상위 검색 어구';
+$lang['graph_edits']           = '문서 편집';
+$lang['graph_creates']         = '문서 만들기';
+$lang['graph_deletions']       = '문서 삭제';
 $lang['graph_views']           = '문서 조회수';
 $lang['graph_sessions']        = '방문';
 $lang['graph_visitors']        = '방문자';
+$lang['graph_page_count']      = '문서';
+$lang['graph_page_size']       = '문서크기 (MB)';
+$lang['graph_media_count']     = '미디어 항목';
+$lang['graph_media_size']      = '미디어 항목 크키 (MB)';
