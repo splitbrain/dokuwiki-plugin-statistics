@@ -2,7 +2,7 @@
 base   statistics
 author Andreas Gohr
 email  andi@splitbrain.org
-date   2015-04-16
+date   2015-05-22
 name   Statistics Plugin
 desc   Gather usage/view statistics
 url    http://www.dokuwiki.org/plugin:statistics
