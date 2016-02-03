@@ -16,7 +16,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
     /**
      * register the eventhandlers and initialize some options
      */
-    function register(&$controller) {
+    function register(Doku_Event_Handler $controller) {
         global $JSINFO;
         global $ACT;
         $JSINFO['act'] = $ACT;
