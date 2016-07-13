@@ -8,14 +8,12 @@
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Andreas Gohr <gohr@cosmocode.de>
  * @author Michael Große <grosse@cosmocode.de>
+ * @author Luca Käser <luca.kaeser@bluewin.ch>
  */
 $lang['menu']                  = 'Zugriffs- und Verwendungsstatistik';
-
 $lang['more']                  = 'mehr';
 $lang['prev']                  = 'Vorherige Seite';
 $lang['next']                  = 'Nächste Seite';
-
-
 $lang['time_select']           = 'Zeitfenster auswählen:';
 $lang['time_today']            = 'Heute';
 $lang['time_last1']            = 'Gestern';
@@ -25,8 +23,6 @@ $lang['time_go']               = 'Los';
 $lang['days']                  = 'Tage';
 $lang['weeks']                 = 'Wochen';
 $lang['months']                = 'Monate';
-
-
 $lang['dashboard']             = 'Dashboard';
 $lang['page']                  = 'Seiten';
 $lang['edits']                 = 'Bearbeitungen';
@@ -56,10 +52,6 @@ $lang['users']                 = '(Nutzer und Gruppen)';
 $lang['links']                 = '(Links)';
 $lang['search']                = '(Suche)';
 $lang['technology']            = '(Technologie)';
-
-
-
-
 $lang['intro_dashboard']       = 'Diese Seite gibt Ihnen einen Überblick über die Aktivitäten in Ihrem Wiki in dem gewählten Zeitraum.<br />Wenn Sie ein Thema aus dem Inhaltsverzeichnis wählen, bekommen Sie weitere Details und Graphen angezeigt.';
 $lang['intro_page']            = 'Dies sind die Wiki-Seiten, die in dem gewählten Zeitraum am häufigsten angezeigt wurden.';
 $lang['intro_edits']           = 'Dies sind die am meisten bearbeiteten Wiki-Seiten im ausgewählten Zeitraum. Hier passiert im Moment am meisten in Ihrem Wiki.';
@@ -85,8 +77,6 @@ $lang['intro_topuser']         = 'Diese Seite zeigt welche eingeloggten Nutzer d
 $lang['intro_topeditor']       = 'Diese Seite zeigt welche eingeloggten Nutzer die meisten Seiten im ausgewählten Zeitraum editiert haben.';
 $lang['intro_topgroup']        = 'Dies sind die Gruppen der eingeloggten Nutzer die im gewählten Zeitraum die meisten Seiten betrachtet haben. Hinweis: alle Gruppen eines Nutzers werden gezählt.';
 $lang['intro_topgroupedit']    = 'Dies sind die Gruppen der eingeloggten Nutzer die im gewählten Zeitraum die meisten Seiten editiert haben. Hinweis: alle Gruppen eines Nutzers werden gezählt.';
-
-
 $lang['dash_pageviews']        = '<strong>%d</strong> Seitenaufrufe';
 $lang['dash_sessions']         = '<strong>%d</strong> Besuche (Sitzung)';
 $lang['dash_visitors']         = '<strong>%d</strong> Individuelle Besucher';
@@ -98,12 +88,9 @@ $lang['dash_bouncerate']       = '<strong>%.1f%%</strong> Absprünge';
 $lang['dash_timespent']        = '<strong>%.2f</strong> Minuten dauerte ein durchschnittlicher Besuch';
 $lang['dash_avgpages']         = '<strong>%.2f</strong> Seiten wurden während eines durchschnittlichen Besuches angezeigt';
 $lang['dash_newvisitors']      = '<strong>%.1f%%</strong> Neue Besucher';
-
 $lang['dash_mostpopular']      = 'Meistbesuchte Seiten';
 $lang['dash_newincoming']      = 'Top eingegangene, neue Links';
 $lang['dash_topsearch']        = 'Top Suchausdrücke';
-
-
 $lang['graph_edits']           = 'Seiten bearbeitet';
 $lang['graph_creates']         = 'Seiten erstellt';
 $lang['graph_deletions']       = 'Seiten gelöscht';
