@@ -68,7 +68,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     protected function dbLink() {
         // connect to DB if needed
         if(!$this->dblink) {
-            $this->dblink = mysql_connect(
+            $this->dblink = mysqli_connect(
                 $this->getConf('db_server'),
                 $this->getConf('db_user'),
                 $this->getConf('db_password')
@@ -77,14 +77,14 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
                 msg('DB Error: connection failed', -1);
                 return null;
             }
-            if(!mysql_select_db($this->getConf('db_database'))) {
+            if(!mysqli_select_db($this->dblink, $this->getConf('db_database'))) {
                 msg('DB Error: failed to select database', -1);
                 return null;
             }
 
             // set utf-8
-            if(!mysql_query('set names utf8', $this->dblink)) {
-                msg('DB Error: could not set UTF-8 (' . mysql_error($this->dblink) . ')', -1);
+            if(!mysqli_query($this->dblink, 'set names utf8')) {
+                msg('DB Error: could not set UTF-8 (' . mysqli_error($this->dblink) . ')', -1);
                 return null;
             }
         }
@@ -97,10 +97,10 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     public function runSQL($sql_string) {
         $link = $this->dbLink();
 
-        $result = mysql_query($sql_string, $link);
+        $result = mysqli_query($link, $sql_string);
         if(!$result) {
-            dbglog('DB Error: ' . mysql_error($link) . ' ' . hsc($sql_string), -1);
-            msg('DB Error: ' . mysql_error($link) . ' ' . hsc($sql_string), -1);
+            dbglog('DB Error: ' . mysqli_error($link) . ' ' . hsc($sql_string), -1);
+            msg('DB Error: ' . mysqli_error($link) . ' ' . hsc($sql_string), -1);
             return null;
         }
 
@@ -108,15 +108,15 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
 
         //mysql_db_query returns 1 on a insert statement -> no need to ask for results
         if($result != 1) {
-            for($i = 0; $i < mysql_num_rows($result); $i++) {
-                $temparray     = mysql_fetch_assoc($result);
+            for($i = 0; $i < mysqli_num_rows($result); $i++) {
+                $temparray     = mysqli_fetch_assoc($result);
                 $resultarray[] = $temparray;
             }
-            mysql_free_result($result);
+            mysqli_free_result($result);
         }
 
-        if(mysql_insert_id($link)) {
-            $resultarray = mysql_insert_id($link); //give back ID on insert
+        if(mysqli_insert_id($link)) {
+            $resultarray = mysqli_insert_id($link); //give back ID on insert
         }
 
         return $resultarray;
