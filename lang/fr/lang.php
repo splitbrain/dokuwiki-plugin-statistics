@@ -8,6 +8,7 @@
  * @author Alexandre Saillet <moutardea@gmail.com>
  * @author tuxun <tuxuntrash@gmail.com>
  * @author Nicolas Friedli <nicolas@theologique.ch>
+ * @author Schplurtz le Déboulonné <Schplurtz@laposte.net>
  */
 $lang['menu']                  = 'Statistiques d\'utilisation et d\'accès';
 $lang['more']                  = 'plus';
