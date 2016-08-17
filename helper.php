@@ -101,7 +101,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
         if(!$link) return null;
 
         $result = mysqli_query($link, $sql_string);
-        if(!$result) {
+        if($result === false) {
             dbglog('DB Error: ' . mysqli_error($link) . ' ' . hsc($sql_string), -1);
             msg('DB Error: ' . mysqli_error($link) . ' ' . hsc($sql_string), -1);
             return null;
@@ -110,7 +110,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
         $resultarray = array();
 
         //mysql_db_query returns 1 on a insert statement -> no need to ask for results
-        if($result != 1) {
+        if($result !== true) {
             for($i = 0; $i < mysqli_num_rows($result); $i++) {
                 $temparray     = mysqli_fetch_assoc($result);
                 $resultarray[] = $temparray;
