@@ -85,7 +85,8 @@ class StatisticsQuery {
         $sql               = "SELECT AVG(end - dt)/60 as time
                   FROM " . $this->hlp->prefix . "session as A
                  WHERE $tlimit
-                   AND dt != end";
+                   AND dt != end
+                   AND DATE(dt) = DATE(end)";
         $result            = $this->hlp->runSQL($sql);
         $data['timespent'] = $result[0]['time'];
 
