@@ -68,6 +68,8 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
     protected function dbLink() {
         // connect to DB if needed
         if(!$this->dblink) {
+            if(!$this->getConf('db_server')) return null;
+
             $this->dblink = mysqli_connect(
                 $this->getConf('db_server'),
                 $this->getConf('db_user'),
@@ -96,6 +98,7 @@ class helper_plugin_statistics extends Dokuwiki_Plugin {
      */
     public function runSQL($sql_string) {
         $link = $this->dbLink();
+        if(!$link) return null;
 
         $result = mysqli_query($link, $sql_string);
         if(!$result) {
