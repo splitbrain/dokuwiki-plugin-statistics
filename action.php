@@ -152,7 +152,7 @@ class action_plugin_statistics extends DokuWiki_Action_Plugin {
         if($event->data['status'] >= 300) {
             $size = 0;
         } else {
-            $size = filesize($event->data['file']);
+            $size = @filesize($event->data['file']);
         }
 
         /** @var helper_plugin_statistics $hlp */

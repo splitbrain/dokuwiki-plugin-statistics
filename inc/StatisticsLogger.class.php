@@ -428,7 +428,7 @@ class StatisticsLogger {
         $ok  = $this->hlp->runSQL($sql);
         if(is_null($ok)) {
             global $MSG;
-            print_r($MSG);
+            dbglog($MSG);
         }
     }
 
