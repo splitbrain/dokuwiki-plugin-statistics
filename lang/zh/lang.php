@@ -2,8 +2,9 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author 橙子狼 <2949384951@qq.com>
+ * @author jackeymai <jackey_mai@hotmail.com>
  */
 $lang['menu']                  = '访问和使用情况统计';
 $lang['more']                  = '更多';
@@ -45,3 +46,12 @@ $lang['technology']            = '（科技）';
 $lang['trafficsum']            = '<STRONG>％S </ STRONG>请求引起<STRONG>％S </ STRONG>流量。';
 $lang['intro_dashboard']       = '本页面为您提供了发生在选定的时间范围内您的维基有什么新的消息。<br />具体的见解和图表请从目录表中挑一个话题。';
 $lang['intro_page']            = '这些都是wiki页面中所选择的时间内观看次数最多的热门内容。';
+$lang['graph_edits']           = '编辑页面';
+$lang['graph_creates']         = '创建页面';
+$lang['graph_deletions']       = '侦测页面';
+$lang['graph_sessions']        = '访问';
+$lang['graph_visitors']        = '访客';
+$lang['graph_page_count']      = '页面';
+$lang['graph_page_size']       = '页面大小（MB）';
+$lang['graph_media_count']     = '媒体项目';
+$lang['graph_media_size']      = '媒体项目大小（MB）';
