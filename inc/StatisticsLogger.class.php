@@ -81,13 +81,18 @@ class StatisticsLogger {
      * @param array  $groups The groups to log
      */
     public function log_groups($type, $groups) {
-        if(!is_array($groups) || !count($groups)) return;
+        if(!is_array($groups)) {
+            return;
+        }
 
         $tolog = $this->hlp->getConf('loggroups');
         if($tolog) {
             foreach($groups as $pos => $group) {
                 if(!in_array($group, $tolog)) unset($groups[$pos]);
             }
+        }
+        if (!count($groups)) {
+            return;
         }
 
         $type = addslashes($type);
