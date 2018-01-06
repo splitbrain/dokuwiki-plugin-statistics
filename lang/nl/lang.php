@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author G. Uitslag <klapinklapin@gmail.com>
  * @author Rene <wllywlnt@yahoo.com>
  * @author Peter van Diest <peter.van.diest@xs4all.nl>
  * @author Wouter Wijsman <wwijsman@live.nl>
@@ -17,6 +18,9 @@ $lang['time_last1']            = 'Gisteren';
 $lang['time_last7']            = 'Laatste 7 dagen';
 $lang['time_last30']           = 'Laatste 30 dagen';
 $lang['time_go']               = 'Voer uit';
+$lang['days']                  = 'Dagen';
+$lang['weeks']                 = 'Weken';
+$lang['months']                = 'Maanden';
 $lang['dashboard']             = 'Dashboard';
 $lang['page']                  = 'Pagina\'s';
 $lang['edits']                 = 'Aanpassingen';
