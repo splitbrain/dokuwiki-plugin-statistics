@@ -258,3 +258,6 @@ CREATE TABLE `stats_groups` (
 )
   ENGINE ='MyISAM'
   COLLATE ='utf8_unicode_ci';
+
+-- UPGRADE added 2019-04-10
+ALTER TABLE `stats_history` MODIFY COLUMN `value` BIGINT;
