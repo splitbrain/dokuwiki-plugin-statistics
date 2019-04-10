@@ -131,7 +131,7 @@ class StatisticsGraph {
         $Chart  = new pChart(600, 200, $Canvas);
 
         $Chart->setFontProperties(dirname(__FILE__) . '/pchart/Fonts/DroidSans.ttf', 8);
-        $Chart->setGraphArea(50, 10, 580, 140);
+        $Chart->setGraphArea(70, 15, 580, 140);
         $Chart->drawScale(
             $DataSet, new ScaleStyle(SCALE_NORMAL, new Color(127)),
             45, 1, false, ceil(count($times) / 12)
