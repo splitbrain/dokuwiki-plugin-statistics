@@ -498,7 +498,7 @@ class StatisticsLogger {
         /** @var helper_plugin_popularity $pop */
         $pop = plugin_load('helper', 'popularity');
         $list = array();
-        search($list,$conf['datadir'],array($pop,'_search_count'),array('all'=>false),'');
+        search($list, $conf['datadir'], array($pop,'searchCountCallback'), array('all' => false), '');
         $page_count = $list['file_count'];
         $page_size  = $list['file_size'];
 
@@ -527,7 +527,7 @@ class StatisticsLogger {
         /** @var helper_plugin_popularity $pop */
         $pop = plugin_load('helper', 'popularity');
         $list = array();
-        search($list,$conf['mediadir'],array($pop,'_search_count'),array('all'=>true),'');
+        search($list, $conf['mediadir'], array($pop, 'searchCountCallback'), array('all' => true), '');
         $media_count = $list['file_count'];
         $media_size  = $list['file_size'];
 
