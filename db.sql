@@ -3,7 +3,7 @@ CREATE TABLE `stats_access` (
   `dt`       TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `page`     VARCHAR(255)
              COLLATE utf8_unicode_ci NOT NULL,
-  `ip`       VARCHAR(15)
+  `ip`       VARCHAR(40)
              COLLATE utf8_unicode_ci NOT NULL,
   `ua`       VARCHAR(255)
              COLLATE utf8_unicode_ci NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `stats_access` (
   COLLATE =utf8_unicode_ci;
 
 CREATE TABLE `stats_iplocation` (
-  `ip`      VARCHAR(15)
+  `ip`      VARCHAR(40)
             COLLATE utf8_unicode_ci NOT NULL,
   `code`    VARCHAR(3)
             COLLATE utf8_unicode_ci NOT NULL,
@@ -261,3 +261,7 @@ CREATE TABLE `stats_groups` (
 
 -- UPGRADE added 2019-04-10
 ALTER TABLE `stats_history` MODIFY COLUMN `value` BIGINT;
+
+-- UPGRADE added 2023-12-08
+ALTER TABLE `stats_iplocation` MODIFY COLUMN `ip` VARCHAR(40);
+ALTER TABLE `stats_access` MODIFY COLUMN `ip` VARCHAR(40);
