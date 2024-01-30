@@ -14,6 +14,7 @@ session_write_close();
 /** @var helper_plugin_statistics $plugin */
 $plugin = plugin_load('helper', 'statistics');
 try {
+    if(!auth_ismanager()) throw new Exception('Access denied');
     $plugin->Graph()->render($_REQUEST['img'], $_REQUEST['f'], $_REQUEST['t'], $_REQUEST['s']);
 } catch(Exception $e) {
     $plugin->sendGIF(false);
