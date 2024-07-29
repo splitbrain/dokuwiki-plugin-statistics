@@ -3,9 +3,11 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Vyacheslav Strenadko <bryanskmap@yandex.ru>
  * @author Yuriy Skalko <yuriy.skalko@gmail.com>
  * @author Aleksandr Selivanov <alexgearbox@yandex.ru>
  */
+$lang['menu']                  = 'Статистика доступа и использования';
 $lang['more']                  = 'ещё';
 $lang['prev']                  = 'пред. стр.';
 $lang['next']                  = 'след. стр.';
@@ -24,6 +26,7 @@ $lang['images']                = 'Изображения';
 $lang['downloads']             = 'Загрузки';
 $lang['referer']               = 'Входящие ссылки';
 $lang['newreferer']            = 'Новые входящие ссылки';
+$lang['outlinks']              = 'Исходящие ссылки';
 $lang['searchengines']         = 'Поисковыи системы';
 $lang['browsers']              = 'Браузеры';
 $lang['os']                    = 'Операционные системы';
